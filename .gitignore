@@ -1,0 +1,11 @@
+/target
+result*
+
+.vscode
+*.swp
+
+secrets/
+.vagrant/
+.terraform*
+terraform.tfstate*
+.direnv/

@@ -1,0 +1,33 @@
+[package]
+name = "jardin"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+thiserror = "1.0"
+regex = "1"
+flexi_logger = "0.25"
+log = "0.4"
+async-trait = "0.1.52"
+tokio = { version = "1", features = ["full"] }
+# TODO: use clap_mangen to generate manual pages
+clap_mangen = "0.2.11"
+
+[dependencies.serde]
+version = "1.0.163"
+features = ["std", "derive"]
+default-features = false
+
+[dependencies.confy]
+version = "0.5.1"
+features = ["toml_conf"]
+default-features = false
+
+[dependencies.clap]
+version = "4.2.7"
+features = ["derive"]
+
+[dependencies.clap_complete]
+version = "4.2.3"

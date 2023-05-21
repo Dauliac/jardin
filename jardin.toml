@@ -1,0 +1,21 @@
+version = 1
+
+[pipeline]
+use_default = true
+default_backend = "nix"
+
+[cluster]
+surname = "cluster"
+
+[cluster.targets]
+[cluster.targets.node1]
+surname = "node1"
+# role = "leader"
+role = "follower"
+ip = '127.0.0.1'
+
+[cluster.targets.node2]
+surname = "node1"
+# role = "leader"
+role = "follower"
+ip = '127.0.0.1'

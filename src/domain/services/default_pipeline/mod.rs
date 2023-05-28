@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
 
 pub mod bootstrap_operating_system;
 pub mod default_identifier;
@@ -6,7 +6,10 @@ pub mod platformize;
 
 use std::collections::HashSet;
 
-use crate::domain::value_objects::pipeline::{Pipeline, PipelineError};
+use crate::domain::{
+    core::Aggregate,
+    models::{aggregates::cluster::Cluster, value_objects::pipeline::PipelineIdentifier},
+};
 
 use self::{
     bootstrap_operating_system::step::get_bootstrap_operating_systems_step,
@@ -19,11 +22,20 @@ impl DefaultIdentifier for DefaultPipelineIdentifier {
     const VALUE: &'static str = "default";
 }
 
-pub fn get_default_pipeline() -> Result<Pipeline, PipelineError> {
+impl DefaultPipelineIdentifier {
+    fn create() -> PipelineIdentifier {
+        PipelineIdentifier::new(Self::VALUE.to_string())
+    }
+}
+
+fn get_default_pipeline(
+    cluster: Cluster,
+) -> Result<<Cluster as Aggregate<Cluster>>::Event, <Cluster as Aggregate<Cluster>>::Error> {
     let platformize = get_platformize_step(|| None);
     let bootstrap_next = Some(HashSet::from([platformize.get_identifier().clone()]));
     let bootstrap = get_bootstrap_operating_systems_step(bootstrap_next);
     let steps = Vec::from([bootstrap, platformize]);
+    let pipeline_identifier = DefaultPipelineIdentifier::create();
 
-    Pipeline::new(DefaultPipelineIdentifier::VALUE.to_string(), steps)
+    cluster.create_pipeline(pipeline_identifier, steps)
 }

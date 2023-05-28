@@ -1,19 +1,21 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
 
 use std::collections::HashSet;
+
+use serde::{Deserialize, Serialize};
 
 use super::backend::Backend;
 
 pub type JobIdentifier = String;
 pub type Retry = u8;
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct NodeExecution {
     pub per_node_execution: bool,
     pub parrallisable: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Job {
     identifier: JobIdentifier,
     backend: Backend,
@@ -47,7 +49,7 @@ impl Executable for Job {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct CheckJob {
     retry: Option<Retry>,
     job: Job,

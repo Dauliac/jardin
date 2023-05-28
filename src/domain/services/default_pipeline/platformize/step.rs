@@ -1,11 +1,11 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
 
-use crate::domain::services::default_pipeline::default_identifier::DefaultIdentifier;
-use crate::domain::value_objects::pipeline::steps::backend;
-use crate::domain::value_objects::pipeline::steps::job::{
+use crate::domain::models::value_objects::pipeline::steps::backend;
+use crate::domain::models::value_objects::pipeline::steps::job::{
     get_none_post_check_jobs, get_none_pre_check_jobs, Job,
 };
-use crate::domain::value_objects::pipeline::steps::step::{NextSteps, Step};
+use crate::domain::models::value_objects::pipeline::steps::step::{NextSteps, Step};
+use crate::domain::services::default_pipeline::default_identifier::DefaultIdentifier;
 
 use super::identifier::PlatformizeIdentifier;
 

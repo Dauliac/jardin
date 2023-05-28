@@ -1,20 +1,17 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
-
-pub mod steps;
+// SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
 
 use std::collections::{HashMap, HashSet};
 
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
-use crate::domain::value_objects::pipeline::steps::step::{Step, StepIdentifier};
-
-pub type PipelineIdentifier = String;
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct Pipeline {
-    pub identifier: PipelineIdentifier,
-    steps: HashMap<StepIdentifier, Step>,
-}
+use crate::domain::{
+    core::Entity,
+    models::value_objects::pipeline::{
+        steps::step::{Step, StepIdentifier},
+        PipelineIdentifier,
+    },
+};
 
 #[derive(Error, Debug, Clone, PartialEq)]
 pub enum PipelineError {
@@ -22,6 +19,14 @@ pub enum PipelineError {
     InvalidNextSteps(HashSet<StepIdentifier>),
     #[error("Siven sources was not loaded")]
     CyclicStepFlow(HashSet<StepIdentifier>),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum PipelineEvent {
+    PipelineCreated {
+        identifier: PipelineIdentifier,
+        steps: Vec<Step>,
+    },
 }
 
 fn detect_non_valid_next_steps(steps: &HashMap<StepIdentifier, Step>) -> Result<(), PipelineError> {
@@ -93,21 +98,51 @@ fn visit_step(
     result
 }
 
+fn index_steps(steps: &[Step]) -> HashMap<StepIdentifier, Step> {
+    steps
+        .iter()
+        .map(|step| (step.get_identifier().clone(), step.clone()))
+        .collect()
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub(in crate::domain) struct Pipeline {
+    identifier: PipelineIdentifier,
+    steps: HashMap<StepIdentifier, Step>,
+}
+
+impl Entity<Pipeline> for Pipeline {
+    type Identifier = PipelineIdentifier;
+    fn get_identifier(&self) -> Self::Identifier {
+        self.identifier.clone()
+    }
+
+    fn equals(&self, _entity: Box<Pipeline>) -> bool {
+        todo!()
+    }
+}
+
 impl Pipeline {
-    pub fn new(
+    pub fn create(
         identifier: PipelineIdentifier,
         steps: Vec<Step>,
-    ) -> Result<Pipeline, PipelineError> {
-        let _ordered_steps = steps.clone();
+    ) -> Result<PipelineEvent, PipelineError> {
+        let ordered_steps = steps.clone();
         let indexed_steps: HashMap<StepIdentifier, Step> = steps
             .into_iter()
             .map(|step| (step.get_identifier().clone(), step))
             .collect();
-        println!("indexed_steps: {:#?}", indexed_steps);
-        detect_non_valid_next_steps(&indexed_steps).map(|_| Pipeline {
+        detect_non_valid_next_steps(&indexed_steps).map(|_| PipelineEvent::PipelineCreated {
             identifier,
-            steps: indexed_steps,
+            steps: ordered_steps,
         })
+    }
+
+    pub fn new(identifier: PipelineIdentifier, steps: Vec<Step>) -> Self {
+        Self {
+            identifier,
+            steps: index_steps(&steps),
+        }
     }
 
     pub fn get_identifier(&self) -> &PipelineIdentifier {

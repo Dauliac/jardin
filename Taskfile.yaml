@@ -19,6 +19,17 @@ tasks:
     sources:
       - ./lefthook.yml
       - ./flake.nix
+  formatter::rust:
+    silent: true
+    desc: 💄Format rust files
+    sources:
+      - "**/*.rs"
+      - "Cargo.toml"
+      - "Cargo.lock"
+    cmds:
+      - cargo fmt
+      - |
+        cargo clippy --fix
   formatter::nix:
     silent: true
     desc: 💄Format nix files
@@ -33,6 +44,7 @@ tasks:
     aliases:
       - fmt
     deps:
+      - task: formatter::rust
       - task: formatter::nix
   lint::rust::clippy:
     silent: true

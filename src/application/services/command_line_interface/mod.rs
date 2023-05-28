@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 pub mod model;
 pub mod presenter;
 
@@ -22,6 +24,8 @@ pub fn start_cli(
     attempt_help_display_on_match(&matches)?;
     attempt_generate_completion_on_match(&matches)?;
     let config = read_config(&matches, config_service)?;
-    attempt_deploy_on_match(&matches).map(|use_case| start_domain_service(use_case, &config));
+    if let Some(use_case) = attempt_deploy_on_match(&matches) {
+        start_domain_service(use_case, &config)
+    }
     Ok(config)
 }

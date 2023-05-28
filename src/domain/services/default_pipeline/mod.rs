@@ -1,10 +1,12 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 pub mod bootstrap_operating_system;
 pub mod default_identifier;
 pub mod platformize;
 
 use std::collections::HashSet;
 
-use crate::domain::value_objects::pipeline::pipeline::{Pipeline, PipelineError};
+use crate::domain::value_objects::pipeline::{Pipeline, PipelineError};
 
 use self::{
     bootstrap_operating_system::step::get_bootstrap_operating_systems_step,

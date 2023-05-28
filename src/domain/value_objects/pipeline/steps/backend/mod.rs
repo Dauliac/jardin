@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 use self::nix::Nix;
 
 pub mod nix;

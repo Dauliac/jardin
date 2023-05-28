@@ -1,8 +1,10 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 use std::sync::{Arc, RwLock};
 
 use super::value_objects::{
     cluster::{cluster::Cluster, surname::ClusterSurname},
-    pipeline::pipeline::{Pipeline, PipelineIdentifier},
+    pipeline::{Pipeline, PipelineIdentifier},
 };
 
 pub trait Repository<I, T> {

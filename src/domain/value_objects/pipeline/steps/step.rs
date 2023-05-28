@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 use std::collections::HashSet;
 
 use super::job::{Job, PostCheckJobs, PreCheckJobs};

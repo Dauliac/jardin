@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 use flexi_logger::{DeferredNow, Record};
 
 use super::formatter::logger_formatter_scoped;

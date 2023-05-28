@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 use std::io;
 
 use clap::{ArgMatches, Command};
@@ -17,11 +19,10 @@ fn logger_print_completion() -> Result<(), FlexiLoggerError> {
         false,
         &LoggerType::Application(ApplicationLoggerType::Completion),
     )
-    .and_then(|logger| {
+    .map(|logger| {
         log::error!("Generate completion script ...");
-        Ok(logger)
+        logger
     })
-    .or_else(|error| Err(error))
 }
 
 fn print_completions<G: Generator>(gen: G, cmd: &mut Command) {
@@ -31,19 +32,14 @@ fn print_completions<G: Generator>(gen: G, cmd: &mut Command) {
 pub fn attempt_generate_completion_on_match(matches: &ArgMatches) -> Result<Option<()>, CliError> {
     matches
         .get_one::<Shell>("shell")
-        .and_then(|generator| {
-            Some(
-                logger_print_completion()
-                    .and_then(|_ok| Ok(build_cli()))
-                    .and_then(|mut cli| {
-                        print_completions(generator.clone(), &mut cli);
-                        Ok(())
-                    }),
-            )
+        .map(|generator| {
+            logger_print_completion()
+                .map(|_ok| build_cli())
+                .map(|mut cli| {
+                    print_completions(*generator, &mut cli);
+                })
         })
         .map_or(Ok(None), |result| {
-            result
-                .map(|_ok| Some(()))
-                .map_err(|error| CliError::Logger(error))
+            result.map(|_ok| Some(())).map_err(CliError::Logger)
         })
 }

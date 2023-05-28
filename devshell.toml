@@ -1,0 +1,7 @@
+name = "jardin"
+motd = "\n  {202}Jardin 🌼, a foss cluster manager{reset}\n  $(type -p menu &>/dev/null && menu)\n"
+[[commands]]
+category = "rust"
+package = "lefthook" # https://search.nixos.org/packages?type=packages&query=nodejs
+name = "hook"
+help = "Run git hook"

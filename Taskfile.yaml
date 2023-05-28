@@ -1,0 +1,104 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+
+version: "3"
+
+set: [errexit, pipefail, nounset]
+shopt: [globstar]
+
+dotenv: [".env.local", ".env"]
+
+tasks:
+  init:
+    silent: true
+    desc: Setup project
+    cmds:
+      - |
+        nix run nixpkgs#lefthook install
+    sources:
+      - ./lefthook.yml
+      - ./flake.nix
+  formatter::nix:
+    silent: true
+    desc: 💄Format nix files
+    sources:
+      - "**/*.nix"
+    cmds:
+      - |
+        nix fmt
+  formatter:
+    silent: true
+    desc: 💄Format jardin
+    aliases:
+      - fmt
+    deps:
+      - task: formatter::nix
+  lint::rust::clippy:
+    silent: true
+    cmds:
+      - |
+        nix run nixpkgs#cargo -- clippy \
+          --fix \
+          --all-targets \
+          --all-features \
+          --allow-staged \
+          --allow-dirty
+    sources:
+      - "**/*.rs"
+      - "Cargo.toml"
+      - "Cargo.lock"
+  lint::typos:
+    silent: true
+    cmds:
+      - |
+        nix run nixpkgs#typos -- --write-changes .
+  lint:
+    silent: true
+    desc: 💄Lint jardin
+    deps:
+      - task: lint::rust::clippy
+      - task: lint::typos
+  build:
+    silent: true
+    desc: Build jardin
+    sources:
+      - ./src/**/*.rs
+      - ./Cargo.toml
+      - ./Cargo.lock
+    generates:
+      - ./target/debug/jardin
+    cmds:
+      - |
+        nix run nixpkgs#cargo build
+  test::lefthook:
+    silent: true
+    cmds:
+      - |
+        nix run nixpkgs#lefthook -- run pre-commit pre-push
+    sources:
+      - "lefthook.yml"
+  toolchain:
+    silent: true
+    # desc: Run all development toolchain
+    cmds:
+      - task: build
+      - task: lint
+  dev:
+    silent: true
+    desc: Run development mode
+    cmds:
+      - |
+        nix run nixpkgs#go-task toolchain -- --watch
+  run:
+    silent: true
+    desc: Run jardin
+    cmds:
+      - |
+        nix run
+  default:
+    silent: true
+    cmds:
+      - task: init
+      - |
+        task -l

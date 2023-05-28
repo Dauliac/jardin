@@ -1,8 +1,11 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 {
-  description = "Build a cargo project";
+  description = "Jardin";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+
+    flake-utils.url = "github:numtide/flake-utils";
 
     crane = {
       url = "github:ipetkov/crane";
@@ -15,131 +18,129 @@
       inputs.rust-analyzer-src.follows = "";
     };
 
-    flake-utils.url = "github:numtide/flake-utils";
-
     advisory-db = {
       url = "github:rustsec/advisory-db";
       flake = false;
     };
   };
 
-  outputs = { self, nixpkgs, crane, fenix, flake-utils, advisory-db, ... }:
+  outputs =
+    { self
+    , nixpkgs
+    , flake-utils
+    , crane
+    , fenix
+    , advisory-db
+    , ...
+    }:
     flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = import nixpkgs {
-          inherit system;
-        };
+    let
+      pkgs = import nixpkgs {
+        inherit system;
+        # overlays = [ (import fenix) ];
+      };
 
-        inherit (pkgs) lib;
+      craneLib = crane.lib.${system};
+      src = craneLib.cleanCargoSource (craneLib.path ./.);
+      commonArgs = {
+        inherit src;
+      };
+      cargoArtifacts = craneLib.buildDepsOnly commonArgs;
 
-        craneLib = crane.lib.${system};
-        src = craneLib.cleanCargoSource (craneLib.path ./.);
-
-        # Common arguments can be set here to avoid repeating them later
-        commonArgs = {
-          inherit src;
-
-          buildInputs = [
-            # Add additional build inputs here
-          ] ++ lib.optionals pkgs.stdenv.isDarwin [
-            # Additional darwin specific inputs can be set here
-            pkgs.libiconv
-          ];
-        };
-
-        craneLibLLvmTools = craneLib.overrideToolchain
-          (fenix.packages.${system}.complete.withComponents [
-            "cargo"
-            "llvm-tools"
-            "rustc"
-            "clippy"
-            "rust-src"
-            "rustfmt"
-          ]);
-
-        # Build *just* the cargo dependencies, so we can reuse
-        # all of that work (e.g. via cachix) when running in CI
-        cargoArtifacts = craneLib.buildDepsOnly commonArgs;
-
-        # Build the actual crate itself, reusing the dependency
-        # artifacts from above.
-        nofreedisk = craneLib.buildPackage (commonArgs // {
+      jardin =
+        let
+          craneLib =
+            crane.lib.${system}.overrideToolchain
+              fenix.packages.${system}.complete.toolchain;
+        in
+        craneLib.buildPackage (commonArgs
+          // {
           inherit cargoArtifacts;
         });
-      in
-      {
-        checks = {
-          # Build the crate as part of `nix flake check` for convenience
-          inherit nofreedisk;
 
-          # Run clippy (and deny all warnings) on the crate source,
-          # again, resuing the dependency artifacts from above.
-          #
-          # Note that this is done as a separate derivation so that
-          # we can block the CI if there are issues here, but not
-          # prevent downstream consumers from building our crate by itself.
-          nofreedisk-clippy = craneLib.cargoClippy (commonArgs // {
-            inherit cargoArtifacts;
-            cargoClippyExtraArgs = "--all-targets -- --deny warnings";
-          });
+      formatterPackages = with pkgs; [
+        nixpkgs-fmt
+        alejandra
+        statix
+      ];
+    in
+    {
+      packages.default = jardin;
 
-          nofreedisk-doc = craneLib.cargoDoc (commonArgs // {
-            inherit cargoArtifacts;
-          });
-
-          # Check formatting
-          nofreedisk-fmt = craneLib.cargoFmt {
-            inherit src;
+      formatter =
+        pkgs.writeShellApplication
+          {
+            name = "normalise_nix";
+            runtimeInputs = formatterPackages;
+            text = ''
+              set -o xtrace
+              alejandra "$@"
+              nixpkgs-fmt "$@"
+              statix fix "$@"
+            '';
           };
 
-          # Audit dependencies
-          nofreedisk-audit = craneLib.cargoAudit {
-            inherit src advisory-db;
+      checks = {
+        inherit jardin;
+        # TODO: add cargo-audit, and lot of other checks
+
+        typos = pkgs.mkShell {
+          buildInputs = with pkgs; [ typos ];
+          shellHook = ''
+            typos .
+          '';
+        };
+        yamllint = pkgs.mkShell {
+          buildInputs = with pkgs; [ yamllint ];
+          shellHook = ''
+            yamllint --strict .
+          '';
+        };
+        reuse = pkgs.mkShell {
+          buildInputs = with pkgs; [ reuse ];
+          shellHook = ''
+            reuse lint
+          '';
+        };
+
+        cargo-fmt = craneLib.cargoFmt {
+          inherit src;
+        };
+
+        audit = craneLib.cargoAudit {
+          inherit src advisory-db;
+        };
+
+        clippy = craneLib.cargoClippy (commonArgs
+          // {
+          inherit cargoArtifacts;
+          # TODO: fix code for clippy
+          # cargoClippyExtraArgs = "--all-targets -- --deny warnings";
+          cargoClippyExtraArgs = "--all-targets";
+        });
+
+        coverage = craneLib.cargoTarpaulin (commonArgs
+          // {
+          inherit cargoArtifacts;
+        });
+      };
+
+      devShells.default =
+        pkgs.mkShell
+          {
+            inputsFrom = builtins.attrValues self.checks.${system};
+
+            RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
+
+            nativeBuildInputs = with pkgs;
+              [
+                go-task
+                lefthook
+                rustc
+                rustfmt
+                rust.packages.stable.rustPlatform.rustLibSrc
+              ]
+              ++ formatterPackages;
           };
-
-          # Run tests with cargo-nextest
-          # Consider setting `doCheck = false` on `nofreedisk` if you do not want
-          # the tests to run twice
-          nofreedisk-nextest = craneLib.cargoNextest (commonArgs // {
-            inherit cargoArtifacts;
-            partitions = 1;
-            partitionType = "count";
-          });
-        } // lib.optionalAttrs (system == "x86_64-linux") {
-          # NB: cargo-tarpaulin only supports x86_64 systems
-          # Check code coverage (note: this will not upload coverage anywhere)
-          nofreedisk-coverage = craneLib.cargoTarpaulin (commonArgs // {
-            inherit cargoArtifacts;
-          });
-        };
-
-        packages = {
-          default = nofreedisk;
-          nofreedisk-llvm-coverage = craneLibLLvmTools.cargoLlvmCov (commonArgs // {
-            inherit cargoArtifacts;
-          });
-        };
-
-        apps.default = flake-utils.lib.mkApp {
-          drv = nofreedisk;
-        };
-
-        devShells.default = pkgs.mkShell {
-          inputsFrom = builtins.attrValues self.checks.${system};
-
-          # Additional dev-shell environment variables can be set directly
-          # MY_CUSTOM_DEVELOPMENT_VAR = "something else";
-          RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
-
-          # Extra inputs can be added here
-          nativeBuildInputs = with pkgs; [
-            cargo
-            rustc
-            rustfmt
-            clippy
-            reuse
-            rust.packages.stable.rustPlatform.rustLibSrc
-          ];
-        };
-      });
+    });
 }

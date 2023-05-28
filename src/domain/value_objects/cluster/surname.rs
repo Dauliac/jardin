@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 use regex::Regex;
 
 use thiserror::Error;
@@ -19,7 +21,7 @@ fn check_surname_specification(surname: String) -> Result<String, SurnameError> 
         .unwrap()
         .is_match(surname.as_str())
         .then(|| Ok(surname.clone()))
-        .unwrap_or_else(|| Err(SurnameError::InvalidSurnameFormat(surname)))
+        .unwrap_or(Err(SurnameError::InvalidSurnameFormat(surname)))
 }
 
 impl NodeSurname {

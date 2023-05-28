@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 use flexi_logger::{FlexiLoggerError, Logger};
 
 use self::{
@@ -32,5 +34,5 @@ pub fn init_logger(debug_logs: bool, logger_type: &LoggerType) -> Result<(), Fle
     .format(logger_formatter)
     .set_palette("196;208;51;7;8".to_string())
     .start()
-    .and_then(|_| Ok(()))
+    .map(|_| ())
 }

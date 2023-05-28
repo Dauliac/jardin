@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 use clap::ArgMatches;
 
 use crate::application::services::command_line_interface::presenter::CliError;

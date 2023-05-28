@@ -1,0 +1,30 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: jardin
+Upstream-Contact: conformism  <conformism@nofreedisk.space>
+Source: https://gitlab.com/conformism/jardin
+
+# Sample paragraph, commented out:
+#
+Files: src/*
+Copyright: 2022 Conformism  <conformism@nofreedisk.space>
+License: AGPL-3.0-or-later
+
+Files: .*
+Copyright: 2022 Conformism  <conformism@nofreedisk.space>
+License: AGPL-3.0-or-later
+
+Files: *.yaml *.yml *.toml flake.nix
+Copyright: 2022 Conformism  <conformism@nofreedisk.space>
+License: AGPL-3.0-or-later
+
+Files: **/*.md
+Copyright: 2022 Conformism  <conformism@nofreedisk.space>
+License: CC-BY-SA-4.0
+
+Files: *.lock
+Copyright: 2022 Conformism  <conformism@nofreedisk.space>
+License: CC0-1.0
+
+Files: *.
+Copyright: 2022 Conformism  <conformism@nofreedisk.space>
+License: CC0-1.0

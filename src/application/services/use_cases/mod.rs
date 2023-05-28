@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 use crate::domain::{
     services::default_pipeline::get_default_pipeline,
     use_cases::{deploy_use_case::UserStory as DeployUserStory, UseCases},
@@ -7,7 +9,7 @@ use super::config::model::Config;
 
 pub fn deploy_cluster_to_production_with_default_pipeline(_config: &Config) {
     let pipeline = get_default_pipeline();
-    println!("AAAA {:?}", pipeline)
+    println!("{:?}", pipeline)
 }
 
 pub fn deploy_cluster_to_production_with_default_pipeline_in_dry_run_mode(_config: &Config) {

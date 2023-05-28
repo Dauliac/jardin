@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 use clap::ArgMatches;
 
 use crate::application::services::{
@@ -9,5 +11,5 @@ pub fn read_config(
     matches: &ArgMatches,
     config_service: impl Fn(Option<&String>) -> Result<Config, ConfigError>,
 ) -> Result<Config, CliError> {
-    config_service(matches.get_one::<String>("config")).map_err(|error| CliError::Config(error))
+    config_service(matches.get_one::<String>("config")).map_err(CliError::Config)
 }

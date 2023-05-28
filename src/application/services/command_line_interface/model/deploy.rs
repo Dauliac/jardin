@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 use std::ops::Not;
 
 use clap::ArgMatches;
@@ -10,17 +12,15 @@ use crate::{
 };
 
 fn is_development_mode(matches: &ArgMatches) -> bool {
-    matches
+    *matches
         .get_one::<bool>(DEVELOPMENT_COMMAND_NAME)
         .unwrap_or(&false)
-        .clone()
 }
 
 fn is_dry_run_mode(matches: &ArgMatches) -> bool {
-    matches
+    *matches
         .get_one::<bool>(DEPLOY_ARG_DRY_RUN)
         .unwrap_or(&false)
-        .clone()
 }
 
 fn check_deploy_production(matches: &ArgMatches) -> bool {

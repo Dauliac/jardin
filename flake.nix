@@ -45,13 +45,24 @@
       commonArgs = {
         inherit src;
       };
+
+      fenix-channel = fenix.packages.${system}.stable;
+
+      toolchain = fenix-channel.withComponents [
+        "rustc"
+        "cargo"
+        "clippy"
+        "rust-analysis"
+        "rust-src"
+        "rustfmt"
+        "llvm-tools-preview"
+      ];
+
       cargoArtifacts = craneLib.buildDepsOnly commonArgs;
 
       jardin =
         let
-          craneLib =
-            crane.lib.${system}.overrideToolchain
-              fenix.packages.${system}.complete.toolchain;
+          craneLib = crane.lib.${system}.overrideToolchain toolchain;
         in
         craneLib.buildPackage (commonArgs
           // {
@@ -66,6 +77,13 @@
     in
     {
       packages.default = jardin;
+      apps.default = jardin;
+
+      packages.coverage = craneLib.cargoLlvmCov (commonArgs
+        // {
+        inherit cargoArtifacts;
+        cargoExtraArgs = "nextest";
+      });
 
       formatter =
         pkgs.writeShellApplication
@@ -119,9 +137,16 @@
           cargoClippyExtraArgs = "--all-targets";
         });
 
-        coverage = craneLib.cargoTarpaulin (commonArgs
+        test = craneLib.cargoNextest (commonArgs
           // {
           inherit cargoArtifacts;
+        });
+
+        coverage = craneLib.cargoLlvmCov (commonArgs
+          // {
+          inherit cargoArtifacts;
+          inherit toolchain;
+          cargoLlvmCovCommand = "nextest";
         });
       };
 
@@ -134,6 +159,8 @@
 
             nativeBuildInputs = with pkgs;
               [
+                toolchain
+                rust-analyzer
                 go-task
                 lefthook
                 rustc

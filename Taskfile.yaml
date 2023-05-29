@@ -27,9 +27,10 @@ tasks:
       - "Cargo.toml"
       - "Cargo.lock"
     cmds:
-      - cargo fmt
       - |
-        cargo clippy --fix
+        nix run nixpkgs#cargo fmt
+      - |
+        nix run nixpkgs#cargo clippy -- --fix --allow-dirty --allow-staged
   formatter::nix:
     silent: true
     desc: 💄Format nix files
@@ -46,20 +47,6 @@ tasks:
     deps:
       - task: formatter::rust
       - task: formatter::nix
-  lint::rust::clippy:
-    silent: true
-    cmds:
-      - |
-        nix run nixpkgs#cargo -- clippy \
-          --fix \
-          --all-targets \
-          --all-features \
-          --allow-staged \
-          --allow-dirty
-    sources:
-      - "**/*.rs"
-      - "Cargo.toml"
-      - "Cargo.lock"
   lint::typos:
     silent: true
     cmds:
@@ -69,7 +56,7 @@ tasks:
     silent: true
     desc: 💄Lint jardin
     deps:
-      - task: lint::rust::clippy
+      # - task: lint::rust::clippy
       - task: lint::typos
   build:
     silent: true
@@ -90,12 +77,33 @@ tasks:
         nix run nixpkgs#lefthook -- run pre-commit pre-push
     sources:
       - "lefthook.yml"
+  test::rust:
+    silent: true
+    cmds:
+      - |
+        nix run nixpkgs#cargo llvm-cov nextest
+    sources:
+      - "**/*.rs"
+      - "Cargo.toml"
+      - "Cargo.lock"
+  test::rust::audit:
+    silent: true
+    cmds:
+      - |
+        nix run nixpkgs#cargo audit
+    sources:
+      - "**/*.rs"
+      - "Cargo.toml"
+      - "Cargo.lock"
   toolchain:
     silent: true
     # desc: Run all development toolchain
     cmds:
       - task: build
+      - task: formatter
       - task: lint
+      - task: test::rust
+      - task: test::rust::audit
   dev:
     silent: true
     desc: Run development mode

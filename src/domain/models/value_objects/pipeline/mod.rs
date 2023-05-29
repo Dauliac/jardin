@@ -2,11 +2,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::domain::core::ValueObject;
+use crate::domain::core::{Identifier, ValueObject};
 
 pub mod steps;
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineIdentifier {
     pub value: String,
 }
@@ -21,8 +21,5 @@ impl PipelineIdentifier {
     }
 }
 
-impl ValueObject<PipelineIdentifier> for PipelineIdentifier {
-    fn equals(&self, value: &PipelineIdentifier) -> bool {
-        self.value.eq(value.get_value())
-    }
-}
+impl ValueObject<PipelineIdentifier> for PipelineIdentifier {}
+impl Identifier<PipelineIdentifier> for PipelineIdentifier {}

@@ -33,3 +33,7 @@ features = ["derive"]
 
 [dependencies.clap_complete]
 version = "4.2.3"
+
+[dev-dependencies]
+serde_json = "1.0.96"
+coverage-helper = "0.1"

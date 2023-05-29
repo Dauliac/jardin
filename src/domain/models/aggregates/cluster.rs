@@ -33,7 +33,8 @@ pub enum ClusterError {
 #[derive(Debug, Clone, PartialEq)]
 pub enum ClusterCommand {
     CreatePipeline {
-        identifier: PipelineIdentifier,
+        identifier: ClusterSurname,
+        pipeline_identifier: PipelineIdentifier,
         steps: Vec<Step>,
     },
 }
@@ -43,6 +44,8 @@ pub enum ClusterEvent {
     ClusterDeclared(ClusterSurname),
     Pipeline(PipelineEvent),
 }
+
+pub type ClusterResult = Result<ClusterEvent, ClusterError>;
 
 pub type Nodes = HashMap<NodeSurname, Node>;
 
@@ -76,11 +79,17 @@ fn check_leader_declaration(nodes: &HashMap<NodeSurname, Node>) -> Result<(), Cl
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Cluster {
     surname: ClusterSurname,
     targets: HashMap<NodeSurname, Node>,
     pipeline: Option<Pipeline>,
+}
+
+impl PartialEq for Cluster {
+    fn eq(&self, other: &Self) -> bool {
+        self.surname.eq(&other.surname)
+    }
 }
 
 impl Entity<Cluster> for Cluster {
@@ -89,23 +98,21 @@ impl Entity<Cluster> for Cluster {
     fn get_identifier(&self) -> ClusterSurname {
         self.surname.clone()
     }
-
-    fn equals(&self, entity: Box<Cluster>) -> bool {
-        self.surname.eq(&entity.surname)
-    }
 }
 
 impl Aggregate<Cluster> for Cluster {
     type Error = ClusterError;
     type Event = ClusterEvent;
     type Command = ClusterCommand;
-    type Result = Result<Self::Event, Self::Error>;
+    type Result = ClusterResult;
 
     fn handle(&self, command: Self::Command) -> Self::Result {
         match command {
-            ClusterCommand::CreatePipeline { identifier, steps } => {
-                self.create_pipeline(identifier, steps)
-            }
+            ClusterCommand::CreatePipeline {
+                identifier: _,
+                pipeline_identifier,
+                steps,
+            } => self.create_pipeline(pipeline_identifier, steps),
         }
     }
 
@@ -114,7 +121,7 @@ impl Aggregate<Cluster> for Cluster {
             ClusterEvent::ClusterDeclared(_) => (),
             ClusterEvent::Pipeline(pipeline_event) => match pipeline_event {
                 PipelineEvent::PipelineCreated { identifier, steps } => {
-                    self.pipeline_created(Pipeline::new(identifier, steps))
+                    self.signal_pipeline_created(Pipeline::new(identifier, steps))
                 }
             },
         }
@@ -152,17 +159,29 @@ impl Cluster {
         &self.surname
     }
 
-    pub fn create_pipeline(
+    pub fn formulate_pipeline_creation(
+        &self,
+        identifier: PipelineIdentifier,
+        steps: Vec<Step>,
+    ) -> ClusterCommand {
+        ClusterCommand::CreatePipeline {
+            identifier: self.get_identifier(),
+            pipeline_identifier: identifier,
+            steps,
+        }
+    }
+
+    fn create_pipeline(
         &self,
         identifier: PipelineIdentifier,
         steps: Vec<Step>,
     ) -> Result<ClusterEvent, ClusterError> {
         Pipeline::create(identifier, steps)
-            .map_err(|error| ClusterError::Pipeline(error))
-            .map(|event| ClusterEvent::Pipeline(event))
+            .map_err(ClusterError::Pipeline)
+            .map(ClusterEvent::Pipeline)
     }
 
-    fn pipeline_created(&mut self, pipeline: Pipeline) {
+    fn signal_pipeline_created(&mut self, pipeline: Pipeline) {
         self.pipeline = Some(pipeline);
     }
 }

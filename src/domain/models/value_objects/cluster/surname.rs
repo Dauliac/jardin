@@ -5,7 +5,7 @@ use regex::Regex;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
-use crate::domain::core::ValueObject;
+use crate::domain::core::{Identifier, ValueObject};
 
 static REGEX: &str = r"^[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$";
 
@@ -25,12 +25,8 @@ impl NodeSurname {
         &self.value
     }
 }
-
-impl ValueObject<NodeSurname> for NodeSurname {
-    fn equals(&self, value: &NodeSurname) -> bool {
-        self.value.eq(value.get_value())
-    }
-}
+impl ValueObject<NodeSurname> for NodeSurname {}
+impl Identifier<NodeSurname> for NodeSurname {}
 
 fn check_surname_specification(surname: String) -> Result<String, SurnameError> {
     Regex::new(REGEX)
@@ -61,8 +57,5 @@ impl ClusterSurname {
     }
 }
 
-impl ValueObject<ClusterSurname> for ClusterSurname {
-    fn equals(&self, value: &ClusterSurname) -> bool {
-        self.value.eq(value.get_value())
-    }
-}
+impl ValueObject<ClusterSurname> for ClusterSurname {}
+impl Identifier<ClusterSurname> for ClusterSurname {}

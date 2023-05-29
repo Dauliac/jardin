@@ -2,13 +2,13 @@
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub enum FinalState {
     Success(),
     Failure(),
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub enum Status {
     ToDo(),
     Doing(),

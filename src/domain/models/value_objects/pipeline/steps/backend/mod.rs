@@ -16,3 +16,14 @@ impl Backend {
         Backend::Nix(Nix {})
     }
 }
+
+#[cfg(test)]
+pub mod tests {
+    use super::*;
+
+    #[test]
+    fn test_backend() {
+        let backend = Backend::get_nix();
+        assert_eq!(backend, backend);
+    }
+}

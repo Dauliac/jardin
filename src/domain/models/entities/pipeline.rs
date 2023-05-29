@@ -105,20 +105,22 @@ fn index_steps(steps: &[Step]) -> HashMap<StepIdentifier, Step> {
         .collect()
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub(in crate::domain) struct Pipeline {
     identifier: PipelineIdentifier,
     steps: HashMap<StepIdentifier, Step>,
+}
+
+impl PartialEq for Pipeline {
+    fn eq(&self, other: &Self) -> bool {
+        self.identifier.eq(&other.identifier)
+    }
 }
 
 impl Entity<Pipeline> for Pipeline {
     type Identifier = PipelineIdentifier;
     fn get_identifier(&self) -> Self::Identifier {
         self.identifier.clone()
-    }
-
-    fn equals(&self, _entity: Box<Pipeline>) -> bool {
-        todo!()
     }
 }
 

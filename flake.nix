@@ -145,7 +145,7 @@
         coverage = craneLib.cargoLlvmCov (commonArgs
           // {
           inherit cargoArtifacts;
-          inherit toolchain;
+          nativeBuildInputs = [ toolchain pkgs.cargo-nextest ];
           cargoLlvmCovCommand = "nextest";
         });
       };

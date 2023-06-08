@@ -28,7 +28,7 @@ tasks:
       - "Cargo.lock"
     cmds:
       - |
-        nix run nixpkgs#cargo fix -- --allow-staged --allow-dirty
+        nix run nixpkgs#cargo fix -- --allow-staged --allow-dirty --all-targets
       - |
         nix run nixpkgs#cargo fmt -- --all
       - |

@@ -28,7 +28,7 @@ impl DefaultPipelineIdentifier {
     }
 }
 
-fn get_default_pipeline(
+pub fn get_default_pipeline(
     cluster: Cluster,
 ) -> Result<<Cluster as Aggregate<Cluster>>::Command, <Cluster as Aggregate<Cluster>>::Error> {
     let platformize = get_platformize_step(|| None);

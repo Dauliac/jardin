@@ -2,27 +2,28 @@
 
 use serde::{Deserialize, Serialize};
 
-use std::{collections::HashMap, net::IpAddr};
+use std::{collections::HashMap, net::IpAddr, path::PathBuf};
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
 pub enum Role {
-    #[serde(rename = "leader")]
     Leader,
-    #[serde(rename = "follower")]
     Follower,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Node {
     pub surname: String,
+    pub name_server: String,
     pub role: Role,
     pub ip: IpAddr,
+    pub ssh_key_path: PathBuf,
 }
 
 #[derive(Default, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
 pub enum Backend {
     #[default]
-    #[serde(rename = "nix")]
     Nix,
 }
 
@@ -68,10 +69,16 @@ pub struct Cluster {
     pub surname: String,
     pub targets: HashMap<String, Node>,
 }
+const IN_MEMORY_DEFAULT: bool = true;
+fn in_memory_default() -> bool {
+    IN_MEMORY_DEFAULT
+}
 
 #[derive(Default, Debug, Serialize, Deserialize)]
 pub struct Config {
     pub version: u8,
     pub pipeline: Pipeline,
     pub cluster: Cluster,
+    #[serde(default = "in_memory_default")]
+    pub in_memory: bool,
 }

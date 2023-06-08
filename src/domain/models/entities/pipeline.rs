@@ -6,27 +6,58 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 use crate::domain::{
-    core::Entity,
-    models::value_objects::pipeline::{
-        steps::step::{Step, StepIdentifier},
-        PipelineIdentifier,
+    core::{Entity, Event, ValueObject},
+    models::{
+        value_objects::pipeline::{
+            steps::step::{Step, StepIdentifier},
+            PipelineIdentifier,
+        },
+        DomainResponseKinds,
     },
 };
 
-#[derive(Error, Debug, Clone, PartialEq)]
+#[derive(Error, Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum PipelineError {
     #[error("Some next step noes not exist")]
     InvalidNextSteps(HashSet<StepIdentifier>),
     #[error("Siven sources was not loaded")]
     CyclicStepFlow(HashSet<StepIdentifier>),
 }
+impl ValueObject<PipelineError> for PipelineError {}
+impl Event<PipelineError> for PipelineError {}
+impl From<PipelineError> for Vec<DomainResponseKinds> {
+    fn from(value: PipelineError) -> Self {
+        match value {
+            PipelineError::InvalidNextSteps(_) => vec![
+                DomainResponseKinds::ClusterPipelineError,
+                DomainResponseKinds::ClusterPipelineInvalidNextStepsError,
+            ],
+            PipelineError::CyclicStepFlow(_) => vec![
+                DomainResponseKinds::ClusterPipelineError,
+                DomainResponseKinds::ClusterPipelineCyclicStepFlowError,
+            ],
+        }
+    }
+}
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum PipelineEvent {
     PipelineCreated {
         identifier: PipelineIdentifier,
         steps: Vec<Step>,
     },
+}
+impl ValueObject<PipelineEvent> for PipelineEvent {}
+impl Event<PipelineEvent> for PipelineEvent {}
+impl From<PipelineEvent> for Vec<DomainResponseKinds> {
+    fn from(event: PipelineEvent) -> Self {
+        match event {
+            PipelineEvent::PipelineCreated { .. } => vec![
+                DomainResponseKinds::ClusterPipelineEvent,
+                DomainResponseKinds::ClusterPipelineCreatedEvent,
+            ],
+        }
+    }
 }
 
 fn detect_non_valid_next_steps(steps: &HashMap<StepIdentifier, Step>) -> Result<(), PipelineError> {
@@ -134,6 +165,7 @@ impl Pipeline {
             .into_iter()
             .map(|step| (step.get_identifier().clone(), step))
             .collect();
+        let _ = detect_non_acyclic_flow(&ordered_steps, &indexed_steps);
         detect_non_valid_next_steps(&indexed_steps).map(|_| PipelineEvent::PipelineCreated {
             identifier,
             steps: ordered_steps,
@@ -145,9 +177,5 @@ impl Pipeline {
             identifier,
             steps: index_steps(&steps),
         }
-    }
-
-    pub fn get_identifier(&self) -> &PipelineIdentifier {
-        &self.identifier
     }
 }

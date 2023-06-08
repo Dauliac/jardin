@@ -1,11 +1,13 @@
 // SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
 
-use crate::domain::models::value_objects::pipeline::steps::backend;
-use crate::domain::models::value_objects::pipeline::steps::job::{
-    get_none_post_check_jobs, get_none_pre_check_jobs, Job,
+use crate::domain::{
+    models::value_objects::pipeline::steps::{
+        backend,
+        job::{get_none_post_check_jobs, get_none_pre_check_jobs, Job},
+        step::{NextSteps, Step},
+    },
+    services::default_pipeline::default_identifier::DefaultIdentifier,
 };
-use crate::domain::models::value_objects::pipeline::steps::step::{NextSteps, Step};
-use crate::domain::services::default_pipeline::default_identifier::DefaultIdentifier;
 
 use super::identifier::BootstrapOperatingSystemsIdentifier;
 

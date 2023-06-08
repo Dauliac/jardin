@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use thiserror::Error;
 
 use crate::domain::{
-    core::{Aggregate, Entity},
+    core::{Aggregate, Command, Entity, Event, ValueObject},
     models::{
         entities::pipeline::{Pipeline, PipelineError, PipelineEvent},
         value_objects::{
@@ -15,22 +15,46 @@ use crate::domain::{
             },
             pipeline::{steps::step::Step, PipelineIdentifier},
         },
+        DomainResponseKinds,
     },
 };
 
-#[derive(Error, Debug, Clone, PartialEq)]
+#[derive(Error, Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum ClusterError {
-    #[error("Duplicated node surname {0}")]
-    NodeSurnameAlreadyExists(String),
-    #[error("No leader declared")]
-    NoLeaderDeclared,
-    #[error("No node in cluster")]
-    NoNodeInCluster,
-    #[error("Pipeline error {0}")]
-    Pipeline(PipelineError),
+    #[error("Duplicated node surname {} in cluster {}", .1.join(", "), .0.get_value())]
+    NodeSurnameAlreadyExists(ClusterSurname, Vec<String>),
+    #[error("No leader declared in cluster {}", .0.get_value())]
+    NoLeaderDeclared(ClusterSurname),
+    #[error("No node in cluster {}", .0.get_value())]
+    NoNodeInCluster(ClusterSurname),
+    #[error("Pipeline error {} in cluster {}", .error, .identifier.get_value())]
+    Pipeline {
+        identifier: ClusterSurname,
+        error: PipelineError,
+    },
+}
+impl ValueObject<ClusterError> for ClusterError {}
+impl Event<ClusterError> for ClusterError {}
+impl From<ClusterError> for Vec<DomainResponseKinds> {
+    fn from(value: ClusterError) -> Self {
+        match value {
+            ClusterError::NodeSurnameAlreadyExists(..) => From::from(value),
+            ClusterError::NoLeaderDeclared(_) => From::from(value),
+            ClusterError::NoNodeInCluster(_) => From::from(value),
+            ClusterError::Pipeline {
+                identifier: _,
+                error,
+            } => {
+                let mut kind = vec![DomainResponseKinds::ClusterError];
+                let mut kind_pipeline: Vec<DomainResponseKinds> = From::from(error);
+                kind.append(kind_pipeline.as_mut());
+                kind
+            }
+        }
+    }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum ClusterCommand {
     CreatePipeline {
         identifier: ClusterSurname,
@@ -38,18 +62,44 @@ pub enum ClusterCommand {
         steps: Vec<Step>,
     },
 }
+impl ValueObject<ClusterCommand> for ClusterCommand {}
+impl Command<ClusterCommand> for ClusterCommand {}
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum ClusterEvent {
     ClusterDeclared(ClusterSurname),
-    Pipeline(PipelineEvent),
+    Pipeline {
+        identifier: ClusterSurname,
+        event: PipelineEvent,
+    },
+}
+impl ValueObject<ClusterEvent> for ClusterEvent {}
+impl Event<ClusterEvent> for ClusterEvent {}
+impl From<ClusterEvent> for Vec<DomainResponseKinds> {
+    fn from(value: ClusterEvent) -> Self {
+        match value {
+            ClusterEvent::ClusterDeclared(_) => From::from(value),
+            ClusterEvent::Pipeline {
+                identifier: _,
+                event,
+            } => {
+                let mut kind = vec![DomainResponseKinds::ClusterEvent];
+                let mut kind_pipeline: Vec<DomainResponseKinds> = From::from(event);
+                kind.append(kind_pipeline.as_mut());
+                kind
+            }
+        }
+    }
 }
 
 pub type ClusterResult = Result<ClusterEvent, ClusterError>;
 
 pub type Nodes = HashMap<NodeSurname, Node>;
 
-fn check_node_surname_uniqueness(nodes: &Nodes) -> Result<(), ClusterError> {
+fn check_node_surname_uniqueness(
+    nodes: &Nodes,
+    cluster_surname: ClusterSurname,
+) -> Result<(), ClusterError> {
     let mut surnames: Vec<String> = nodes
         .iter()
         .map(|(surname, _)| surname.value.clone())
@@ -59,23 +109,32 @@ fn check_node_surname_uniqueness(nodes: &Nodes) -> Result<(), ClusterError> {
     if surnames.len() == nodes.len() {
         Ok(())
     } else {
-        Err(ClusterError::NodeSurnameAlreadyExists(surnames.join(", ")))
+        Err(ClusterError::NodeSurnameAlreadyExists(
+            cluster_surname,
+            surnames,
+        ))
     }
 }
 
-fn check_the_presence_of_at_least_one_node(nodes: &Nodes) -> Result<(), ClusterError> {
+fn check_the_presence_of_at_least_one_node(
+    nodes: &Nodes,
+    cluster_surname: ClusterSurname,
+) -> Result<(), ClusterError> {
     let no_node_in_cluster = nodes.is_empty();
     match no_node_in_cluster {
-        true => Err(ClusterError::NoNodeInCluster),
+        true => Err(ClusterError::NoNodeInCluster(cluster_surname)),
         false => Ok(()),
     }
 }
 
-fn check_leader_declaration(nodes: &HashMap<NodeSurname, Node>) -> Result<(), ClusterError> {
+fn check_leader_declaration(
+    nodes: &HashMap<NodeSurname, Node>,
+    cluster_surname: ClusterSurname,
+) -> Result<(), ClusterError> {
     let leader = nodes.iter().find(|(_, node)| node.is_leader());
     match leader {
         Some(_) => Ok(()),
-        None => Err(ClusterError::NoLeaderDeclared),
+        None => Err(ClusterError::NoLeaderDeclared(cluster_surname)),
     }
 }
 
@@ -119,7 +178,10 @@ impl Aggregate<Cluster> for Cluster {
     fn apply(&mut self, event: Self::Event) {
         match event {
             ClusterEvent::ClusterDeclared(_) => (),
-            ClusterEvent::Pipeline(pipeline_event) => match pipeline_event {
+            ClusterEvent::Pipeline {
+                identifier: _,
+                event,
+            } => match event {
                 PipelineEvent::PipelineCreated { identifier, steps } => {
                     self.signal_pipeline_created(Pipeline::new(identifier, steps))
                 }
@@ -145,9 +207,9 @@ impl Cluster {
         surname: ClusterSurname,
         targets: HashMap<NodeSurname, Node>,
     ) -> Result<Self, ClusterError> {
-        check_the_presence_of_at_least_one_node(&targets)?;
-        check_node_surname_uniqueness(&targets)?;
-        check_leader_declaration(&targets)?;
+        check_the_presence_of_at_least_one_node(&targets, surname.to_owned())?;
+        check_node_surname_uniqueness(&targets, surname.to_owned())?;
+        check_leader_declaration(&targets, surname.to_owned())?;
         Ok(Self {
             surname,
             targets,
@@ -177,8 +239,14 @@ impl Cluster {
         steps: Vec<Step>,
     ) -> Result<ClusterEvent, ClusterError> {
         Pipeline::create(identifier, steps)
-            .map_err(ClusterError::Pipeline)
-            .map(ClusterEvent::Pipeline)
+            .map_err(|error| ClusterError::Pipeline {
+                identifier: self.get_identifier(),
+                error,
+            })
+            .map(|event| ClusterEvent::Pipeline {
+                identifier: self.get_identifier(),
+                event,
+            })
     }
 
     fn signal_pipeline_created(&mut self, pipeline: Pipeline) {

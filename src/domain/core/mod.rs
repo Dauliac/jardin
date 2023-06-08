@@ -4,7 +4,7 @@ use async_trait::async_trait;
 use serde::{de::DeserializeOwned, Serialize};
 use std::{fmt::Debug, hash::Hash};
 
-pub trait Entity<T>: Serialize + DeserializeOwned + Debug + Clone + PartialEq {
+pub trait Entity<T: 'static>: Serialize + DeserializeOwned + Debug + Clone + PartialEq {
     type Identifier;
 
     fn get_identifier(&self) -> Self::Identifier;
@@ -14,10 +14,11 @@ pub trait ValueObject<T>: Serialize + DeserializeOwned + Debug + Clone + Partial
 
 pub trait Identifier<T>: ValueObject<T> + Eq + Hash {}
 
-pub trait Event: Hash + Eq {}
+pub trait Event<T>: ValueObject<T> {}
+pub trait Command<T>: ValueObject<T> {}
 
 #[async_trait]
-pub trait Aggregate<T>:
+pub trait Aggregate<T: 'static>:
     Entity<T> + Serialize + DeserializeOwned + Sync + Send + PartialEq + Debug
 {
     type Error;
@@ -37,11 +38,13 @@ pub mod tests {
 
     #[test]
     fn test_entity() {
+        #[cfg(test)]
         #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
         struct User {
             id: u32,
         }
 
+        #[cfg(test)]
         impl Entity<User> for User {
             type Identifier = u32;
 
@@ -51,9 +54,9 @@ pub mod tests {
         }
 
         let id = 1;
-        let user1 = User { id: 1 };
+        let user1 = User { id };
         let user2 = User { id: 2 };
-        let user1_bis = User { id: 1 };
+        let user1_bis = User { id };
 
         assert!(!user1.eq(&user2));
         assert!(user1.eq(&user1_bis));
@@ -68,6 +71,12 @@ pub mod tests {
         struct Name(String);
 
         impl ValueObject<Name> for Name {}
+        // let mut name1 = MockValueObject::new();
+        // name1.expect_eq()
+        //     .with(eq("John".to_string()))
+        //     .times(1)
+        //     .return_const(true);
+        // println!("{:?}", name1);
 
         let name1 = Name("John".to_string());
         let name2 = Name("Jane".to_string());

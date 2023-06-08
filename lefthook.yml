@@ -6,11 +6,8 @@ skip_output:
   - success
 
 pre-commit:
-  parallel: true
+  parallel: false
   commands:
-    build:
-      tags: build
-      run: nix build --allow-dirty
     check:
       tags: check
       run: nix flake check

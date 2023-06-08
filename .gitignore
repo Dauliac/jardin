@@ -12,3 +12,5 @@ secrets/
 terraform.tfstate*
 .direnv/
 .task
+
+mutants.out*

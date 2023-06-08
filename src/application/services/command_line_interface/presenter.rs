@@ -2,18 +2,15 @@
 
 use std::path::PathBuf;
 
-use clap::value_parser;
-use clap::Arg;
-use clap::Command;
+use clap::{value_parser, Arg, Command};
 use clap_complete::Shell;
 use flexi_logger::FlexiLoggerError;
 use thiserror::Error;
 
 use super::super::config::error::ConfigError;
-use crate::application::services::config::parser::get_get_default_config_path;
-use crate::application::AUTHOR;
-use crate::application::NAME;
-use crate::application::VERSION;
+use crate::application::{
+    services::config::parser::get_get_default_config_path, AUTHOR, NAME, VERSION,
+};
 
 #[derive(Error, Debug)]
 pub enum CliError {

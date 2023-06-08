@@ -18,8 +18,8 @@ fn check_empty_pipeline_specification(config: &Config) -> Result<(), ConfigError
 
 fn confy_error_adapter(error: ConfyError) -> ConfigError {
     match error {
-        ConfyError::BadTomlData(error) => ConfigError::BadConfigDirectory(error.to_string()),
-        ConfyError::BadConfigDirectory(error) => ConfigError::BadFormat(error),
+        ConfyError::BadTomlData(error) => ConfigError::BadConfiguration(error.to_string()),
+        ConfyError::BadConfigDirectory(error) => ConfigError::BadConfigDirectory(error),
         ConfyError::DirectoryCreationFailed(_) => ConfigError::Unknown,
         ConfyError::GeneralLoadError(_) => ConfigError::Unknown,
         ConfyError::SerializeTomlError(_) => ConfigError::Unknown,

@@ -7,5 +7,4 @@ pub mod deploy_use_case;
 #[derive(Debug)]
 pub enum UseCases {
     Deploy(DeployUserStory),
-    Development,
 }

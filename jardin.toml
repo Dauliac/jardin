@@ -1,8 +1,8 @@
 version = 1
 
 [pipeline]
+default_backend = "Nix"
 use_default = true
-default_backend = "nix"
 
 [cluster]
 surname = "cluster"

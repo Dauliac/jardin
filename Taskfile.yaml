@@ -28,13 +28,19 @@ tasks:
       - "Cargo.lock"
     cmds:
       - |
-        nix run nixpkgs#cargo fmt
+        nix run nixpkgs#cargo fix -- --allow-staged --allow-dirty
+      - |
+        nix run nixpkgs#cargo fmt -- --all
       - |
         nix run nixpkgs#cargo clippy -- --fix --allow-dirty --allow-staged
+      - |
+        nix run nixpkgs#cargo-deny check
   formatter::nix:
     silent: true
     desc: 💄Format nix files
     sources:
+      - "**/*.nix"
+    generates:
       - "**/*.nix"
     cmds:
       - |
@@ -77,11 +83,13 @@ tasks:
         nix run nixpkgs#lefthook -- run pre-commit pre-push
     sources:
       - "lefthook.yml"
-  test::rust:
+  test::rust:unit:
     silent: true
     cmds:
       - |
         nix run nixpkgs#cargo llvm-cov nextest
+      - |
+        nix run nixpkgs#cargo mutants
     sources:
       - "**/*.rs"
       - "Cargo.toml"

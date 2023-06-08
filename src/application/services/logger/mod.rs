@@ -7,6 +7,10 @@ use self::{
         logger_formatter_command_line_interface, logger_formatter_completion,
         logger_formatter_config, logger_formatter_deployment,
     },
+    domain::{
+        logger_formatter_cluster, logger_formatter_job, logger_formatter_post_check,
+        logger_formatter_pre_check, logger_formatter_step,
+    },
     types::LoggerType,
 };
 
@@ -25,7 +29,13 @@ pub fn init_logger(debug_logs: bool, logger_type: &LoggerType) -> Result<(), Fle
             }
             types::ApplicationLoggerType::Deployment => logger_formatter_deployment,
         },
-        LoggerType::Domain(_) => todo!(),
+        LoggerType::Domain(logger) => match logger {
+            types::DomainLoggerType::Cluster => logger_formatter_cluster,
+            types::DomainLoggerType::Step => logger_formatter_step,
+            types::DomainLoggerType::Job => logger_formatter_job,
+            types::DomainLoggerType::PreCheck => logger_formatter_pre_check,
+            types::DomainLoggerType::PostCheck => logger_formatter_post_check,
+        },
     };
     Logger::try_with_env_or_str(match debug_logs {
         true => "debug",

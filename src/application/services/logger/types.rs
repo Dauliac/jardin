@@ -3,6 +3,7 @@
 use std::fmt::{self, Display};
 
 pub enum DomainLoggerType {
+    Cluster,
     Step,
     Job,
     PreCheck,
@@ -16,6 +17,7 @@ impl Display for DomainLoggerType {
             DomainLoggerType::Job => "job",
             DomainLoggerType::PreCheck => "pre-check",
             DomainLoggerType::PostCheck => "post-check",
+            DomainLoggerType::Cluster => "cluster",
         };
         write!(f, "{}", printable)
     }

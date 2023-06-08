@@ -75,6 +75,7 @@ impl Executable for CheckJob {
 }
 
 pub type LinkedCheckJobs = Option<HashSet<CheckJob>>;
+
 pub type PreCheckJobs = LinkedCheckJobs;
 pub type PostCheckJobs = LinkedCheckJobs;
 

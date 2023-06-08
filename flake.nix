@@ -13,7 +13,7 @@
     };
 
     fenix = {
-      url = "github:nix-community/fenix";
+      url = "github:nix-community/fenix/monthly";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.rust-analyzer-src.follows = "";
     };
@@ -46,7 +46,7 @@
         inherit src;
       };
 
-      fenix-channel = fenix.packages.${system}.stable;
+      fenix-channel = fenix.packages.${system}.latest;
 
       toolchain = fenix-channel.withComponents [
         "rustc"
@@ -120,34 +120,59 @@
             reuse lint
           '';
         };
-
+        deny = pkgs.mkShell {
+          inherit cargoArtifacts;
+          buildInputs = with pkgs; [ cargo-deny ];
+          shellHook = ''
+            cargo deny check
+          '';
+        };
+        # mutants = pkgs.mkShell {
+        #   inherit cargoArtifacts;
+        #   shellHook = ''
+        #     cargo mutants
+        #   '';
+        # };
         cargo-fmt = craneLib.cargoFmt {
           inherit src;
         };
-
         audit = craneLib.cargoAudit {
           inherit src advisory-db;
         };
-
         clippy = craneLib.cargoClippy (commonArgs
           // {
           inherit cargoArtifacts;
           # TODO: fix code for clippy
-          # cargoClippyExtraArgs = "--all-targets -- --deny warnings";
-          cargoClippyExtraArgs = "--all-targets";
+          cargoClippyExtraArgs = "-- --deny warnings";
+          # cargoClippyExtraArgs = "--all-targets";
         });
-
-        test = craneLib.cargoNextest (commonArgs
-          // {
-          inherit cargoArtifacts;
-        });
-
+        # test = craneLib.cargoNextest (commonArgs
+        #   // {
+        #   inherit cargoArtifacts;
+        #   nativeBuildInputs = [
+        #     toolchain
+        #     pkgs.cargo-nextest
+        #   ];
+        # });
         coverage = craneLib.cargoLlvmCov (commonArgs
           // {
           inherit cargoArtifacts;
-          nativeBuildInputs = [ toolchain pkgs.cargo-nextest ];
+          nativeBuildInputs = [
+            toolchain
+            pkgs.cargo-nextest
+          ];
           cargoLlvmCovCommand = "nextest";
         });
+        # TODO: define fuzzing policy
+        # fuzz = craneLib.cargoLlvmCov (commonArgs
+        #   // {
+        #   inherit cargoArtifacts;
+        #   nativeBuildInputs = [
+        #     toolchain
+        #     pkgs.aflplusplus
+        #   ];
+        #   cargoLlvmCovCommand = "nextest";
+        # });
       };
 
       devShells.default =
@@ -164,6 +189,7 @@
                 go-task
                 lefthook
                 rustc
+                cargo-udeps
                 rustfmt
                 rust.packages.stable.rustPlatform.rustLibSrc
               ]

@@ -3,6 +3,14 @@
 pub mod model;
 pub mod presenter;
 
+use crate::application::services::{
+    exit::error_exit,
+    logger::{
+        init_logger,
+        types::{ApplicationLoggerType, LoggerType},
+    },
+};
+
 use self::{
     model::{
         completion::attempt_generate_completion_on_match, config::read_config,
@@ -16,16 +24,52 @@ use super::{
     use_cases::start_domain_service,
 };
 
+fn exit_on_cli_error(error: CliError, logger_type: &LoggerType) {
+    init_logger(false, logger_type).ok();
+    log::error!("{}", error);
+    error_exit();
+}
+
 pub fn start_cli(
     config_service: impl Fn(Option<&String>) -> Result<Config, ConfigError>,
-) -> Result<Config, CliError> {
-    // TODO rewrite in functional style
+    callback: impl Fn(Config),
+) {
     let matches = build_cli().get_matches();
-    attempt_help_display_on_match(&matches)?;
-    attempt_generate_completion_on_match(&matches)?;
-    let config = read_config(&matches, config_service)?;
-    if let Some(use_case) = attempt_deploy_on_match(&matches) {
-        start_domain_service(use_case, &config)
-    }
-    Ok(config)
+    attempt_help_display_on_match(&matches)
+        .map_err(|error| {
+            exit_on_cli_error(
+                error,
+                &LoggerType::Application(ApplicationLoggerType::CommandLineInterface),
+            )
+        })
+        .map(|_| {
+            attempt_generate_completion_on_match(&matches)
+                .map_err(|error| {
+                    exit_on_cli_error(
+                        error,
+                        &LoggerType::Application(ApplicationLoggerType::CommandLineInterface),
+                    )
+                })
+                .ok();
+        })
+        .map(|_| {
+            read_config(&matches, config_service)
+                .map_err(|error| {
+                    init_logger(
+                        false,
+                        &LoggerType::Application(ApplicationLoggerType::Config),
+                    )
+                    .ok();
+                    log::error!("{}", error);
+                    error_exit();
+                })
+                .map(|config| async {
+                    attempt_deploy_on_match(&matches).map(|use_case| {
+                        start_domain_service(use_case, &config);
+                    });
+                    callback(config)
+                })
+                .ok();
+        })
+        .ok();
 }

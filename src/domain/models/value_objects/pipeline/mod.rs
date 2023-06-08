@@ -15,10 +15,6 @@ impl PipelineIdentifier {
     pub fn new(value: String) -> Self {
         Self { value }
     }
-
-    pub(crate) fn get_value(&self) -> &String {
-        &self.value
-    }
 }
 
 impl ValueObject<PipelineIdentifier> for PipelineIdentifier {}

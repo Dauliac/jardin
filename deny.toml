@@ -1,0 +1,39 @@
+[advisories]
+vulnerability = "deny"
+unmaintained = "deny"
+yanked = "deny"
+notice = "deny"
+
+# https://embarkstudios.github.io/cargo-deny/checks/licenses/cfg.html
+[licenses]
+unlicensed = "deny"
+copyleft = "allow"
+allow-osi-fsf-free = "both"
+default = "deny"
+confidence-threshold = 0.8
+allow = [
+    "Unicode-DFS-2016"
+]
+
+[bans]
+wildcards = "deny"
+highlight = "all"
+skip = [
+    { name = "hermit-abi", version = "0.2.6" },
+    { name = "windows-sys", version = "0.45" },
+    { name = "windows-targets", version = "0.42"},
+    { name = "windows_aarch64_gnullvm", version = "0.42"},
+    { name = "windows_aarch64_msvc", version = "0.42"},
+    { name = "windows_i686_gnu", version = "0.42"},
+    { name = "windows_i686_msvc", version = "0.42"},
+    { name = "windows_x86_64_gnu", version = "0.42"},
+    { name = "windows_x86_64_gnullvm", version = "0.42"},
+    { name = "windows_x86_64_msvc", version = "0.42"},
+	{ name = "syn", version = "1.0.109" },
+]
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = []

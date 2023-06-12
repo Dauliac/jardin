@@ -24,11 +24,14 @@ pub enum DomainResponseKinds {
     ClusterDeclaredEvent,
     ClusterPipelineEvent,
     ClusterPipelineCreatedEvent,
+    ClusterPipelineStartedEvent,
+    ClusterPipelineJobUpdatedEvent,
     ClusterError,
     ClusterNodeSurnameAlreadyExistsError,
     ClusterNoLeaderDeclaredError,
     ClusterNoNodeInClusterError,
     ClusterPipelineError,
+    ClusterPipelineNotFoundError,
     ClusterPipelineInvalidNextStepsError,
     ClusterPipelineCyclicStepFlowError,
 }
@@ -41,9 +44,12 @@ impl ValueObject<DomainEvent> for DomainEvent {}
 impl Event<DomainEvent> for DomainEvent {}
 impl From<DomainEvent> for Vec<DomainResponseKinds> {
     fn from(value: DomainEvent) -> Self {
-        match value {
+        let mut kind = vec![DomainResponseKinds::Event];
+        let mut specific_kind: Vec<DomainResponseKinds> = match value {
             DomainEvent::Cluster(event) => From::from(event),
-        }
+        };
+        kind.append(&mut specific_kind);
+        kind
     }
 }
 
@@ -58,10 +64,13 @@ impl ValueObject<DomainError> for DomainError {}
 impl Event<DomainError> for DomainError {}
 impl From<DomainError> for Vec<DomainResponseKinds> {
     fn from(value: DomainError) -> Self {
-        match value {
+        let mut kind = vec![DomainResponseKinds::Error];
+        let mut specific_kind: Vec<DomainResponseKinds> = match value {
             DomainError::Surname(error) => From::from(error),
             DomainError::Cluster(error) => From::from(error),
-        }
+        };
+        kind.append(&mut specific_kind);
+        kind
     }
 }
 

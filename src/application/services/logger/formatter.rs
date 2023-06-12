@@ -1,8 +1,6 @@
 // SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
 
-use flexi_logger::{DeferredNow, Record, TS_DASHES_BLANK_COLONS_DOT_BLANK};
-
-use super::types::LoggerType;
+use colored::*;
 
 const fn make_emoji(level: log::Level) -> &'static str {
     match level {
@@ -14,38 +12,17 @@ const fn make_emoji(level: log::Level) -> &'static str {
     }
 }
 
-pub fn logger_formatter_scoped(
-    write: &mut dyn std::io::Write,
-    now: &mut DeferredNow,
-    logger_type: &LoggerType,
-    record: &Record,
-) -> Result<(), std::io::Error> {
-    let level: log::Level = record.level();
-
-    write!(
-        write,
-        "[{} {}] {} [{}] {}",
-        make_emoji(level),
-        level.as_str().to_uppercase(),
-        now.format(TS_DASHES_BLANK_COLONS_DOT_BLANK),
-        logger_type,
-        record.args()
-    )
-}
-
-pub fn logger_formatter(
+pub fn logger_formatter_human(
     write: &mut dyn std::io::Write,
     now: &mut DeferredNow,
     record: &Record,
 ) -> Result<(), std::io::Error> {
     let level: log::Level = record.level();
-
     write!(
         write,
-        "[{} {}] {} {}",
+        "{} {}: {}",
         make_emoji(level),
-        level.as_str().to_uppercase(),
-        now.format(TS_DASHES_BLANK_COLONS_DOT_BLANK),
+        level.as_str().to_uppercase().green().bold(),
         record.args()
     )
 }

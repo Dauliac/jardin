@@ -8,12 +8,16 @@ pub mod steps;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineIdentifier {
-    pub value: String,
+    value: String,
 }
 
 impl PipelineIdentifier {
     pub fn new(value: String) -> Self {
         Self { value }
+    }
+
+    pub fn get_value(&self) -> &String {
+        &self.value
     }
 }
 

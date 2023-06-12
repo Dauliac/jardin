@@ -55,32 +55,31 @@ impl<R: ClusterRepository> MemoryCommandBus<R> {
                 pipeline_identifier: _,
                 steps: _,
             } => identifier.to_owned(),
+            ClusterCommand::RunPipeline {
+                identifier: _,
+                dry_run: _,
+            } => todo!(),
         }
     }
 
     fn publish_to_event_store(&mut self, event: DomainResponse) {
-        self.event_bus
-            .write()
-            .unwrap()
-            .publish(Event::new(event, None));
+        self.event_bus.write().unwrap().publish(Event::new(event));
     }
 }
 
 #[async_trait]
-impl<R: ClusterRepository + Sync + Send> CommandBus<R> for MemoryCommandBus<R> {
+impl<R: ClusterRepository + Sync + Send> CommandBus for MemoryCommandBus<R> {
     fn publish(&mut self, command: Command) {
         self.queue.push(command);
     }
 
     async fn run(&mut self) {
-        loop {
-            self.queue
-                .pop()
-                .map(|command| (command.to_owned(), Self::extract_identifier(&command)))
-                .map(|(command, identifier)| {
-                    let response = self.read(command.get_command(), identifier);
-                    self.publish_to_event_store(response);
-                });
-        }
+        self.queue
+            .pop()
+            .map(|command| (command.to_owned(), Self::extract_identifier(&command)))
+            .map(|(command, identifier)| {
+                let response = self.read(command.get_command(), identifier);
+                self.publish_to_event_store(response);
+            });
     }
 }

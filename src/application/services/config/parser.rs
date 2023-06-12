@@ -28,6 +28,7 @@ fn confy_error_adapter(error: ConfyError) -> ConfigError {
         ConfyError::OpenConfigurationFileError(_) => ConfigError::Unknown,
     }
 }
+
 pub fn parse_config(config_path: Option<&String>) -> Result<Config, ConfigError> {
     let config = config_path
         .map_or_else(|| confy::load(NAME, None), confy::load_path)

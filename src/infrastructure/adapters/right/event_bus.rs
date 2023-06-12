@@ -1,3 +1,4 @@
+use async_trait::async_trait;
 use multimap::MultiMap;
 use std::{
     collections::VecDeque,
@@ -40,7 +41,7 @@ impl<R: ClusterRepository> MemoryEventBus<R> {
             .iter_mut()
             .for_each(|handler| match handler.as_mut() {
                 EventHandlers::Logger(logger) => {
-                    logger.notify(response.clone());
+                    logger.write().unwrap().notify(response.to_owned());
                 }
             });
     }
@@ -64,6 +65,7 @@ impl<R: ClusterRepository> MemoryEventBus<R> {
     }
 }
 
+#[async_trait]
 impl<R: ClusterRepository + Send + Sync> EventBus for MemoryEventBus<R> {
     fn subscribe(&mut self, event: DomainResponseKinds, handler: EventHandlers) {
         self.listeners.insert(event, Box::new(handler));
@@ -73,8 +75,9 @@ impl<R: ClusterRepository + Send + Sync> EventBus for MemoryEventBus<R> {
         self.queue.push_back(event);
     }
 
-    fn run(&mut self) {
+    async fn run(&mut self) {
         self.queue.pop_front().map(|event| {
+            // println!("Event {:?}", event);
             match event.response.to_owned() {
                 DomainResponse::Event(event) => {
                     self.write(

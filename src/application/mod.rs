@@ -2,13 +2,19 @@
 
 use std::sync::{Arc, RwLock};
 
-use crate::infrastructure::adapters::right::{
-    cqrs::MemoryCommandBus, event_bus::MemoryEventBus,
-    repository_in_memory::ClusterRepositoryInMemory,
+use crate::{
+    application::services::use_cases::start_domain_service,
+    infrastructure::adapters::right::{
+        cqrs::MemoryCommandBus, event_bus::MemoryEventBus,
+        repository_in_memory::ClusterRepositoryInMemory,
+    },
+    user_interface::Logger,
 };
 
 use self::services::{
-    command_line_interface::start_cli, config::parser::parse_config, cqrs_es::command::CommandBus,
+    command_line_interface::start_cli,
+    config::parser::parse_config,
+    cqrs_es::{command::CommandBus, event::EventBus},
 };
 
 pub mod services;
@@ -18,14 +24,31 @@ pub const NAME: &str = env!("CARGO_PKG_NAME");
 pub const AUTHOR: &str = env!("CARGO_PKG_AUTHORS");
 
 pub async fn start() {
-    start_cli(parse_config, |_config| {
-        let repository = Arc::new(RwLock::new(ClusterRepositoryInMemory::new()));
-        let event_bus = Arc::new(RwLock::new(MemoryEventBus::new(repository.clone())));
-        let mut command_bus = MemoryCommandBus::new(repository, event_bus);
+    let config = start_cli(parse_config);
+    match config {
+        Ok((config, use_case)) => {
+            let repository = Arc::new(RwLock::new(ClusterRepositoryInMemory::new()));
+            let event_bus = Arc::new(RwLock::new(MemoryEventBus::new(repository.to_owned())));
+            let command_bus = Arc::new(RwLock::new(MemoryCommandBus::new(
+                repository.to_owned(),
+                event_bus.to_owned(),
+            )));
 
-        #[allow(unused_must_use)]
-        {
-            command_bus.run();
+            let logger = Arc::new(RwLock::new(Logger::new(false)));
+            start_domain_service(
+                use_case,
+                &config,
+                repository.to_owned(),
+                event_bus.to_owned(),
+                command_bus.to_owned(),
+                logger,
+            );
+
+            loop {
+                event_bus.write().unwrap().run().await;
+                command_bus.write().unwrap().run().await;
+            }
         }
-    });
+        Err(_) => {}
+    };
 }

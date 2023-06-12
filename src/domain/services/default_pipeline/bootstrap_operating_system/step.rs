@@ -1,21 +1,19 @@
 // SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
 
-use crate::domain::{
-    models::value_objects::pipeline::steps::{
-        backend,
+use crate::domain::models::{
+    entities::{
         job::{get_none_post_check_jobs, get_none_pre_check_jobs, Job},
         step::{NextSteps, Step},
     },
-    services::default_pipeline::default_identifier::DefaultIdentifier,
+    value_objects::pipeline::steps::backend,
 };
 
-use super::identifier::BootstrapOperatingSystemsIdentifier;
+use super::identifier::{get_job_identifier, get_step_identifier};
 
-pub fn get_bootstrap_operating_systems_step(nexts: NextSteps) -> Step {
-    const JOB_IDENTIFIER: &str = "nix-infect";
-    let step_identifier = BootstrapOperatingSystemsIdentifier::VALUE.to_string();
+pub(in crate::domain) fn get_bootstrap_operating_systems_step(nexts: NextSteps) -> Step {
+    let step_identifier = get_step_identifier();
     let backend = backend::Backend::get_nix();
-    let job = Job::new(JOB_IDENTIFIER.to_string(), backend);
+    let job = Job::default(get_job_identifier(), backend);
 
     let pre_check = get_none_pre_check_jobs();
     let post_check = get_none_post_check_jobs();

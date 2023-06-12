@@ -3,13 +3,7 @@
 pub mod model;
 pub mod presenter;
 
-use crate::application::services::{
-    exit::error_exit,
-    logger::{
-        init_logger,
-        types::{ApplicationLoggerType, LoggerType},
-    },
-};
+use crate::{application::services::exit::error_exit, domain::use_cases::UseCases};
 
 use self::{
     model::{
@@ -19,57 +13,39 @@ use self::{
     presenter::{build_cli, CliError},
 };
 
-use super::{
-    config::{error::ConfigError, model::Config},
-    use_cases::start_domain_service,
-};
+use super::config::{error::ConfigError, model::Config};
 
-fn exit_on_cli_error(error: CliError, logger_type: &LoggerType) {
-    init_logger(false, logger_type).ok();
-    log::error!("{}", error);
+fn exit_on_cli_error(error: CliError) {
+    log::error!("{}", error.to_string());
     error_exit();
 }
 
 pub fn start_cli(
     config_service: impl Fn(Option<&String>) -> Result<Config, ConfigError>,
-    callback: impl Fn(Config),
-) {
+) -> Result<(Config, UseCases), ()> {
     let matches = build_cli().get_matches();
     attempt_help_display_on_match(&matches)
-        .map_err(|error| {
-            exit_on_cli_error(
-                error,
-                &LoggerType::Application(ApplicationLoggerType::CommandLineInterface),
-            )
-        })
+        .map_err(|error| exit_on_cli_error(error))
         .map(|_| {
-            attempt_generate_completion_on_match(&matches)
-                .map_err(|error| {
-                    exit_on_cli_error(
-                        error,
-                        &LoggerType::Application(ApplicationLoggerType::CommandLineInterface),
-                    )
-                })
-                .ok();
+            attempt_generate_completion_on_match(&matches);
         })
         .map(|_| {
             read_config(&matches, config_service)
                 .map_err(|error| {
-                    init_logger(
-                        false,
-                        &LoggerType::Application(ApplicationLoggerType::Config),
-                    )
-                    .ok();
-                    log::error!("{}", error);
+                    log::error!(
+                        "{}",
+                        match error {
+                            CliError::Config(error) => error.to_string(),
+                        }
+                    );
                     error_exit();
                 })
-                .map(|config| async {
-                    attempt_deploy_on_match(&matches).map(|use_case| {
-                        start_domain_service(use_case, &config);
-                    });
-                    callback(config)
+                .map(|config| {
+                    attempt_deploy_on_match(&matches)
+                        .ok_or(())
+                        .map(|use_case| (config, use_case))
                 })
-                .ok();
+                .flatten()
         })
-        .ok();
+        .flatten()
 }

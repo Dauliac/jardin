@@ -7,7 +7,7 @@ use std::{fmt::Debug, hash::Hash};
 pub trait Entity<T: 'static>: Serialize + DeserializeOwned + Debug + Clone + PartialEq {
     type Identifier;
 
-    fn get_identifier(&self) -> Self::Identifier;
+    fn identifier(&self) -> Self::Identifier;
 }
 
 pub trait ValueObject<T>: Serialize + DeserializeOwned + Debug + Clone + PartialEq {}
@@ -48,7 +48,7 @@ pub mod tests {
         impl Entity<User> for User {
             type Identifier = u32;
 
-            fn get_identifier(&self) -> Self::Identifier {
+            fn identifier(&self) -> Self::Identifier {
                 self.id
             }
         }
@@ -60,7 +60,7 @@ pub mod tests {
 
         assert!(!user1.eq(&user2));
         assert!(user1.eq(&user1_bis));
-        assert!(user1.get_identifier().eq(&id));
+        assert!(user1.identifier().eq(&id));
     }
 
     #[test]
@@ -146,7 +146,7 @@ pub mod tests {
         impl Entity<UserAggregate> for UserAggregate {
             type Identifier = u32;
 
-            fn get_identifier(&self) -> Self::Identifier {
+            fn identifier(&self) -> Self::Identifier {
                 self.id
             }
         }

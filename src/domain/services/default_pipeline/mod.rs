@@ -31,10 +31,9 @@ impl DefaultPipelineIdentifier {
 pub fn get_default_pipeline(
     cluster: Cluster,
 ) -> Result<<Cluster as Aggregate<Cluster>>::Command, <Cluster as Aggregate<Cluster>>::Error> {
-    let platformize = get_platformize_step(|| None);
-    let bootstrap_next = Some(HashSet::from([platformize.get_identifier().clone()]));
-    let bootstrap = get_bootstrap_operating_systems_step(bootstrap_next);
-    let steps = Vec::from([bootstrap, platformize]);
-    let identifier = DefaultPipelineIdentifier::create();
-    Ok(cluster.formulate_pipeline_creation(identifier, steps))
+    let platformize_step = get_platformize_step(|| None);
+    let bootstrap_next = Some(HashSet::from([platformize_step.identifier().clone()]));
+    let bootstrap_step = get_bootstrap_operating_systems_step(bootstrap_next);
+    let steps = Vec::from([From::from(bootstrap_step), From::from(platformize_step)]);
+    cluster.order_pipeline_creation(steps)
 }

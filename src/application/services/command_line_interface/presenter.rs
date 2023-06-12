@@ -4,7 +4,6 @@ use std::path::PathBuf;
 
 use clap::{value_parser, Arg, Command};
 use clap_complete::Shell;
-use flexi_logger::FlexiLoggerError;
 use thiserror::Error;
 
 use super::super::config::error::ConfigError;
@@ -16,8 +15,6 @@ use crate::application::{
 pub enum CliError {
     #[error("Configuration error")]
     Config(ConfigError),
-    #[error("Logger error")]
-    Logger(FlexiLoggerError),
 }
 
 pub const DEPLOY_COMMAND_NAME: &str = "deploy";

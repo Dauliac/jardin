@@ -7,13 +7,16 @@ use thiserror::Error;
 use crate::domain::{
     core::{Aggregate, Command, Entity, Event, ValueObject},
     models::{
-        entities::pipeline::{Pipeline, PipelineError, PipelineEvent},
+        entities::{
+            pipeline::{Pipeline, PipelineError, PipelineEvent},
+            step::Step,
+        },
         value_objects::{
             cluster::{
                 node::Node,
                 surname::{ClusterSurname, NodeSurname},
             },
-            pipeline::{steps::step::Step, PipelineIdentifier},
+            pipeline::{steps::step::StepPreview, PipelineIdentifier},
         },
         DomainResponseKinds,
     },
@@ -21,7 +24,7 @@ use crate::domain::{
 
 #[derive(Error, Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum ClusterError {
-    #[error("Duplicated node surname {} in cluster {}", .1.join(", "), .0.get_value())]
+    #[error("Duplicated node surname {} in the cluster {}", .1.join(", "), .0.get_value())]
     NodeSurnameAlreadyExists(ClusterSurname, Vec<String>),
     #[error("No leader declared in cluster {}", .0.get_value())]
     NoLeaderDeclared(ClusterSurname),
@@ -32,25 +35,34 @@ pub enum ClusterError {
         identifier: ClusterSurname,
         error: PipelineError,
     },
+    #[error("Pipeline not found in cluster {}", .identifier.get_value())]
+    PipelineNotFound { identifier: ClusterSurname },
 }
 impl ValueObject<ClusterError> for ClusterError {}
 impl Event<ClusterError> for ClusterError {}
 impl From<ClusterError> for Vec<DomainResponseKinds> {
     fn from(value: ClusterError) -> Self {
-        match value {
-            ClusterError::NodeSurnameAlreadyExists(..) => From::from(value),
-            ClusterError::NoLeaderDeclared(_) => From::from(value),
-            ClusterError::NoNodeInCluster(_) => From::from(value),
+        let mut kind = vec![DomainResponseKinds::ClusterError];
+        let mut specific_kind: Vec<DomainResponseKinds> = match value {
+            ClusterError::NodeSurnameAlreadyExists(..) => {
+                vec![DomainResponseKinds::ClusterNodeSurnameAlreadyExistsError]
+            }
+            ClusterError::NoLeaderDeclared(..) => {
+                vec![DomainResponseKinds::ClusterNoLeaderDeclaredError]
+            }
+            ClusterError::NoNodeInCluster(..) => {
+                vec![DomainResponseKinds::ClusterNoNodeInClusterError]
+            }
             ClusterError::Pipeline {
                 identifier: _,
                 error,
-            } => {
-                let mut kind = vec![DomainResponseKinds::ClusterError];
-                let mut kind_pipeline: Vec<DomainResponseKinds> = From::from(error);
-                kind.append(kind_pipeline.as_mut());
-                kind
+            } => From::from(error),
+            ClusterError::PipelineNotFound { identifier: _ } => {
+                vec![DomainResponseKinds::ClusterPipelineNotFoundError]
             }
-        }
+        };
+        kind.append(&mut specific_kind);
+        kind
     }
 }
 
@@ -59,7 +71,11 @@ pub enum ClusterCommand {
     CreatePipeline {
         identifier: ClusterSurname,
         pipeline_identifier: PipelineIdentifier,
-        steps: Vec<Step>,
+        steps: Vec<StepPreview>,
+    },
+    RunPipeline {
+        identifier: ClusterSurname,
+        dry_run: bool,
     },
 }
 impl ValueObject<ClusterCommand> for ClusterCommand {}
@@ -77,18 +93,16 @@ impl ValueObject<ClusterEvent> for ClusterEvent {}
 impl Event<ClusterEvent> for ClusterEvent {}
 impl From<ClusterEvent> for Vec<DomainResponseKinds> {
     fn from(value: ClusterEvent) -> Self {
-        match value {
-            ClusterEvent::ClusterDeclared(_) => From::from(value),
+        let mut kind = vec![DomainResponseKinds::ClusterEvent];
+        let mut specific_kind: Vec<DomainResponseKinds> = match value {
+            ClusterEvent::ClusterDeclared(_) => vec![DomainResponseKinds::ClusterDeclaredEvent],
             ClusterEvent::Pipeline {
                 identifier: _,
                 event,
-            } => {
-                let mut kind = vec![DomainResponseKinds::ClusterEvent];
-                let mut kind_pipeline: Vec<DomainResponseKinds> = From::from(event);
-                kind.append(kind_pipeline.as_mut());
-                kind
-            }
-        }
+            } => From::from(event),
+        };
+        kind.append(&mut specific_kind);
+        kind
     }
 }
 
@@ -154,7 +168,7 @@ impl PartialEq for Cluster {
 impl Entity<Cluster> for Cluster {
     type Identifier = ClusterSurname;
 
-    fn get_identifier(&self) -> ClusterSurname {
+    fn identifier(&self) -> ClusterSurname {
         self.surname.clone()
     }
 }
@@ -171,7 +185,14 @@ impl Aggregate<Cluster> for Cluster {
                 identifier: _,
                 pipeline_identifier,
                 steps,
-            } => self.create_pipeline(pipeline_identifier, steps),
+            } => self.create_pipeline(
+                pipeline_identifier,
+                steps.iter().map(|step| step.clone().into()).collect(),
+            ),
+            ClusterCommand::RunPipeline {
+                identifier: _,
+                dry_run,
+            } => self.run_pipeline(dry_run),
         }
     }
 
@@ -182,9 +203,29 @@ impl Aggregate<Cluster> for Cluster {
                 identifier: _,
                 event,
             } => match event {
-                PipelineEvent::PipelineCreated { identifier, steps } => {
-                    self.signal_pipeline_created(Pipeline::new(identifier, steps))
+                PipelineEvent::PipelineCreated {
+                    identifier,
+                    steps,
+                    jobs: _,
+                } => {
+                    self.signal_pipeline_created(Pipeline::new(
+                        identifier,
+                        steps.iter().map(|step| step.clone().into()).collect(),
+                    ));
                 }
+                PipelineEvent::PipelineStarted {
+                    identifier: _,
+                    dry_run,
+                    step_started: _,
+                    job_started: _,
+                } => {
+                    let _ = self.run_pipeline(dry_run);
+                }
+                PipelineEvent::JobUpdated {
+                    identifier: _,
+                    dry_run: _,
+                    output: _,
+                } => todo!(),
             },
         }
     }
@@ -195,12 +236,8 @@ impl Cluster {
         surname: ClusterSurname,
         targets: HashMap<NodeSurname, Node>,
     ) -> Result<(ClusterEvent, Self), ClusterError> {
-        Self::new(surname, targets).map(|cluster| {
-            (
-                ClusterEvent::ClusterDeclared(cluster.get_identifier()),
-                cluster,
-            )
-        })
+        Self::new(surname, targets)
+            .map(|cluster| (ClusterEvent::ClusterDeclared(cluster.identifier()), cluster))
     }
 
     pub fn new(
@@ -221,15 +258,33 @@ impl Cluster {
         &self.surname
     }
 
-    pub fn formulate_pipeline_creation(
+    pub fn order_pipeline_creation(
         &self,
-        identifier: PipelineIdentifier,
-        steps: Vec<Step>,
-    ) -> ClusterCommand {
-        ClusterCommand::CreatePipeline {
-            identifier: self.get_identifier(),
-            pipeline_identifier: identifier,
-            steps,
+        steps: Vec<StepPreview>,
+    ) -> Result<ClusterCommand, ClusterError> {
+        match &self.pipeline {
+            Some(pipeline) => Ok(ClusterCommand::CreatePipeline {
+                identifier: self.identifier(),
+                pipeline_identifier: pipeline.identifier(),
+                steps,
+            }),
+            None => Err(ClusterError::PipelineNotFound {
+                identifier: self.identifier(),
+            }),
+        }
+    }
+
+    pub fn order_to_run_pipeline(&self, dry_run: bool) -> ClusterCommand {
+        ClusterCommand::RunPipeline {
+            identifier: self.identifier(),
+            dry_run,
+        }
+    }
+
+    pub fn pipeline_identifier(&self) -> Option<PipelineIdentifier> {
+        match &self.pipeline {
+            Some(pipeline) => Some(pipeline.identifier()),
+            None => None,
         }
     }
 
@@ -240,16 +295,43 @@ impl Cluster {
     ) -> Result<ClusterEvent, ClusterError> {
         Pipeline::create(identifier, steps)
             .map_err(|error| ClusterError::Pipeline {
-                identifier: self.get_identifier(),
+                identifier: self.identifier(),
                 error,
             })
             .map(|event| ClusterEvent::Pipeline {
-                identifier: self.get_identifier(),
+                identifier: self.identifier(),
                 event,
             })
     }
 
     fn signal_pipeline_created(&mut self, pipeline: Pipeline) {
         self.pipeline = Some(pipeline);
+    }
+
+    fn run_pipeline(&self, dry_run: bool) -> <Cluster as Aggregate<Cluster>>::Result {
+        let identifier = self.identifier().clone();
+        match &self.pipeline {
+            Some(pipeline) => Ok(ClusterEvent::Pipeline {
+                identifier: self.surname.clone(),
+                event: PipelineEvent::PipelineStarted {
+                    identifier: pipeline.identifier().clone(),
+                    dry_run,
+                    step_started: pipeline.get_steps_to_run(),
+                    job_started: pipeline.get_job_to_run(),
+                },
+            }),
+            None => {
+                return Err(ClusterError::PipelineNotFound {
+                    identifier: identifier.to_owned(),
+                })
+            }
+        }
+    }
+
+    fn signal_run_pipeline(&mut self, dry_run: bool) {
+        match &mut self.pipeline {
+            Some(pipeline) => pipeline.run(dry_run),
+            None => (),
+        }
     }
 }

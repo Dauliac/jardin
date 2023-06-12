@@ -1,14 +1,15 @@
+use colored::*;
 use log::{error, info};
+use pretty_env_logger::formatted_builder;
+extern crate pretty_env_logger;
+use std::io::Write;
 
 use crate::{
-    application::services::{
-        cqrs_es::event::EventHandler,
-        logger::{
-            init_logger,
-            types::{DomainLoggerType, LoggerType},
-        },
+    application::services::cqrs_es::event::EventHandler,
+    domain::models::{
+        aggregates::cluster::ClusterEvent, entities::pipeline::PipelineEvent, DomainError,
+        DomainEvent, DomainResponse,
     },
-    domain::models::{DomainError, DomainEvent, DomainResponse},
 };
 
 pub struct Logger {
@@ -17,30 +18,68 @@ pub struct Logger {
 
 impl Logger {
     pub fn new(debug: bool) -> Self {
+        //pretty_env_logger::init();
+        //TODO: set formatter
+        formatted_builder()
+            .filter_level(log::LevelFilter::Trace)
+            .format(|buf, record| writeln!(buf, "{}", record.args()))
+            .init();
+
         Self { debug }
     }
 
     fn info(&self, event: &DomainEvent) {
-        init_logger(
-            self.debug,
-            match event.to_owned() {
-                DomainEvent::Cluster(_) => &LoggerType::Domain(DomainLoggerType::Cluster),
+        match event {
+            DomainEvent::Cluster(event) => match event {
+                ClusterEvent::ClusterDeclared(surname) => {
+                    info!(
+                        "Cluster `{}` is declared",
+                        surname.get_value().bold().green()
+                    );
+                }
+                ClusterEvent::Pipeline {
+                    identifier: _,
+                    event,
+                } => match event {
+                    PipelineEvent::PipelineCreated {
+                        identifier,
+                        steps,
+                        jobs: _,
+                    } => {
+                        let names = steps.iter().fold(String::new(), |acc, step| {
+                            format!("{}`{}`, ", acc, step.identifier.value().green())
+                        });
+                        info!(
+                            "Pipeline `{}` is created with steps {}",
+                            identifier.get_value().bold().green(),
+                            names
+                        );
+                    }
+                    PipelineEvent::PipelineStarted {
+                        identifier: _,
+                        dry_run: _,
+                        step_started: _,
+                        job_started: _,
+                    } => todo!(),
+                    PipelineEvent::JobUpdated {
+                        identifier: _,
+                        dry_run: _,
+                        output: _,
+                    } => todo!(),
+                },
             },
-        )
-        .unwrap();
-        info!("{:?}", event);
+        }
     }
 
     fn error(&self, error: &DomainError) {
-        init_logger(
-            self.debug,
-            match error {
-                DomainError::Surname(_) => &LoggerType::Domain(DomainLoggerType::Cluster),
-                DomainError::Cluster(_) => &LoggerType::Domain(DomainLoggerType::Cluster),
-            },
-        )
-        .unwrap();
-        error!("{}", error);
+        //println!("Error {:?}", error);
+        let error_prefix = format!("{}{} ", "Error".bold().red(), ":".bold());
+        let error = match error {
+            DomainError::Surname(error) => error.to_string(),
+            DomainError::Cluster(error) => error.to_string(),
+        };
+        let message = format!("{}{}", error_prefix, error);
+        error!("{}", message.bold());
     }
 }
 impl EventHandler for Logger {

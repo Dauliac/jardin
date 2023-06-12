@@ -1,7 +1,7 @@
 version = 1
 
 [pipeline]
-default_backend = "Nix"
+default_backend = "nix"
 use_default = true
 
 [cluster]
@@ -10,12 +10,17 @@ surname = "cluster"
 [cluster.targets]
 [cluster.targets.node1]
 surname = "node1"
-# role = "leader"
-role = "follower"
+name_server = "node2"
+role = "leader"
+# role = "follower"
 ip = '127.0.0.1'
+ssh_key_path = '~/.ssh/id_rsa'
 
 [cluster.targets.node2]
 surname = "node1"
+# TODO: should we change it with domain notion ?
+name_server = "node2.nofreedisk.space"
 # role = "leader"
 role = "follower"
 ip = '127.0.0.1'
+ssh_key_path = '~/.ssh/id_rsa'

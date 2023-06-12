@@ -2,7 +2,7 @@ use async_trait::async_trait;
 
 use std::time::SystemTime;
 
-use crate::domain::{models::aggregates::cluster::ClusterCommand, repositories::ClusterRepository};
+use crate::domain::models::aggregates::cluster::ClusterCommand;
 
 #[derive(Clone, PartialEq)]
 pub struct Command {
@@ -31,7 +31,7 @@ impl Command {
 }
 
 #[async_trait]
-pub trait CommandBus<R: ClusterRepository>: Sync + Send {
+pub trait CommandBus: Sync + Send {
     fn publish(&mut self, command: Command);
     async fn run(&mut self);
 }

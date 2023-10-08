@@ -1,15 +1,12 @@
-use std::{collections::HashMap, net::IpAddr, path::PathBuf};
+use std::{net::IpAddr, path::PathBuf};
 
 use crate::domain::models::{
-    aggregates::cluster::Cluster,
     value_objects::cluster::{
         node::{Node, Private, Public, Role, Sensitive},
-        surname::{ClusterSurname, NodeSurname, SurnameError},
+        surname::{NodeSurname, SurnameError},
     },
-    DomainError, DomainEvent,
+    DomainError,
 };
-
-use super::default_pipeline::get_default_pipeline;
 
 pub struct NodeBuilder {
     surname: Result<NodeSurname, SurnameError>,
@@ -54,24 +51,26 @@ impl NodeBuilder {
     }
 }
 
-pub fn declare_cluster(
-    cluster_surname: String,
-    targets: HashMap<NodeSurname, Node>,
-    callback: impl Fn(Result<(Vec<DomainEvent>, Cluster), DomainError>),
-) {
-    ClusterSurname::new(cluster_surname)
-        .map_err(|error| {
-            callback(Err(DomainError::Surname(error)));
-        })
-        .map(|surname| {
-            Cluster::declare(surname, targets)
-                .map_err(|error| callback(Err(DomainError::Cluster(error))))
-                .map(|(event, cluster)| {
-                    let _pipeline = get_default_pipeline(cluster.to_owned());
-                    let events = vec![DomainEvent::Cluster(event)];
-                    callback(Ok((events, cluster)));
-                })
-                .ok();
-        })
-        .ok();
-}
+// TODO: use this in use case
+// pub fn declare_cluster(
+//     cluster_surname: String,
+//     targets: HashMap<NodeSurname, Node>,
+//     callback: impl Fn(Result<(Vec<DomainEvent>, Cluster), DomainError>),
+// ) {
+//     ClusterSurname::new(cluster_surname)
+//         .map_err(|error| {
+//             callback(Err(DomainError::Surname(error)));
+//         })
+//         .map(|surname| {
+//             Cluster::declare(surname, targets)
+//                 .map_err(|error| callback(Err(DomainError::Cluster(error))))
+//                 .map(|(event, cluster)| {
+//                     let cluster = &mut cluster;
+//                     let _pipeline = get_default_pipeline(cluster);
+//                     let events = vec![DomainEvent::Cluster(event)];
+//                     callback(Ok((events, cluster)));
+//                 })
+//                 .ok();
+//         })
+//         .ok();
+// }

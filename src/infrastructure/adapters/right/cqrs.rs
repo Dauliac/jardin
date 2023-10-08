@@ -32,7 +32,7 @@ impl<R: ClusterRepository> MemoryCommandBus<R> {
         }
     }
 
-    fn read(
+    fn extract_and_publish_event(
         &self,
         command: &ClusterCommand,
         identifier: <Cluster as Entity<Cluster>>::Identifier,
@@ -45,6 +45,7 @@ impl<R: ClusterRepository> MemoryCommandBus<R> {
     }
 
     fn handle(command: &ClusterCommand, cluster: Arc<RwLock<Cluster>>) -> ClusterResult {
+        println!("handle {:?}", &command);
         cluster.read().unwrap().handle(command.to_owned())
     }
 
@@ -56,9 +57,9 @@ impl<R: ClusterRepository> MemoryCommandBus<R> {
                 steps: _,
             } => identifier.to_owned(),
             ClusterCommand::RunPipeline {
-                identifier: _,
+                identifier,
                 dry_run: _,
-            } => todo!(),
+            } => identifier.to_owned(),
         }
     }
 
@@ -70,6 +71,7 @@ impl<R: ClusterRepository> MemoryCommandBus<R> {
 #[async_trait]
 impl<R: ClusterRepository + Sync + Send> CommandBus for MemoryCommandBus<R> {
     fn publish(&mut self, command: Command) {
+        println!("{:?}", &command.get_command());
         self.queue.push(command);
     }
 
@@ -78,7 +80,7 @@ impl<R: ClusterRepository + Sync + Send> CommandBus for MemoryCommandBus<R> {
             .pop()
             .map(|command| (command.to_owned(), Self::extract_identifier(&command)))
             .map(|(command, identifier)| {
-                let response = self.read(command.get_command(), identifier);
+                let response = self.extract_and_publish_event(command.get_command(), identifier);
                 self.publish_to_event_store(response);
             });
     }

@@ -162,7 +162,7 @@ pub(in crate::domain) struct CheckJob {
 
 impl PartialEq for CheckJob {
     fn eq(&self, other: &Self) -> bool {
-        self.job.eq(&other.job())
+        self.job.eq(other.job())
     }
 }
 
@@ -204,25 +204,21 @@ impl CheckJob {
         self.retried
     }
     pub fn fail(&mut self) -> Option<Retry> {
-        self.retried
-            .map(|retried| {
-                self.retry
-                    .map(|retry| {
-                        let remains = retry - retried;
-                        retry
-                            .eq(&retried)
-                            .then(|| {
-                                self.job.fail();
-                                remains
-                            })
-                            .or_else(|| {
-                                self.retried = Some(retried + 1);
-                                Some(remains)
-                            })
+        self.retried.and_then(|retried| {
+            self.retry.and_then(|retry| {
+                let remains = retry - retried;
+                retry
+                    .eq(&retried)
+                    .then(|| {
+                        self.job.fail();
+                        remains
                     })
-                    .flatten()
+                    .or_else(|| {
+                        self.retried = Some(retried + 1);
+                        Some(remains)
+                    })
             })
-            .flatten()
+        })
     }
     pub fn success(&mut self) {
         self.job.success()
@@ -237,7 +233,7 @@ impl CheckJob {
 
 impl Executable for CheckJob {
     fn run(&mut self, dry_run: bool) {
-        self.retried = self.retry.is_some().then(|| 0);
+        self.retried = self.retry.is_some().then_some(0);
         self.job_mut().run(dry_run);
     }
 }

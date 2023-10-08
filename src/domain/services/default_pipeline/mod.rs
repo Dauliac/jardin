@@ -29,11 +29,12 @@ impl DefaultPipelineIdentifier {
 }
 
 pub fn get_default_pipeline(
-    cluster: Cluster,
+    cluster: &mut Cluster,
 ) -> Result<<Cluster as Aggregate<Cluster>>::Command, <Cluster as Aggregate<Cluster>>::Error> {
+    let identifier = DefaultPipelineIdentifier::create();
     let platformize_step = get_platformize_step(|| None);
     let bootstrap_next = Some(HashSet::from([platformize_step.identifier().clone()]));
     let bootstrap_step = get_bootstrap_operating_systems_step(bootstrap_next);
     let steps = Vec::from([From::from(bootstrap_step), From::from(platformize_step)]);
-    cluster.order_pipeline_creation(steps)
+    cluster.order_pipeline_creation(identifier, steps)
 }

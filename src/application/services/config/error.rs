@@ -10,6 +10,8 @@ pub enum ConfigError {
     BadConfigDirectory(String),
     #[error("Can't have empty pipeline without default_pipeline enabled")]
     EmptyPipeline,
+    #[error("Can't use pipeline without identifier")]
+    NoPipelineIdentifier,
     #[error("Unknown error")]
     Unknown,
 }

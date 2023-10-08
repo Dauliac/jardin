@@ -21,10 +21,8 @@ impl Logger {
         //pretty_env_logger::init();
         //TODO: set formatter
         formatted_builder()
-            .filter_level(log::LevelFilter::Trace)
             .format(|buf, record| writeln!(buf, "{}", record.args()))
             .init();
-
         Self { debug }
     }
 

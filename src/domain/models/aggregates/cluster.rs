@@ -30,6 +30,11 @@ pub enum ClusterError {
     NoLeaderDeclared(ClusterSurname),
     #[error("No node in cluster {}", .0.get_value())]
     NoNodeInCluster(ClusterSurname),
+    #[error("Pipeline {} already exists in cluster {}", .pipeline_identifier.get_value(), .identifier.get_value())]
+    PipelineAlreadyExists {
+        identifier: ClusterSurname,
+        pipeline_identifier: PipelineIdentifier,
+    },
     #[error("Pipeline error {} in cluster {}", .error, .identifier.get_value())]
     Pipeline {
         identifier: ClusterSurname,
@@ -52,6 +57,12 @@ impl From<ClusterError> for Vec<DomainResponseKinds> {
             }
             ClusterError::NoNodeInCluster(..) => {
                 vec![DomainResponseKinds::ClusterNoNodeInClusterError]
+            }
+            ClusterError::PipelineAlreadyExists {
+                identifier: _,
+                pipeline_identifier: _,
+            } => {
+                vec![DomainResponseKinds::ClusterPipelineAlreadyExistsError]
             }
             ClusterError::Pipeline {
                 identifier: _,
@@ -219,7 +230,7 @@ impl Aggregate<Cluster> for Cluster {
                     step_started: _,
                     job_started: _,
                 } => {
-                    let _ = self.run_pipeline(dry_run);
+                    self.signal_run_pipeline(dry_run);
                 }
                 PipelineEvent::JobUpdated {
                     identifier: _,
@@ -260,16 +271,18 @@ impl Cluster {
 
     pub fn order_pipeline_creation(
         &self,
+        pipeline_identifier: PipelineIdentifier,
         steps: Vec<StepPreview>,
     ) -> Result<ClusterCommand, ClusterError> {
         match &self.pipeline {
-            Some(pipeline) => Ok(ClusterCommand::CreatePipeline {
+            Some(pipeline) => Err(ClusterError::PipelineAlreadyExists {
                 identifier: self.identifier(),
                 pipeline_identifier: pipeline.identifier(),
-                steps,
             }),
-            None => Err(ClusterError::PipelineNotFound {
+            None => Ok(ClusterCommand::CreatePipeline {
                 identifier: self.identifier(),
+                pipeline_identifier,
+                steps,
             }),
         }
     }
@@ -282,10 +295,7 @@ impl Cluster {
     }
 
     pub fn pipeline_identifier(&self) -> Option<PipelineIdentifier> {
-        match &self.pipeline {
-            Some(pipeline) => Some(pipeline.identifier()),
-            None => None,
-        }
+        self.pipeline.as_ref().map(|pipeline| pipeline.identifier())
     }
 
     fn create_pipeline(
@@ -309,22 +319,18 @@ impl Cluster {
     }
 
     fn run_pipeline(&self, dry_run: bool) -> <Cluster as Aggregate<Cluster>>::Result {
-        let identifier = self.identifier().clone();
+        let identifier = self.identifier();
         match &self.pipeline {
             Some(pipeline) => Ok(ClusterEvent::Pipeline {
                 identifier: self.surname.clone(),
                 event: PipelineEvent::PipelineStarted {
-                    identifier: pipeline.identifier().clone(),
+                    identifier: pipeline.identifier(),
                     dry_run,
                     step_started: pipeline.get_steps_to_run(),
                     job_started: pipeline.get_job_to_run(),
                 },
             }),
-            None => {
-                return Err(ClusterError::PipelineNotFound {
-                    identifier: identifier.to_owned(),
-                })
-            }
+            None => Err(ClusterError::PipelineNotFound { identifier }),
         }
     }
 

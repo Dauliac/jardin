@@ -118,6 +118,14 @@ tasks:
     cmds:
       - |
         nix run nixpkgs#go-task toolchain -- --watch
+  debug:
+    silent: true
+    desc: Run jardin in debug mode
+    deps:
+      - task: build
+    cmds:
+      - |
+        ./target/debug/jardin -c jardin.toml deploy
   run:
     silent: true
     desc: Run jardin

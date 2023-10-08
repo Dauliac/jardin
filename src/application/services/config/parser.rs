@@ -16,6 +16,14 @@ fn check_empty_pipeline_specification(config: &Config) -> Result<(), ConfigError
     }
 }
 
+fn check_pipeline_key_specification(config: &Config) -> Result<(), ConfigError> {
+    let constraint = config.pipeline.identifier.is_none() && !config.pipeline.use_default;
+    match constraint {
+        true => Err(ConfigError::NoPipelineIdentifier),
+        false => Ok(()),
+    }
+}
+
 fn confy_error_adapter(error: ConfyError) -> ConfigError {
     match error {
         ConfyError::BadTomlData(error) => ConfigError::BadConfiguration(error.to_string()),
@@ -33,6 +41,7 @@ pub fn parse_config(config_path: Option<&String>) -> Result<Config, ConfigError>
     let config = config_path
         .map_or_else(|| confy::load(NAME, None), confy::load_path)
         .map_err(confy_error_adapter)?;
+    check_pipeline_key_specification(&config)?;
     check_empty_pipeline_specification(&config).map(|_| config)
 }
 

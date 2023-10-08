@@ -24,6 +24,8 @@ pub const NAME: &str = env!("CARGO_PKG_NAME");
 pub const AUTHOR: &str = env!("CARGO_PKG_AUTHORS");
 
 pub async fn start() {
+    let logger = Arc::new(RwLock::new(Logger::new(false)));
+
     let config = start_cli(parse_config);
     match config {
         Ok((config, use_case)) => {
@@ -34,7 +36,6 @@ pub async fn start() {
                 event_bus.to_owned(),
             )));
 
-            let logger = Arc::new(RwLock::new(Logger::new(false)));
             start_domain_service(
                 use_case,
                 &config,
@@ -42,13 +43,16 @@ pub async fn start() {
                 event_bus.to_owned(),
                 command_bus.to_owned(),
                 logger,
-            );
+            )
+            .await;
 
             loop {
                 event_bus.write().unwrap().run().await;
                 command_bus.write().unwrap().run().await;
             }
         }
-        Err(_) => {}
+        Err(error) => {
+            println!("Error: {:?}", error);
+        }
     };
 }

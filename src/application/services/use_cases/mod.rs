@@ -27,11 +27,11 @@ use super::{
     config::model::Config,
     cqrs_es::{
         command::CommandBus,
-        event::{EventBus, EventHandlers},
+        event::{EventBus, EventHandler, EventHandlers},
     },
 };
 
-pub fn deploy_cluster_to_production_with_default_pipeline(
+async fn deploy_cluster_to_production_with_default_pipeline(
     config: &Config,
     repository: Arc<RwLock<dyn ClusterRepository>>,
     event_bus: Arc<RwLock<dyn EventBus>>,
@@ -58,7 +58,7 @@ pub fn deploy_cluster_to_production_with_default_pipeline(
             let node = node?;
             NodeSurname::new(node_identifier)
                 .map_err(|error| {
-                    let error = DomainError::Surname(error.to_owned());
+                    let error = DomainError::Surname(error);
                     let event = Event::new(DomainResponse::Error(error.to_owned()));
                     event_bus.write().unwrap().publish(event);
                     error
@@ -77,38 +77,82 @@ pub fn deploy_cluster_to_production_with_default_pipeline(
                 .map(|cluster_surname| {
                     Cluster::declare(cluster_surname, targets)
                         .map_err(|error| {
-                            let event =
+                            let error =
                                 Event::new(DomainResponse::Error(DomainError::Cluster(error)));
-                            event_bus.write().unwrap().publish(event);
+                            event_bus.write().unwrap().publish(error);
                         })
-                        .map(|(event, cluster)| {
-                            let event =
-                                Event::new(DomainResponse::Event(DomainEvent::Cluster(event)));
-                            event_bus.write().unwrap().publish(event);
-                            get_default_pipeline(cluster.to_owned())
-                                .map_err(|pipeline_error| {
+                        .map(
+                            |(event, mut cluster)| match get_default_pipeline(&mut cluster) {
+                                Err(error) => {
                                     let event = Event::new(DomainResponse::Error(
-                                        DomainError::Cluster(pipeline_error),
+                                        DomainError::Cluster(error),
                                     ));
                                     event_bus.write().unwrap().publish(event);
-                                })
-                                .map(|command| {
-                                    let command = Command::new(command);
-                                    command_bus.write().unwrap().publish(command);
+                                }
+                                Ok(command) => {
                                     let cluster = Arc::new(RwLock::new(cluster));
-                                    // TODO: add dry_run option from config
-                                    let command = Command::new(
-                                        cluster.write().unwrap().order_to_run_pipeline(true),
+                                    repository.write().unwrap().write(cluster.to_owned());
+                                    let event = Event::new(DomainResponse::Event(
+                                        DomainEvent::Cluster(event),
+                                    ));
+                                    event_bus.write().unwrap().publish(event);
+                                    let command = Command::new(command);
+                                    let handler = EventHandlers::Deploy(Arc::new(RwLock::new(
+                                        ClusterDeploymentService::new(
+                                            cluster,
+                                            command_bus.clone(),
+                                            event_bus.clone(),
+                                        ),
+                                    )));
+
+                                    event_bus.write().unwrap().subscribe(
+                                        DomainResponseKinds::ClusterPipelineCreatedEvent,
+                                        handler,
                                     );
                                     command_bus.write().unwrap().publish(command);
-
-                                    repository.write().unwrap().write(cluster);
-                                })
-                                .ok();
-                        })
+                                }
+                            },
+                        )
                         .ok();
                 })
         });
+}
+
+#[derive(Clone)]
+pub struct ClusterDeploymentService {
+    cluster: Arc<RwLock<Cluster>>,
+    command_bus: Arc<RwLock<dyn CommandBus>>,
+    event_bus: Arc<RwLock<dyn EventBus>>,
+}
+
+impl ClusterDeploymentService {
+    pub fn new(
+        cluster: Arc<RwLock<Cluster>>,
+        command_bus: Arc<RwLock<dyn CommandBus>>,
+        event_bus: Arc<RwLock<dyn EventBus>>,
+    ) -> Self {
+        Self {
+            cluster,
+            command_bus,
+            event_bus,
+        }
+    }
+    fn unsubscribe(&self) {
+        let handler = EventHandlers::Deploy(Arc::new(RwLock::new(self.clone())));
+        self.event_bus
+            .write()
+            .unwrap()
+            .unsubscribe(DomainResponseKinds::ClusterPipelineCreatedEvent, &handler);
+    }
+}
+
+impl EventHandler for ClusterDeploymentService {
+    fn notify(&mut self, _response: DomainResponse) {
+        let command = Command::new(self.cluster.write().unwrap().order_to_run_pipeline(true));
+        self.command_bus.write().unwrap().publish(command);
+        self.unsubscribe();
+        println!("let's go!)");
+    }
 }
 
 pub fn deploy_cluster_to_production_with_default_pipeline_in_dry_run_mode(_config: &Config) {
@@ -123,7 +167,7 @@ pub fn deploy_cluster_to_develop_with_default_pipeline(_config: &Config) {
     println!("DDDD")
 }
 
-pub fn handle_deploy_user_story(
+async fn handle_deploy_user_story(
     user_story: DeployUserStory,
     config: &Config,
     repository: Arc<RwLock<dyn ClusterRepository>>,
@@ -138,6 +182,7 @@ pub fn handle_deploy_user_story(
                 event_bus,
                 command_bus,
             )
+            .await
         }
         DeployUserStory::DeployClusterToProductionWithDefaultPipelineInDryRunMode => {
             deploy_cluster_to_production_with_default_pipeline_in_dry_run_mode(config)
@@ -151,7 +196,7 @@ pub fn handle_deploy_user_story(
     };
 }
 
-pub fn start_domain_service(
+pub async fn start_domain_service(
     use_case: UseCases,
     config: &Config,
     repository: Arc<RwLock<dyn ClusterRepository>>,
@@ -171,7 +216,7 @@ pub fn start_domain_service(
 
     match use_case {
         UseCases::Deploy(deploy) => {
-            handle_deploy_user_story(deploy, config, repository, event_bus, command_bus)
+            handle_deploy_user_story(deploy, config, repository, event_bus, command_bus).await
         }
     }
 }

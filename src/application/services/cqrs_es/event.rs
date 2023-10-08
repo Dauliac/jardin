@@ -7,6 +7,7 @@ use std::{
 };
 
 use crate::{
+    application::services::use_cases::ClusterDeploymentService,
     domain::models::{DomainResponse, DomainResponseKinds},
     user_interface::Logger,
 };
@@ -33,11 +34,13 @@ pub trait EventHandler {
 #[derive(Clone)]
 pub enum EventHandlers {
     Logger(Arc<RwLock<Logger>>),
+    Deploy(Arc<RwLock<ClusterDeploymentService>>),
 }
 
 #[async_trait]
 pub trait EventBus: Send + Sync {
     fn subscribe(&mut self, response: DomainResponseKinds, handler: EventHandlers);
+    fn unsubscribe(&mut self, response: DomainResponseKinds, handler: &EventHandlers);
     fn publish(&mut self, event: Event);
     async fn run(&mut self);
 }

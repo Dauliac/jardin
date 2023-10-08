@@ -131,7 +131,7 @@ impl Step {
     }
 
     pub fn is_starter(&self) -> bool {
-        !self.nexts.is_some()
+        self.nexts.is_none()
     }
     pub fn job(&self) -> &Job {
         &self.job
@@ -162,20 +162,19 @@ impl Step {
         match self
             .pre_checks
             .as_mut()
-            .map(|pre_check| {
+            .and_then(|pre_check| {
                 pre_check
                     .get_mut(&job)
                     .map(|job| job.update(output.to_owned()))
             })
-            .flatten()
             .map(|_| {
                 self.post_checks.as_mut().and_then(|post_checks| {
-                    post_checks
-                        .get_mut(&job)
-                        .and_then(|job| Some(job.update(output.to_owned())))
+                    post_checks.get_mut(&job).map(|job| {
+                        job.update(output.to_owned());
+                    })
                 })
             })
-            .map_or(None, |_| {
+            .and_then(|_| {
                 self.job
                     .identifier()
                     .eq(&job)
@@ -192,11 +191,9 @@ impl Step {
                         }
                         self.job.update(output)
                     })
-                    .map_or(None, |_| {
-                        Some(StepError::JobNotFound {
-                            step: self.identifier().clone(),
-                            job: self.job.identifier().clone(),
-                        })
+                    .map(|_| StepError::JobNotFound {
+                        step: self.identifier().clone(),
+                        job: self.job.identifier(),
                     })
             }) {
             Some(error) => Err(error),
@@ -210,11 +207,11 @@ impl Executable for Step {
         self.dry_run = dry_run;
         self.status = Status::Doing;
         self.start_at = Some(SystemTime::now());
-        self.pre_checks.as_mut().and_then(|pre_checks| {
+        self.pre_checks.as_mut().map(|pre_checks| {
             pre_checks.iter_mut().for_each(|(_, pre_check)| {
                 pre_check.run(dry_run);
             });
-            Some(pre_checks)
+            pre_checks
         });
     }
 }

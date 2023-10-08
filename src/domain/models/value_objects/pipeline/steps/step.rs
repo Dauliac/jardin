@@ -79,17 +79,17 @@ impl From<Job> for JobPreview {
     }
 }
 
-impl Into<Job> for JobPreview {
-    fn into(self) -> Job {
+impl From<JobPreview> for Job {
+    fn from(val: JobPreview) -> Self {
         Job::new(
-            self.identifier,
-            self.backend,
-            self.status,
-            self.dry_run,
-            self.node_execution,
-            self.output,
-            self.start_at,
-            self.start_at,
+            val.identifier,
+            val.backend,
+            val.status,
+            val.dry_run,
+            val.node_execution,
+            val.output,
+            val.start_at,
+            val.start_at,
         )
     }
 }
@@ -111,9 +111,9 @@ impl From<CheckJob> for CheckJobPreview {
     }
 }
 
-impl Into<CheckJob> for CheckJobPreview {
-    fn into(self) -> CheckJob {
-        CheckJob::new(self.retry, self.retried, self.job.into())
+impl From<CheckJobPreview> for CheckJob {
+    fn from(val: CheckJobPreview) -> Self {
+        CheckJob::new(val.retry, val.retried, val.job.into())
     }
 }
 
@@ -136,19 +136,19 @@ impl From<Step> for StepPreview {
             identifier: step.identifier().clone(),
             job: step.job().clone().into(),
             status: step.status().clone(),
-            dry_run: step.is_dry_run().clone(),
-            start_at: step.start_at().clone(),
-            end_at: step.end_at().clone().clone(),
+            dry_run: step.is_dry_run(),
+            start_at: *step.start_at(),
+            end_at: *step.end_at(),
             pre_checks: step.pre_checks().clone().map(|pre_check| {
                 pre_check
-                    .iter()
-                    .map(|(_, check_job)| From::from(check_job.clone()))
+                    .values()
+                    .map(|check_job| From::from(check_job.clone()))
                     .collect()
             }),
             post_checks: step.post_checks().clone().map(|pre_check| {
                 pre_check
-                    .iter()
-                    .map(|(_, check_job)| From::from(check_job.clone()))
+                    .values()
+                    .map(|check_job| From::from(check_job.clone()))
                     .collect()
             }),
             nexts: step
@@ -159,28 +159,28 @@ impl From<Step> for StepPreview {
     }
 }
 
-impl Into<Step> for StepPreview {
-    fn into(self) -> Step {
+impl From<StepPreview> for Step {
+    fn from(val: StepPreview) -> Self {
         Step::new(
-            self.identifier,
-            self.job.into(),
-            self.status,
-            self.dry_run,
-            self.start_at,
-            self.end_at,
-            self.pre_checks.map(|pre_checks| {
+            val.identifier,
+            val.job.into(),
+            val.status,
+            val.dry_run,
+            val.start_at,
+            val.end_at,
+            val.pre_checks.map(|pre_checks| {
                 pre_checks
                     .into_iter()
                     .map(|check_job| (check_job.job.identifier.clone(), check_job.into()))
                     .collect()
             }),
-            self.post_checks.map(|post_checks| {
+            val.post_checks.map(|post_checks| {
                 post_checks
                     .into_iter()
                     .map(|check_job| (check_job.job.identifier.clone(), check_job.into()))
                     .collect()
             }),
-            self.nexts.map(|nexts| nexts.into_iter().collect()),
+            val.nexts.map(|nexts| nexts.into_iter().collect()),
         )
     }
 }

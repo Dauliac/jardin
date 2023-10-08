@@ -192,6 +192,8 @@
                 cargo-udeps
                 rustfmt
                 rust.packages.stable.rustPlatform.rustLibSrc
+                # BUG: this package is broken
+                # vscode-extensions.llvm-org.lldb-vscode
               ]
               ++ formatterPackages;
           };

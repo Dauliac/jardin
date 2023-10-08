@@ -30,6 +30,7 @@ pub enum DomainResponseKinds {
     ClusterNodeSurnameAlreadyExistsError,
     ClusterNoLeaderDeclaredError,
     ClusterNoNodeInClusterError,
+    ClusterPipelineAlreadyExistsError,
     ClusterPipelineError,
     ClusterPipelineNotFoundError,
     ClusterPipelineInvalidNextStepsError,

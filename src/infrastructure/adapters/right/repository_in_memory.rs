@@ -29,6 +29,7 @@ impl Repository<ClusterSurname, Cluster> for ClusterRepositoryInMemory {
     }
     fn write(&mut self, aggregate: Arc<RwLock<Cluster>>) {
         let identifier = aggregate.read().unwrap().get_surname().clone();
+        println!("identifier: {:?}", &identifier);
         self.clusters.insert(identifier, aggregate);
     }
 }

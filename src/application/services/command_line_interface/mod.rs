@@ -25,11 +25,11 @@ pub fn start_cli(
 ) -> Result<(Config, UseCases), ()> {
     let matches = build_cli().get_matches();
     attempt_help_display_on_match(&matches)
-        .map_err(|error| exit_on_cli_error(error))
+        .map_err(exit_on_cli_error)
         .map(|_| {
             attempt_generate_completion_on_match(&matches);
         })
-        .map(|_| {
+        .and_then(|_| {
             read_config(&matches, config_service)
                 .map_err(|error| {
                     log::error!(
@@ -40,12 +40,10 @@ pub fn start_cli(
                     );
                     error_exit();
                 })
-                .map(|config| {
+                .and_then(|config| {
                     attempt_deploy_on_match(&matches)
                         .ok_or(())
                         .map(|use_case| (config, use_case))
                 })
-                .flatten()
         })
-        .flatten()
 }

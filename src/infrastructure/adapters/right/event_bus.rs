@@ -43,6 +43,9 @@ impl<R: ClusterRepository> MemoryEventBus<R> {
                 EventHandlers::Logger(logger) => {
                     logger.write().unwrap().notify(response.to_owned());
                 }
+                EventHandlers::Deploy(handler) => {
+                    handler.write().unwrap().notify(response.to_owned());
+                }
             });
     }
 
@@ -71,13 +74,35 @@ impl<R: ClusterRepository + Send + Sync> EventBus for MemoryEventBus<R> {
         self.listeners.insert(event, Box::new(handler));
     }
 
+    fn unsubscribe(&mut self, event: DomainResponseKinds, handler: &EventHandlers) {
+        let handlers = self.listeners.remove(&event);
+        match handlers {
+            Some(handlers) => {
+                let iter = handlers.iter().filter(|subscribed_handler| {
+                    let subscribed_handler = subscribed_handler.as_ref();
+                    match (subscribed_handler, handler.to_owned()) {
+                        (EventHandlers::Logger(_), EventHandlers::Logger(_)) => true,
+                        (EventHandlers::Deploy(_), EventHandlers::Deploy(_)) => true,
+                        _ => false,
+                    }
+                });
+                assert_eq!(iter.clone().count(), 0, "No handlers found");
+                iter.for_each(|handler| {
+                    self.listeners.insert(event.to_owned(), handler.to_owned());
+                });
+            }
+            None => {
+                panic!("No handlers found");
+            }
+        };
+    }
+
     fn publish(&mut self, event: Event) {
         self.queue.push_back(event);
     }
 
     async fn run(&mut self) {
         self.queue.pop_front().map(|event| {
-            // println!("Event {:?}", event);
             match event.response.to_owned() {
                 DomainResponse::Event(event) => {
                     self.write(

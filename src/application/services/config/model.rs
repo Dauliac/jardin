@@ -59,7 +59,7 @@ pub struct Step {
 
 #[derive(Default, Debug, Serialize, Deserialize)]
 pub struct Pipeline {
-    pub identifier: String,
+    pub identifier: Option<String>,
     pub use_default: bool,
     pub default_backend: Option<Backend>,
     pub steps: Option<Vec<Step>>,

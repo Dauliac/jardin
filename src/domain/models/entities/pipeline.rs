@@ -187,17 +187,13 @@ impl Entity<Pipeline> for Pipeline {
 fn get_jobs(steps: &Steps) -> HashMap<JobIdentifier, StepIdentifier> {
     steps
         .iter()
-        .fold(HashMap::new(), |mut jobs, (_step_identifier, &ref step)| {
-            jobs.insert(step.job().identifier().clone(), step.identifier().clone());
+        .fold(HashMap::new(), |mut jobs, (_step_identifier, step)| {
+            jobs.insert(step.job().identifier(), step.identifier().clone());
             step.is_starter().then(|| {
-                step.pre_checks().clone().and_then(|pre_checks| {
+                step.pre_checks().clone().map(|pre_checks| {
                     pre_checks.iter().for_each(|(_, pre_check)| {
-                        jobs.insert(
-                            pre_check.job().identifier().clone(),
-                            step.identifier().clone(),
-                        );
+                        jobs.insert(pre_check.job().identifier(), step.identifier().clone());
                     });
-                    Some(())
                 });
             });
             jobs

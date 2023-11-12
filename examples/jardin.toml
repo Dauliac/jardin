@@ -1,26 +1,34 @@
 version = 1
 
 [pipeline]
-default_backend = "nix"
-use_default = true
+backend = "nix"
+
+[pipeline.jobs.bootstrap]
+statefull = true
+
+[pipeline.jobs.dns]
+depends = []
+
+[pipeline.jobs.provisioning]
+depends = ["bootstrap"]
+
+[pipeline.jobs.applications]
+# with kube or docker or 
+statefull = true
+depends = ["provisioning"]
 
 [cluster]
 surname = "cluster"
+domain = "my.domain"
 
 [cluster.targets]
 [cluster.targets.node1]
 surname = "node1"
 name_server = "node2"
 role = "leader"
-# role = "follower"
 ip = '127.0.0.1'
-ssh_key_path = '~/.ssh/id_rsa'
 
 [cluster.targets.node2]
 surname = "node1"
-# TODO: should we change it with domain notion ?
-name_server = "node2.nofreedisk.space"
-# role = "leader"
 role = "follower"
-ip = '127.0.0.1'
-ssh_key_path = '~/.ssh/id_rsa'
+ip = "127.0.0.1"

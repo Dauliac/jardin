@@ -1,32 +1,8 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
 {
   description = "Jardin";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-
-    flake-utils.url = "github:numtide/flake-utils";
-
-    crane = {
-      url = "github:ipetkov/crane";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    fenix = {
-      url = "github:nix-community/fenix/monthly";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.rust-analyzer-src.follows = "";
-    };
-
-    advisory-db = {
-      url = "github:rustsec/advisory-db";
-      flake = false;
-    };
-    git-gamble = {
-      url = "gitlab:pinage404/git-gamble";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
   };
   outputs =
     { self

@@ -33,15 +33,13 @@ impl Default for Private {
 pub struct Sensitive {
     name_server: NameServer,
     ip_address: IpAddr,
-    ssh_key_path: PathBuf,
 }
 
 impl Sensitive {
-    pub fn new(name_server: NameServer, ip_address: IpAddr, ssh_key_path: PathBuf) -> Self {
+    pub fn new(name_server: NameServer, ip_address: IpAddr) -> Self {
         Self {
             name_server,
             ip_address,
-            ssh_key_path,
         }
     }
 }
@@ -158,9 +156,8 @@ mod tests {
     fn test_sensitive() {
         let name_server: String = Title(EN).fake();
         let ip_address: IpAddr = IP(EN).fake();
-        let ssh_key_path: PathBuf = FilePath(EN).fake();
 
-        let sensitive = Sensitive::new(name_server.clone(), ip_address, ssh_key_path.clone());
+        let sensitive = Sensitive::new(name_server.clone(), ip_address);
         let sensitive_clone = sensitive.clone();
         assert_eq!(sensitive, sensitive_clone);
 
@@ -178,9 +175,7 @@ mod tests {
 
         let name_server_2: String = Title(EN).fake();
         let ip_address_2 = IP(EN).fake();
-        let ssh_key_path_2: PathBuf = FilePath(EN).fake();
-        let sensitive_2 =
-            Sensitive::new(name_server_2.clone(), ip_address_2, ssh_key_path_2.clone());
+        let sensitive_2 = Sensitive::new(name_server_2.clone(), ip_address_2);
         assert_ne!(sensitive, sensitive_2);
 
         let json = serde_json::to_string(&sensitive).unwrap();
@@ -242,8 +237,7 @@ mod tests {
     fn test_node() {
         let name_server: String = Title(EN).fake();
         let ip_address: IpAddr = IP(EN).fake();
-        let ssh_key_path: PathBuf = FilePath(EN).fake();
-        let sensitive = Sensitive::new(name_server.clone(), ip_address, ssh_key_path.clone());
+        let sensitive = Sensitive::new(name_server.clone(), ip_address);
 
         let private = Private::new();
         let valid_surname: String = Word(EN).fake();

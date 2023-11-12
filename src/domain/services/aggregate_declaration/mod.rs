@@ -12,24 +12,16 @@ pub struct NodeBuilder {
     surname: Result<NodeSurname, SurnameError>,
     name_server: String,
     ip: IpAddr,
-    ssh_key_path: PathBuf,
     role: Role,
 }
 
 impl NodeBuilder {
-    pub fn new(
-        surname: String,
-        name_server: String,
-        ip: IpAddr,
-        ssh_key_path: PathBuf,
-        role: Role,
-    ) -> Self {
+    pub fn new(surname: String, name_server: String, ip: IpAddr, role: Role) -> Self {
         let surname: Result<NodeSurname, SurnameError> = NodeSurname::new(surname);
         Self {
             surname,
             name_server,
             ip,
-            ssh_key_path,
             role,
         }
     }
@@ -39,11 +31,7 @@ impl NodeBuilder {
             .as_ref()
             .map_err(|error| DomainError::Surname(error.to_owned()))
             .map(|surname| {
-                let sensitive = Sensitive::new(
-                    self.name_server.to_owned(),
-                    self.ip.to_owned(),
-                    self.ssh_key_path.to_owned(),
-                );
+                let sensitive = Sensitive::new(self.name_server.to_owned(), self.ip.to_owned());
                 let private = Private::new();
                 let public = Public::new(surname.to_owned());
                 Node::new(sensitive, private, public, self.role.to_owned())

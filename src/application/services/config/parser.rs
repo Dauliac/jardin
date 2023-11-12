@@ -9,7 +9,7 @@ use crate::application::NAME;
 use super::{error::ConfigError, model::Config};
 
 fn check_empty_pipeline_specification(config: &Config) -> Result<(), ConfigError> {
-    let invalid_pipeline = config.pipeline.steps.is_none() && !config.pipeline.use_default;
+    let invalid_pipeline = config.pipeline.steps.is_none();
     match invalid_pipeline {
         true => Err(ConfigError::EmptyPipeline),
         false => Ok(()),
@@ -17,7 +17,7 @@ fn check_empty_pipeline_specification(config: &Config) -> Result<(), ConfigError
 }
 
 fn check_pipeline_key_specification(config: &Config) -> Result<(), ConfigError> {
-    let constraint = config.pipeline.identifier.is_none() && !config.pipeline.use_default;
+    let constraint = config.pipeline.identifier.is_none();
     match constraint {
         true => Err(ConfigError::NoPipelineIdentifier),
         false => Ok(()),

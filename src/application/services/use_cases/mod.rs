@@ -46,7 +46,6 @@ async fn deploy_cluster_to_production_with_default_pipeline(
                 node.surname.to_owned(),
                 node.name_server.to_owned(),
                 node.ip,
-                node.ssh_key_path.to_owned(),
                 match node.role {
                     super::config::model::Role::Leader => Role::Leader,
                     super::config::model::Role::Follower => Role::Follower,
@@ -104,7 +103,6 @@ async fn deploy_cluster_to_production_with_default_pipeline(
                                             event_bus.clone(),
                                         ),
                                     )));
-
                                     event_bus.write().unwrap().subscribe(
                                         DomainResponseKinds::ClusterPipelineCreatedEvent,
                                         handler,
@@ -151,7 +149,6 @@ impl EventHandler for ClusterDeploymentService {
         let command = Command::new(self.cluster.write().unwrap().order_to_run_pipeline(true));
         self.command_bus.write().unwrap().publish(command);
         self.unsubscribe();
-        println!("let's go!)");
     }
 }
 

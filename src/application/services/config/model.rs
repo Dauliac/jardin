@@ -17,14 +17,22 @@ pub struct Node {
     pub name_server: String,
     pub role: Role,
     pub ip: IpAddr,
-    pub ssh_key_path: PathBuf,
 }
 
 #[derive(Default, Debug, Serialize, Deserialize)]
+pub struct NixBackend {
+    path: PathBuf,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Backend {
-    #[default]
-    Nix,
+    Nix(NixBackend),
+}
+impl Default for Backend {
+    fn default() -> Self {
+        Backend::Nix(NixBackend::default())
+    }
 }
 
 #[derive(Default, Debug, Serialize, Deserialize)]
@@ -60,8 +68,7 @@ pub struct Step {
 #[derive(Default, Debug, Serialize, Deserialize)]
 pub struct Pipeline {
     pub identifier: Option<String>,
-    pub use_default: bool,
-    pub default_backend: Option<Backend>,
+    pub backend: Option<Backend>,
     pub steps: Option<Vec<Step>>,
 }
 
@@ -70,16 +77,10 @@ pub struct Cluster {
     pub surname: String,
     pub targets: HashMap<String, Node>,
 }
-const IN_MEMORY_DEFAULT: bool = true;
-fn in_memory_default() -> bool {
-    IN_MEMORY_DEFAULT
-}
 
 #[derive(Default, Debug, Serialize, Deserialize)]
 pub struct Config {
     pub version: u8,
     pub pipeline: Pipeline,
     pub cluster: Cluster,
-    #[serde(default = "in_memory_default")]
-    pub in_memory: bool,
 }

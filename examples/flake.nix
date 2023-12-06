@@ -22,10 +22,16 @@
           domain = "my.domain";
           targets = {
             node1 = {
-              hostname = "node1";
+              hostname = "node2";
               role = "node";
               ip = "192.168.21.21";
             };
+            node2 = {
+              hostname = "node2";
+              role = "node";
+              ip = "192.168.21.21";
+            };
+
           };
         };
       };

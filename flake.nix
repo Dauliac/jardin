@@ -22,11 +22,8 @@
       url = "github:rustsec/advisory-db";
       flake = false;
     };
-    git-gamble = {
-      url = "gitlab:pinage404/git-gamble";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
+    inputs.iac-dns-cloudflare.url = "path:./infrastructure_as_code/domain-name-system/cloudflare";
+    inputs.iac-faker-vm.url = "path:./infrastructure_as_code/faker/virtual_machine";
   };
   outputs =
     { self
@@ -183,7 +180,8 @@
                 # BUG: this package is broken
                 # vscode-extensions.llvm-org.lldb-vscode
               ]
-              ++ formatterPackages ++ jardinIacDnsPackages;
+              ++ formatterPackages
+              ++ jardinIacDnsPackages;
             packages = [
               git-gamble.packages."${system}".git-gamble
             ];

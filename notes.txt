@@ -1,0 +1,57 @@
+flake_client(config, plugins) ->> nix flake jardin(config, extends) -->> jardin_bin(config): [input] --> nixclusters(input, extends)
+
+# jardin_bin:
+  - check métier sur la config
+  - execute les différents jobs de la pipeline en se chargeant lui meme de leurs schedule 
+  - dry-run diff: plan terraform, 
+## Domain
+### Use cases
+  - rotation des secrets:
+    entitées:
+      - seed de secret si possible, sinon plusieurs secrets
+      - 
+    options:
+     - changer la seed
+     - changer le coffre des secrets statefull
+    service:
+      - ?? dans le job, il expose une api
+    deps:
+      - sops(seed(-> initial secret consul) ) 
+    algo: 
+      - secret = seed + service + bruit(target)
+
+## Tests plan:
+- unitaires: asserts, rust, ...
+- integration: fake configs, ...
+- e2e:
+  - full faked: peut aussi servir au dev env: oblige à utiliser des vms a cause du bootstrap et des pbs de storage
+    - permet de tester le bootstrap, mais c'est lent.
+    - On doit le tester sur plusieurs OS
+  - faked: Se passe du bootstrap, et install un fake storage/network
+    - containers:
+    - vms nix
+
+# nixclusters
+## Application
+- job:
+  - dry_run:
+    1. deploy 
+  - run:
+    1. pre_check 
+    2. deploy 
+      ?-> force 
+    3. post_check
+    4. rollback
+## Domain 
+  1. bootstrap
+  2. platform
+  3. accounts
+  4. networks
+  5. storage
+  6. applications
+## Infra
+  - Les services doivent etre idempotent
+  - Les services doivent exposer un pre-check, rollback, de passage en force et un post-check 
+    - en cas de post-check invalid, il faut rollback
+  - les services doivent nettoyer d'eux même: si c'est pas de la data
+

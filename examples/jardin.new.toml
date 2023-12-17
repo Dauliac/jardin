@@ -1,0 +1,53 @@
+version = 1
+
+[pipeline]
+default_backend = "nix"
+use_default = true
+
+[cluster]
+surname = "cluster"
+dns_zone = nofreedisk.space
+
+[cluster.storage.hot.database]
+size = 12G
+replicas = 1
+sharable = false # Peut pas etre claim pas plus de 1 noeud
+
+[cluster.storage.cold.movies]
+size = 132G # = 12 + 110
+# Je suis pas sure que c'est utile, mais a voir
+sharable = true # Peut pas etre claim par plusieurs noeuds
+replicas = 3 # Peut pas marcher y'a que 2 noeuds, peut pas marcher avec sharable = false
+
+# [cluster.secrets] # Ici pour pourrait gérer les secrets
+# seed = DZJIECZZECdze12 # Seed pour générer les secrets. 
+
+[cluster.targets]
+
+[cluster.targets.node1]
+
+[cluster.targets.node1.network.wan]
+ip = 1.29.123.12.1
+region = eu/paris-1
+
+[cluster.targets.node1.network.lan.scaleway1]
+ip = 192.168.1.2
+
+[cluster.targets.node1.storage.hot.database]
+size = 12G
+
+[cluster.targets.node1.storage.cold.movies] # Ici on claim le cluster storage movies
+size = 110G
+replicas = 3
+strategy = "local" # or safe === the most
+
+[cluster.targets.node2]
+[cluster.targets.node2.network.wan]
+public_ip = 1.29.123.12.1
+region = eu/paris-2
+
+[cluster.targets.node2.network.lan.ovh1]
+ip = 192.165.1.2
+
+[cluster.targets.node2.storage.cold.movies]
+size = 12G

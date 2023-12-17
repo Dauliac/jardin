@@ -1,9 +1,8 @@
-{ pkgs, jardin }:
+{ pkgs, config }:
 let
   configService = import ../config/default.nix { inherit pkgs; };
-  config = { cluster, configService }: configService.write cluster;
-  model = import ./model.nix;
+  configFile = { cluster, configService }: configService.write config;
+  tasks = import ./tasks/default.nix config.cluster;
+  json = pkgs.writeText "deploy.json" (builtins.toJSON tasks);
 in
-{
-  deploy = { };
-}
+{ deploy = { cluster }: ({ inherit tasks; }); }

@@ -17,10 +17,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.rust-analyzer-src.follows = "";
     };
-
     advisory-db = {
       url = "github:rustsec/advisory-db";
       flake = false;
+    };
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
     };
   };
   outputs = { self, nixpkgs, flake-utils, crane, fenix, advisory-db, ... }:
@@ -59,18 +62,15 @@
         packages = rec {
           jardin = jardinPackage;
           default = jardin;
-        };
-        # lib = { iac = (import ./iac/default.nix pkgs).lib; };
-        lib = {
-          iac = pkgs.writeShellScript "la" ''
-            echo la
-          '';
+          lib = { iac = (import ./iac/default.nix { inherit pkgs; }).lib; };
         };
         apps = rec {
           jardin =
             flake-utils.lib.mkApp { drv = self.packages.${system}.jardin; };
           default = jardin;
+          iac = { iac = (import ./iac/default.nix pkgs).lib; };
         };
+
         packages.coverage = craneLib.cargoLlvmCov (commonArgs // {
           inherit cargoArtifacts;
           cargoExtraArgs = "nextest";

@@ -1,9 +1,0 @@
----
-extends: default
-
-ignore:
-  - /target
-  - /vagrant
-  - /.task
-  - /mutants*
-  - /result

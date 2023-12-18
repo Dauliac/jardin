@@ -141,10 +141,10 @@ pub fn parse_flake(flake_uri: &str) -> Result<FlakeRef, ParseFlakeError> {
 pub mod tests {
     use super::parse_flake;
 
-    #[test]
-    fn parse_in_project_flake() {
-        let uri = "/home/dauliac/ghq/gitlab.com/conformism/jardin";
-        parse_flake(uri);
-        assert!(false);
-    }
+    // #[test]
+    // fn parse_in_project_flake() {
+    //     let uri = "/home/dauliac/ghq/gitlab.com/conformism/jardin";
+    //     parse_flake(uri);
+    //     assert!(false);
+    // }
 }

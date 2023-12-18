@@ -1,0 +1,21 @@
+---
+retain_line_breaks: true
+scan_folded_as_literal: true
+formatter:
+  type: basic
+  include_document_start: true
+  max_line_length: 120
+doublestar: true
+exclude:
+  - ".direnv/**/*"
+  - ".git/**/*"
+  - ".task/**/*"
+  - ".vscode/**/*"
+  - "src/account/**/*"
+  - "src/dev/**/*"
+  - "src/file/**/*"
+  - "src/pdf-generator-backend/**/*"
+  - "src/pdf-generator-frontend/**/*"
+  - "src/saas/**/*"
+  - "src/seally/**/*"
+  - "src/sellsy-pdf-generator/**/*"

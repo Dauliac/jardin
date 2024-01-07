@@ -15,7 +15,7 @@ tasks:
     desc: Setup project
     cmds:
       - |
-        nix run nixpkgs#lefthook install
+        lefthook install
     sources:
       - ./lefthook.yml
       - ./flake.nix
@@ -28,13 +28,13 @@ tasks:
       - "Cargo.lock"
     cmds:
       - |
-        nix run nixpkgs#cargo fix -- --allow-staged --allow-dirty --all-targets
+        cargo fix -- --allow-staged --allow-dirty --all-targets
       - |
-        nix run nixpkgs#cargo fmt -- --all
+        cargo fmt -- --all
       - |
-        nix run nixpkgs#cargo clippy -- --fix --allow-dirty --allow-staged
+        cargo clippy -- --fix --allow-dirty --allow-staged
       - |
-        nix run nixpkgs#cargo-deny check
+        cargo-deny check
   formatter::nix:
     silent: true
     desc: 💄Format nix files
@@ -57,7 +57,7 @@ tasks:
     silent: true
     cmds:
       - |
-        nix run nixpkgs#typos -- --write-changes .
+        typos -- --write-changes .
   lint:
     silent: true
     desc: 💄Lint jardin
@@ -75,21 +75,21 @@ tasks:
       - ./target/debug/jardin
     cmds:
       - |
-        nix run nixpkgs#cargo build
+        cargo build
   test::lefthook:
     silent: true
     cmds:
       - |
-        nix run nixpkgs#lefthook -- run pre-commit pre-push
+        lefthook -- run pre-commit pre-push
     sources:
       - "lefthook.yml"
   test::rust:unit:
     silent: true
     cmds:
       - |
-        nix run nixpkgs#cargo llvm-cov nextest
+        cargo llvm-cov nextest
       - |
-        nix run nixpkgs#cargo mutants
+        cargo mutants
     sources:
       - "**/*.rs"
       - "Cargo.toml"
@@ -98,7 +98,7 @@ tasks:
     silent: true
     cmds:
       - |
-        nix run nixpkgs#cargo audit
+        cargo audit
     sources:
       - "**/*.rs"
       - "Cargo.toml"
@@ -117,7 +117,7 @@ tasks:
     desc: Run development mode
     cmds:
       - |
-        nix run nixpkgs#go-task toolchain -- --watch
+        go-task toolchain -- --watch
   debug:
     silent: true
     desc: Run jardin in debug mode

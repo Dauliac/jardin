@@ -3,18 +3,13 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    jardin.url = "path:..";
   };
-  outputs =
-    { self
-    , nixpkgs
-    , ...
-    }:
-    let
-      pkgs = import nixpkgs {
-        inherit system;
-      };
+  outputs = { self, nixpkgs, jardin, ... }:
+    let script = jardin.lib.x86_64-linux.echoLa "lol";
     in
     {
+      inherit script;
       jardin = {
         pipeline = { };
         cluster = {
@@ -35,5 +30,5 @@
           };
         };
       };
-    }
-
+    };
+}

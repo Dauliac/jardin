@@ -1,1 +1,1 @@
-{inputs, ...}: {imports = [./build-system ./development];}
+{ inputs, ... }: { imports = [ ./build-system ./development ./sources ]; }

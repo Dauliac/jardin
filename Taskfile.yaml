@@ -28,11 +28,11 @@ tasks:
       - "Cargo.lock"
     cmds:
       - |
-        cargo fix -- --allow-staged --allow-dirty --all-targets
+        cargo fix --allow-staged --allow-dirty --all-targets
       - |
-        cargo fmt -- --all
+        cargo fmt --all
       - |
-        cargo clippy -- --fix --allow-dirty --allow-staged
+        cargo clippy --fix --allow-dirty --allow-staged
       - |
         cargo-deny check
   formatter::nix:
@@ -57,7 +57,7 @@ tasks:
     silent: true
     cmds:
       - |
-        typos -- --write-changes .
+        typos --write-changes .
   lint:
     silent: true
     desc: 💄Lint jardin

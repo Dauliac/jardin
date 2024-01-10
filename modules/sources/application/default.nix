@@ -1,1 +1,3 @@
-{pkgs}: {services = import ./services/default.nix {inherit pkgs;};}
+{ lib, pkgs, inputs, system }: {
+  services = import ./services { inherit lib pkgs inputs system; };
+}

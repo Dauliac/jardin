@@ -1,1 +1,1 @@
-{}: {toJSON = builtins.toJSON;}
+_: { inherit (builtins) toJSON; }

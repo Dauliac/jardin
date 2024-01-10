@@ -9,7 +9,7 @@ dry-run = false # only check things without applying them
 [cluster]
 name = "cluster"
 dns_zone = "nofreedisk.space"
-# setted from git slug
+# set from git slug
 version = "" 
 
 [accounts]
@@ -52,7 +52,7 @@ size = "2T"
 [applications.jellyfin.storage.hot.configs]
 size = "2G"
 
-# jardin peut calculer que la taille totale du pool n'est pas < à la somme des claims par machines ou par applications
+# jardin peut calculer que la taille totale du pool n'est pas < à la some des claims par machines ou par applications
 [cluster.storage.hot]
 size = 12G
 replicas = 1

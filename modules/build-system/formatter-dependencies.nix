@@ -1,1 +1,1 @@
-{pkgs}: with pkgs; [nixpkgs-fmt alejandra statix]
+{ pkgs }: with pkgs; [ nixpkgs-fmt alejandra statix ]

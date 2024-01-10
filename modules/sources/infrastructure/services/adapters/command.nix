@@ -1,27 +1,33 @@
-{}: {
-  build = (
-    {
-      bin,
-      action,
-      globalFlags,
-      localFlags,
-    }: let
-      separator = " ";
-      action =
-        if action == null
-        then ""
-        else action;
-      extendFlags = flag: "${flag.key}${separator}${separator.value}";
-      extendedGlobalFlags =
-        buildtins.map
-        extendFlags
-        globalFlags;
-      extendedLocalFlagsFlags =
-        buildtins.map
-        extendFlags
-        localFlags;
-    in {
-      command = "${bin}${separator}${extendedGlobalFlags}${separator}${action}${separator}${extendedLocalFlags}";
-    }
-  );
+_: {
+  mkCommand =
+    { bin
+    , action ? null
+    , globalFlags ? [ ]
+    , localFlags ? [ ]
+    , valuedActionFlags ? [ ]
+    ,
+    }:
+    let
+      mkFlag = flag:
+        if builtins.isString flag
+        then flag
+        else "${flag.flag}=${flag.value}";
+      joinFlags = flags:
+        builtins.concatStringsSep " " (builtins.map mkFlag flags);
+
+      globalFlagsStr = joinFlags globalFlags;
+      localFlagsStr = joinFlags localFlags;
+      valuedActionFlagsStr = joinFlags valuedActionFlags;
+
+      commandStr =
+        builtins.concatStringsSep " "
+          (builtins.filter (s: s != null) [
+            bin
+            action
+            globalFlagsStr
+            localFlagsStr
+            valuedActionFlagsStr
+          ]);
+    in
+    { command = commandStr; };
 }

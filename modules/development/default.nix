@@ -1,7 +1,6 @@
-{
-  inputs,
-  config,
-  options,
-  pkgs,
-  ...
-}: {imports = [./devShell.nix];}
+{ inputs
+, config
+, options
+, pkgs
+, ...
+}: { imports = [ ./devShell.nix ]; }

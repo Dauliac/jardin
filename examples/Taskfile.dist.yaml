@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+
+version: "3"
+
+set: [errexit, pipefail, nounset]
+shopt: [globstar]
+
+dotenv: [".env.local", ".env"]
+
+tasks:
+  test:
+    silent: true
+    desc: Setup project
+    cmds:
+      - nix flake update 
+      - nix flake update 

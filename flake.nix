@@ -19,23 +19,9 @@
       url = "github:rustsec/advisory-db";
       flake = false;
     };
-<<<<<<< HEAD
     terranix = {
       url = "github:terranix/terranix";
       inputs.nixpkgs.follows = "nixpkgs";
-||||||| parent of 565b713 (feat(modules-sources): poc to define protocol between nix and jardin tasks)
-  };
-  outputs = inputs @ {flake-parts, ...}:
-    flake-parts.lib.mkFlake {inherit inputs;} {
-      systems = ["x86_64-linux"];
-      imports = [./modules/default.nix];
-=======
-  };
-  outputs = inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [ "x86_64-linux" ];
-      imports = [ ./modules/default.nix ];
->>>>>>> 565b713 (feat(modules-sources): poc to define protocol between nix and jardin tasks)
     };
   };
 

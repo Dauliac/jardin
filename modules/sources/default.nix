@@ -1,11 +1,11 @@
-{ ... }: {
+{ config, lib, pkgs, inputs, ... }: {
   perSystem = { system, pkgs, self', ... }: {
     lib = {
-      echoLa = name:
-        pkgs.writeShellScript name ''
-          #!/usr/bin/env bash
-          echo coucou
-        '';
+      # TODO: rewrite it as nixOsModule
+      inherit ((import ./application {
+        inherit lib pkgs inputs system;
+      }).services.operations)
+        deploy;
     };
   };
 }

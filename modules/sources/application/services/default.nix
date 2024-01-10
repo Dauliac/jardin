@@ -1,3 +1,3 @@
-{pkgs}: {
-  deploy = {config}: import ./deploy/default.nix {inherit pkgs config;};
+{ lib, pkgs, inputs, system }: {
+  operations = import ./operations { inherit lib pkgs inputs system; };
 }

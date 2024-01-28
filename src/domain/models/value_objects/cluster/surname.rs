@@ -96,9 +96,9 @@ mod tests {
         assert_eq!(surname, surname_clone);
         let mut hasher = DefaultHasher::new();
         assert_eq!(surname.hash(&mut hasher), surname_2.hash(&mut hasher));
-        assert_eq!(format!("{:?}", surname).is_empty(), false);
+        assert!(!format!("{:?}", surname).is_empty());
         let json = serde_json::to_string(&surname).unwrap();
-        assert_eq!(json.is_empty(), false);
+        assert!(!json.is_empty());
         let private_serialized = serde_json::from_str::<NodeSurname>(json.as_str()).unwrap();
         assert_eq!(private_serialized, surname);
 
@@ -110,7 +110,7 @@ mod tests {
         ];
         invalids_surnames.iter().for_each(|surname| {
             let result = NodeSurname::new(surname.to_owned());
-            assert_eq!(result.is_err(), true);
+            assert!(result.is_err());
             let _ = result
                 .map_err(|error| {
                     assert_eq!(

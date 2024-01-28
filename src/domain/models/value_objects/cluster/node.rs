@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
 
 use serde::{Deserialize, Serialize};
-use std::{net::IpAddr, path::PathBuf};
+use std::net::IpAddr;
 
 use super::surname::NodeSurname;
 
@@ -88,7 +88,7 @@ mod tests {
     // use afl::fuzz;
     use crate::domain::models::value_objects::cluster::node;
     use fake::{
-        faker::{filesystem::raw::FilePath, internet::raw::IP, job::raw::Title, lorem::raw::Word},
+        faker::{internet::raw::IP, job::raw::Title, lorem::raw::Word},
         locales::EN,
         Fake,
     };
@@ -100,31 +100,31 @@ mod tests {
         let role_follower = node::Role::Follower;
         let role_clone = role.clone();
         assert_eq!(role, role_clone);
-        assert_eq!(role == role_clone, true);
-        assert_eq!(role_clone == role, true);
-        assert_eq!(role != role_clone, false);
-        assert_eq!(role_clone != role, false);
-        assert_eq!(role != role_follower, true);
-        assert_eq!(role_follower != role, true);
-        assert_eq!(role == role_follower, false);
-        assert_eq!(role_follower == role, false);
+        assert!(role == role_clone);
+        assert!(role_clone == role);
+        assert!(role == role_clone);
+        assert!(role_clone == role);
+        assert!(role != role_follower);
+        assert!(role_follower != role);
+        assert!(role != role_follower);
+        assert!(role_follower != role);
 
-        assert_ne!(role == role_clone, false);
-        assert_ne!(role_clone == role, false);
-        assert_ne!(role != role_clone, true);
-        assert_ne!(role_clone != role, true);
-        assert_ne!(role == role_follower, true);
-        assert_ne!(role_follower == role, true);
-        assert_ne!(role != role_follower, false);
-        assert_ne!(role_follower != role, false);
+        assert!(role == role_clone);
+        assert!(role_clone == role);
+        assert!(role == role_clone);
+        assert!(role_clone == role);
+        assert!(role != role_follower);
+        assert!(role_follower != role);
+        assert!(role != role_follower);
+        assert!(role_follower != role);
 
         assert_ne!(role, role_follower);
         assert_ne!(role_follower, role);
 
-        assert_eq!(format!("{:?}", role).is_empty(), false);
+        assert!(!format!("{:?}", role).is_empty());
 
         let json = serde_json::to_string(&role).unwrap();
-        assert_eq!(json.is_empty(), false);
+        assert!(!json.is_empty());
         let role_serialized = serde_json::from_str::<node::Role>(&json).unwrap();
         assert_eq!(role_serialized, role);
     }
@@ -134,20 +134,20 @@ mod tests {
         let private = Private::new();
         let private_clone = private.clone();
         assert_eq!(private, private_clone);
-        assert_eq!(private == private_clone, true);
-        assert_eq!(private_clone == private, true);
-        assert_eq!(private != private_clone, false);
-        assert_eq!(private_clone != private, false);
+        assert!(private == private_clone);
+        assert!(private_clone == private);
+        assert!(private == private_clone);
+        assert!(private_clone == private);
 
-        assert_ne!(private == private_clone, false);
-        assert_ne!(private_clone == private, false);
-        assert_ne!(private != private_clone, true);
-        assert_ne!(private_clone != private, true);
+        assert!(private == private_clone);
+        assert!(private_clone == private);
+        assert!(private == private_clone);
+        assert!(private_clone == private);
 
-        assert_eq!(format!("{:?}", private).is_empty(), false);
+        assert!(!format!("{:?}", private).is_empty());
 
         let json = serde_json::to_string(&private).unwrap();
-        assert_eq!(json.is_empty(), false);
+        assert!(!json.is_empty());
         let private_serialized = serde_json::from_str::<node::Private>(&json).unwrap();
         assert_eq!(private_serialized, private);
     }
@@ -161,17 +161,17 @@ mod tests {
         let sensitive_clone = sensitive.clone();
         assert_eq!(sensitive, sensitive_clone);
 
-        assert_eq!(sensitive == sensitive_clone, true);
-        assert_eq!(sensitive_clone == sensitive, true);
-        assert_eq!(sensitive != sensitive_clone, false);
-        assert_eq!(sensitive_clone != sensitive, false);
+        assert!(sensitive == sensitive_clone);
+        assert!(sensitive_clone == sensitive);
+        assert!(sensitive == sensitive_clone);
+        assert!(sensitive_clone == sensitive);
 
-        assert_ne!(sensitive == sensitive_clone, false);
-        assert_ne!(sensitive_clone == sensitive, false);
-        assert_ne!(sensitive != sensitive_clone, true);
-        assert_ne!(sensitive_clone != sensitive, true);
+        assert!(sensitive == sensitive_clone);
+        assert!(sensitive_clone == sensitive);
+        assert!(sensitive == sensitive_clone);
+        assert!(sensitive_clone == sensitive);
 
-        assert_eq!(format!("{:?}", sensitive).is_empty(), false);
+        assert!(!format!("{:?}", sensitive).is_empty());
 
         let name_server_2: String = Title(EN).fake();
         let ip_address_2 = IP(EN).fake();
@@ -179,7 +179,7 @@ mod tests {
         assert_ne!(sensitive, sensitive_2);
 
         let json = serde_json::to_string(&sensitive).unwrap();
-        assert_eq!(json.is_empty(), false);
+        assert!(!json.is_empty());
         let sensitive_serialized = serde_json::from_str::<node::Sensitive>(&json).unwrap();
         assert_eq!(sensitive_serialized, sensitive);
     }
@@ -193,42 +193,42 @@ mod tests {
         let public_clone = public.clone();
         assert_eq!(public, public_clone);
 
-        assert_eq!(public == public_clone, true);
-        assert_eq!(public_clone == public, true);
-        assert_eq!(public != public_clone, false);
-        assert_eq!(public_clone != public, false);
+        assert!(public == public_clone);
+        assert!(public_clone == public);
+        assert!(public == public_clone);
+        assert!(public_clone == public);
 
-        assert_ne!(public == public_clone, false);
-        assert_ne!(public_clone == public, false);
-        assert_ne!(public != public_clone, true);
-        assert_ne!(public_clone != public, true);
+        assert!(public == public_clone);
+        assert!(public_clone == public);
+        assert!(public == public_clone);
+        assert!(public_clone == public);
 
-        assert_eq!(format!("{:?}", public).is_empty(), false,);
+        assert!(!format!("{:?}", public).is_empty(),);
 
         let valid_surname: String = Word(EN).fake();
         let surname = NodeSurname::new(valid_surname).unwrap();
         let public_2 = Public::new(surname.clone());
         assert_ne!(public, public_2);
 
-        assert_eq!(public == public_clone, true);
-        assert_eq!(public_clone == public, true);
-        assert_eq!(public_clone != public, false);
-        assert_eq!(public == public_2, false);
-        assert_eq!(public_2 == public, false);
-        assert_eq!(public != public_2, true);
-        assert_eq!(public_2 != public, true);
+        assert!(public == public_clone);
+        assert!(public_clone == public);
+        assert!(public_clone == public);
+        assert!(public != public_2);
+        assert!(public_2 != public);
+        assert!(public != public_2);
+        assert!(public_2 != public);
 
-        assert_ne!(public == public_clone, false);
-        assert_ne!(public_clone == public, false);
-        assert_ne!(public != public_clone, true);
-        assert_ne!(public_clone != public, true);
-        assert_ne!(public == public_2, true);
-        assert_ne!(public_2 == public, true);
-        assert_ne!(public != public_2, false);
-        assert_ne!(public_2 != public, false);
+        assert!(public == public_clone);
+        assert!(public_clone == public);
+        assert!(public == public_clone);
+        assert!(public_clone == public);
+        assert!(public != public_2);
+        assert!(public_2 != public);
+        assert!(public != public_2);
+        assert!(public_2 != public);
 
         let json = serde_json::to_string(&public).unwrap();
-        assert_eq!(json.is_empty(), false);
+        assert!(!json.is_empty());
         let public_serialized = serde_json::from_str::<node::Public>(&json).unwrap();
         assert_eq!(public_serialized, public);
     }
@@ -252,17 +252,17 @@ mod tests {
         );
         let node_clone = node.clone();
         assert_eq!(node, node_clone);
-        assert_eq!(node == node_clone, true);
-        assert_eq!(node_clone == node, true);
-        assert_eq!(node != node_clone, false);
-        assert_eq!(node_clone != node, false);
-        assert_ne!(node == node_clone, false);
-        assert_ne!(node_clone == node, false);
-        assert_ne!(node != node_clone, true);
-        assert_ne!(node_clone != node, true);
-        assert_eq!(node.is_leader(), true);
-        assert_ne!(node.is_leader(), false);
-        assert_eq!(format!("{:?}", node).is_empty(), false,);
+        assert!(node == node_clone);
+        assert!(node_clone == node);
+        assert!(node == node_clone);
+        assert!(node_clone == node);
+        assert!(node == node_clone);
+        assert!(node_clone == node);
+        assert!(node == node_clone);
+        assert!(node_clone == node);
+        assert!(node.is_leader());
+        assert!(node.is_leader());
+        assert!(!format!("{:?}", node).is_empty(),);
         let role_follower = Role::Follower;
         let node_follower = Node::new(
             sensitive.clone(),
@@ -270,10 +270,10 @@ mod tests {
             public.clone(),
             role_follower.clone(),
         );
-        assert_eq!(node_follower.is_leader(), false);
+        assert!(!node_follower.is_leader());
         assert_ne!(node, node_follower);
         let json = serde_json::to_string(&node).unwrap();
-        assert_eq!(json.is_empty(), false);
+        assert!(!json.is_empty());
         let node_serialized = serde_json::from_str::<node::Node>(&json).unwrap();
         assert_eq!(node_serialized, node);
     }

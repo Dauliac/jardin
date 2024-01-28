@@ -1,7 +1,5 @@
 // SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
 
-use std::path::PathBuf;
-
 use clap::{value_parser, Arg, Command};
 use clap_complete::Shell;
 use thiserror::Error;
@@ -34,7 +32,7 @@ pub(crate) fn build_cli() -> Command {
                 .help(format!(
                     "TOML configuration file path, defaults is:\n {}",
                     get_get_default_config_path()
-                        .unwrap_or(PathBuf::new())
+                        .unwrap_or_default()
                         .to_str()
                         .unwrap()
                 ))

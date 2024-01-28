@@ -14,3 +14,4 @@ terraform.tfstate*
 .task
 
 mutants.out*
+.nixos-test-history

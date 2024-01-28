@@ -13,9 +13,7 @@ pub enum ParseNixUriError {
 
 impl From<NixUriError> for ParseNixUriError {
     fn from(_err: NixUriError) -> Self {
-        match _err {
-            _ => ParseNixUriError::InvalidUri,
-        }
+        ParseNixUriError::InvalidUri
     }
 }
 

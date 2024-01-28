@@ -1,0 +1,9 @@
+version: "3"
+
+tasks:
+  default:
+    cmds:
+      - |
+        nix run \
+          '.#packages.x86_64-linux.kube.driverInteractive' -- \
+          --keep-vm-state 

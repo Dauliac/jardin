@@ -1,6 +1,5 @@
 // SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
 
-#![cfg_attr(coverage_nightly, feature(no_coverage))]
 #![feature(result_flattening)]
 #![allow(clippy::option_map_unit_fn)]
 

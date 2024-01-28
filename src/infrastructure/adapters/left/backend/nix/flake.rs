@@ -1,9 +1,5 @@
 use nix_uri::FlakeRef;
-use rnix::{
-    self,
-    ast::{AttrSet, Expr},
-    SyntaxKind,
-};
+use rnix::{self};
 use std::fs;
 use thiserror::Error;
 
@@ -33,20 +29,20 @@ impl From<ParseNixUriError> for ParseFlakeError {
 pub fn parse_flake(flake_uri: &str) -> Result<FlakeRef, ParseFlakeError> {
     let flake_ref = parse(flake_uri);
 
-    return match flake_ref {
+    match flake_ref {
         Ok(flake_ref) => {
             let flake_file = "flake.nix";
 
             let flake_full_path = format!("{}/{}", flake_uri, flake_file);
             let code = match fs::read_to_string(flake_full_path) {
                 Ok(code) => code,
-                Err(err) => {
+                Err(_err) => {
                     return Err(ParseFlakeError::UnreadableFlakeFileError(
                         flake_uri.to_string(),
                     ))
                 }
             };
-            let ast = rnix::Root::parse(&code);
+            let _ast = rnix::Root::parse(&code);
             let tree = rnix::Root::parse(&code).syntax();
             let flake = tree.first_child();
             match flake {
@@ -55,7 +51,7 @@ pub fn parse_flake(flake_uri: &str) -> Result<FlakeRef, ParseFlakeError> {
                     let key = outputs.first_token().unwrap();
                     if key.text() == "outputs" {
                         for output in outputs.last_child().unwrap().children() {
-                            println!("************\noutputs_la: {:}", output.to_string());
+                            println!("************\noutputs_la: {:}", output);
                         }
                     } else {
                         return Err(ParseFlakeError::UnreadableFlakeFileError(
@@ -72,7 +68,7 @@ pub fn parse_flake(flake_uri: &str) -> Result<FlakeRef, ParseFlakeError> {
             Ok(flake_ref)
         }
         Err(err) => Err(ParseFlakeError::from(err)),
-    };
+    }
     // let flake_fragment_start = flake.find('#');
     // let (repo, maybe_fragment) = match flake_fragment_start {
     //     Some(s) => (&flake[..s], Some(&flake[s + 1..])),
@@ -139,7 +135,6 @@ pub fn parse_flake(flake_uri: &str) -> Result<FlakeRef, ParseFlakeError> {
 
 #[cfg(test)]
 pub mod tests {
-    use super::parse_flake;
 
     // #[test]
     // fn parse_in_project_flake() {

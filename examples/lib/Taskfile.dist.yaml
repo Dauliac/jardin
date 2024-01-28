@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+
+version: "3"
+
+set: [errexit, pipefail, nounset]
+shopt: [globstar]
+
+dotenv: [".env.local", ".env"]
+
+tasks:
+  test:
+    silent: true
+    desc: Setup project
+    cmds:
+      - nix flake update 
+      - nix run '.#nixCluster.pipeline.jobs.dns.job'
+  serialize:
+    silent: true
+    desc: Setup project
+    cmds:
+      - nix flake update 
+      - nix build '.#packages.x86_64-linux.domainJson'

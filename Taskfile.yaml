@@ -9,9 +9,15 @@ shopt: [globstar]
 
 dotenv: [".env.local", ".env"]
 
+includes:
+  vm: 
+    taskfile: taskfiles/Dev.yaml
+    dir: .
+
 tasks:
   init:
     silent: true
+    run: "once"
     desc: Setup project
     cmds:
       - |
@@ -19,8 +25,9 @@ tasks:
     sources:
       - ./lefthook.yml
       - ./flake.nix
-  formatter::rust:
+  formatter:rust:
     silent: true
+    run: "once"
     desc: 💄Format rust files
     sources:
       - "**/*.rs"
@@ -35,8 +42,9 @@ tasks:
         cargo clippy --fix --allow-dirty --allow-staged
       - |
         cargo-deny check
-  formatter::nix:
+  formatter:nix:
     silent: true
+    run: "once"
     desc: 💄Format nix files
     sources:
       - "**/*.nix"
@@ -51,9 +59,9 @@ tasks:
     aliases:
       - fmt
     deps:
-      - task: formatter::rust
-      - task: formatter::nix
-  lint::typos:
+      - task: formatter:rust
+      - task: formatter:nix
+  lint:typos:
     silent: true
     cmds:
       - |
@@ -62,8 +70,8 @@ tasks:
     silent: true
     desc: 💄Lint jardin
     deps:
-      # - task: lint::rust::clippy
-      - task: lint::typos
+      # - task: lint:rust:clippy
+      - task: lint:typos
   build:
     silent: true
     desc: Build jardin
@@ -76,26 +84,25 @@ tasks:
     cmds:
       - |
         cargo build
-  test::lefthook:
+  test:lefthook:
     silent: true
     cmds:
       - |
         lefthook -- run pre-commit pre-push
     sources:
       - "lefthook.yml"
-  test::rust:unit:
+  test:rust:unit:
     silent: true
     cmds:
       - |
         cargo llvm-cov nextest
-      - |
-        cargo mutants
     sources:
       - "**/*.rs"
       - "Cargo.toml"
       - "Cargo.lock"
-  test::rust::audit:
+  test:rust:audit:
     silent: true
+    run: "once"
     cmds:
       - |
         cargo audit
@@ -103,23 +110,26 @@ tasks:
       - "**/*.rs"
       - "Cargo.toml"
       - "Cargo.lock"
-  toolchain:
+  test:
     silent: true
-    # desc: Run all development toolchain
+    run: "once"
+    desc: Run all development test toolchain
     cmds:
       - task: build
       - task: formatter
       - task: lint
-      - task: test::rust
-      - task: test::rust::audit
+      - task: test:rust
+      - task: test:rust:audit
   dev:
     silent: true
+    run: "once"
     desc: Run development mode
     cmds:
       - |
-        go-task toolchain -- --watch
+        task toolchain -- --watch
   debug:
     silent: true
+    run: "once"
     desc: Run jardin in debug mode
     deps:
       - task: build
@@ -128,12 +138,14 @@ tasks:
         ./target/debug/jardin -c jardin.toml deploy
   run:
     silent: true
+    run: "once"
     desc: Run jardin
     cmds:
       - |
         nix run
   default:
     silent: true
+    run: "once"
     cmds:
       - task: init
       - |

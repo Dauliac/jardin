@@ -4,6 +4,11 @@
 , inputs
 , ...
 }: {
-  imports = [ ./build-system ./development ./flakeModules ];
-  flake = { lib.domain = import ./domain.nix; };
+  imports = [
+    ./build-system
+    ./development
+    ./flakeModules
+    ./pkgs
+    ./lib/maintainers.nix
+  ];
 }

@@ -10,24 +10,28 @@
 }:
 let
   inherit (lib) maintainers;
-  buildOctoPackage =
+  buildOctoDnsPackage =
     { name
     , version
     , description
     , hash
+    , maintainers
     , octodns
     ,
     }:
+    let
+      title = "octodns";
+    in
     buildPythonPackage rec {
       inherit version;
-      pname = "octodns-${name}";
+      pname = "${title}-${name}";
       pyproject = true;
 
       disabled = pythonOlder "3.8";
 
       src = fetchFromGitHub {
-        owner = "octodns";
-        repo = "octodns-${name}";
+        owner = "${title}";
+        repo = "${title}-${name}";
         rev = "v${version}";
         inherit hash;
       };
@@ -38,25 +42,25 @@ let
 
       env.OCTODNS_RELEASE = 1;
 
-      pythonImportsCheck = [ "octodns_${name}" ];
+      pythonImportsCheck = [ "${title}_${name}" ];
 
       nativeCheckInputs = [ pytestCheckHook ];
 
       meta = with lib; {
         inherit description maintainer;
-        homepage = "https://github.com/octodns/octodns-${name}";
-        changelog = "https://github.com/octodns/octodns-${name}/blob/${src.rev}/CHANGELOG.md";
+        homepage = "https://github.com/${title}/${pname}";
+        changelog = "https://github.com/${title}/${pname}/blob/${src.rev}/CHANGELOG.md";
         license = licenses.mit;
       };
     };
 in
 {
-  octodnsCloudflare = buildOctoPackage {
+  octodnsCloudflare = buildOctoDnsPackage {
     inherit octodns;
     name = "cloudflare";
     version = "0.0.4";
     hash = "sha256-0ia/xYarrOiLZa8KU0s5wtCGtXIyxSl6OcwNkSJb/rA=";
-    description = " An octoDNS provider that targets Cloudflare.";
+    description = "An octoDNS provider that targets Cloudflare.";
     maintainers = with maintainers; [ "dauliac" ];
   };
 }

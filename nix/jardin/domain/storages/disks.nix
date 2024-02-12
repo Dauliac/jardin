@@ -1,111 +1,174 @@
-_:
+{ flake-parts-lib
+, lib
+, config
+, ...
+}:
 let
-  # TODO: mode it into application layer
-  fromStr = sizeStr:
-    let
-      matchResult = builtins.match "([0-9]+)GiB" sizeStr;
-    in
-    assert matchResult != null; builtins.head matchResult;
-
-  mkTotalStorageSize = node:
-    let
-      storageSizes = map (disk: disk.sizeGib) node.resources.storage.disks;
-    in
-    builtins.foldl' (acc: size: acc + (fromStr size)) 0 storageSizes;
-
-  mkDefaults = node:
-    let
-      defaultbackupKernels = 2;
-    in
-    node
-    // {
-      useUEFI = node.resources.storage.useUEFI or false;
-      numberOfKernels =
-        node.resources.storage.numberOfKernels or defaultbackupKernels;
-    };
-
-  mkBootSize = node:
-    let
-      node' = mkDefaults node;
-      baseSize =
-        if node'.resources.storage.useUEFI
-        then 300
-        else 100;
-      perKernelSize = 25;
-    in
-    baseSize + (node'.resources.storage.numberOfKernels * perKernelSize);
-
-  mkSwapSize = node:
-    let
-      node' = mkDefaults node;
-      inherit (node'.resources) memory;
-      storage = mkTotalStorageSize node';
-      halfMemory = memory / 2;
-      maxSwap = 4096;
-      baseSwap =
-        if memory < 2048
-        then memory
-        else if memory <= 8192
-        then halfMemory
-        else maxSwap;
-      additionalStorageSwap = storage / 10;
-    in
-    baseSwap + additionalStorageSwap - (mkBootSize node');
-
-  mkRootSize = node:
-    let
-      node' = mkDefaults node;
-      storage = mkTotalStorageSize node';
-      bootSize = mkBootSize node';
-      swapSize = mkSwapSize node';
-    in
-    storage - bootSize - swapSize;
-
-  mkPartitionLayoutForNode = node:
-    let
-      node' = mkDefaults node;
-      bootSize = mkBootSize node';
-      swapSize = mkSwapSize node';
-      rootSize = mkRootSize node';
-
-      bootEnd = bootSize;
-      swapEnd = bootSize + swapSize;
-      rootEnd = bootSize + swapSize + rootSize;
-    in
-    {
-      boot = {
-        start = 0;
-        end = bootEnd;
-      };
-      swap = {
-        start = bootEnd;
-        end = swapEnd;
-      };
-      root = {
-        start = swapEnd;
-        end = rootEnd;
-      };
-    };
+  inherit (lib) mkOption types mkIf mdDoc;
+  inherit (flake-parts-lib) mkSubmoduleOptions;
+  cfg = config.domain.cluster.storage;
+  inherit (config.domain) cluster;
 in
 {
-  configure = { nodes }:
-    let
-      mkTopology = nodes: {
-        nodes =
-          builtins.mapAttrs
-            (_nodeId: node: {
-              storage = {
-                partitions = mkPartitionLayoutForNode (mkDefaults node);
-                inherit (node.resources.storage) disks;
-              };
-            })
-            nodes;
+  options = {
+    domain.cluster.storage = {
+      lib = {
+        mkBootSize = mkOption {
+          description = mdDoc "Boot partition size for a node";
+          default = node:
+            let
+              baseSize =
+                if node.uefi
+                then cfg.boot.uefiClaimSize
+                else cfg.boot.nonUefiClaimSize;
+            in
+            baseSize + (cfg.numberOfKernels * cfg.boot.perKernelSize);
+        };
+        mkTotalSize = mkOption {
+          description = mdDoc "Compute the all available size of the node";
+          default = node:
+            lib.foldl' (acc: disk: acc + disk.sizeGb * 1000) 0 node.disks;
+        };
+        mkSwapSize = mkOption {
+          description = mdDoc "Swap partition size for a node";
+          default = node:
+            let
+              storage = cfg.lib.mkTotalSize node;
+              halfMemory = node.memory / 2;
+              baseSwap =
+                if node.memory < 2048
+                then node.memory
+                else if node.memory <= 8192
+                then halfMemory
+                else cfg.swap.maxSize;
+              additionalStorageSwap = storage / 10;
+            in
+            baseSwap + additionalStorageSwap;
+        };
+        mkRootSize = mkOption {
+          description = mdDoc "Root partition size for a node";
+          default = node:
+            (cfg.lib.mkTotalSize node)
+            - (cfg.lib.mkBootSize node)
+            - (cfg.lib.mkSwapSize node);
+        };
+        mkNodes = mkOption {
+          description = mdDoc "The list of nodes";
+          default = nodes:
+            lib.mapAttrsToList
+              (name: node: {
+                inherit name;
+                inherit (node) memory;
+                inherit (node) disks;
+                inherit (node) uefi;
+                inherit (node) numberOfKernels;
+                boot = cfg.mkBootSize node;
+                swap = cfg.mkSwapSize node;
+                root = cfg.mkRootSize node;
+              })
+              nodes;
+        };
       };
-    in
-    {
-      # topology = mkTopology nodes;
-      topology = { };
-      mkLayout = nodeId: topology.nodes.${nodeId}.storage.partitions;
-      mkdisks = nodeId: topology.nodes.${nodeId}.storage.disks;
+      boot = {
+        perKernelSize = mkOption {
+          description = mdDoc "The size of the kernel";
+          type = types.ints.positive;
+          default = 25;
+        };
+        uefiClaimSize = mkOption {
+          description = mdDoc "The size of the uefi partition";
+          type = types.ints.positive;
+          default = 300;
+        };
+        nonUefiClaimSize = mkOption {
+          description = mdDoc "The size of the non uefi partition";
+          type = types.ints.positive;
+          default = 100;
+        };
+      };
+      swap = {
+        maxSize = mkOption {
+          description = mdDoc "The base size of the swap";
+          type = types.ints.positive;
+          default = 4096;
+        };
+      };
+      numberOfKernels = mkOption {
+        description = mdDoc "The number of kernels to keep";
+        type = types.ints.positive;
+        default = 2;
+      };
+      nodes = mkOption {
+        description = mdDoc "Nodes storage information";
+        type = types.attrsOf (types.submodule (_: {
+          options = {
+            memory = mkOption {
+              description = mdDoc "The amount of memory in MB";
+              type = types.ints.positive;
+            };
+            disks = mkOption {
+              description = mdDoc "The list of disks";
+              type = types.listOf (types.submodule (_: {
+                options = {
+                  device = mkOption {
+                    description = mdDoc "The device of the disk";
+                    type = types.singleLineStr;
+                  };
+                  sizeGb = mkOption {
+                    description = mdDoc "The size of the disk";
+                    type = types.ints.positive;
+                  };
+                };
+              }));
+            };
+            partitions = {
+              boot = mkOption {
+                description = mdDoc "The size of the boot partition";
+                type = types.ints.positive;
+              };
+              root = mkOption {
+                description = mdDoc "The size of the root partition";
+                type = types.ints.positive;
+              };
+              swap = mkOption {
+                description = mdDoc "The size of the swap partition";
+                type = types.ints.positive;
+              };
+            };
+            uefi = mkOption {
+              description = mdDoc "Is the node have uefi";
+              type = types.bool;
+            };
+          };
+        }));
+      };
     };
+  };
+  config = {
+    domain.cluster.storage = {
+      nodes =
+        builtins.mapAttrs
+          (name: clusterNode:
+            let
+              node = {
+                inherit (clusterNode.resources) memory;
+                disks =
+                  builtins.map
+                    (disk: {
+                      inherit (disk) device;
+                      inherit (disk) sizeGb;
+                    })
+                    clusterNode.resources.storage.disks;
+                inherit (clusterNode.resources.storage) uefi;
+              };
+              node.partitions = {
+                boot = cfg.lib.mkBootSize node;
+                root = cfg.lib.mkRootSize node;
+                swap = cfg.lib.mkSwapSize node;
+              };
+            in
+            node)
+          cluster.nodes;
+    };
+  };
 }

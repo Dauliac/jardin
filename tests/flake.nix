@@ -32,7 +32,7 @@
       #           storage = {
       #             disks = [{
       #               device = "/dev/sda";
-      #               sizeGb = "10Gb";
+      #               size = "10Gb";
       #             }];
       #           };
       #         };

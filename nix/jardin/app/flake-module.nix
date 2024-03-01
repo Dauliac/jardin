@@ -64,7 +64,7 @@ in
                               description = mdDoc "The device of the disk";
                               type = types.singleLineStr;
                             };
-                            sizeGb = mkOption {
+                            size = mkOption {
                               description = mdDoc "The size of the disk";
                               type = types.singleLineStr;
                             };

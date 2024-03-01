@@ -15,21 +15,19 @@ in
       cluster = {
         networks = {
           dns = {
-            lib = {
-              mkRecords = mkOption {
-                description = mdDoc "Create DNS records for the cluster.";
-                default =
-                  { domain
-                  , nodes
-                  ,
-                  }:
-                  builtins.mapAttrs
-                    (hostname: node: {
-                      key = "${hostname}.${domain}";
-                      inherit (node) ip;
-                    })
-                    nodes;
-              };
+            mkRecords = mkOption {
+              description = mdDoc "Create DNS records for the cluster.";
+              default =
+                { domain
+                , nodes
+                ,
+                }:
+                builtins.mapAttrs
+                  (hostname: node: {
+                    key = "${hostname}.${domain}";
+                    inherit (node) ip;
+                  })
+                  nodes;
             };
             nameServerKind = mkOption {
               type = types.enum [ "privacyFriendly" "privacyLess" ];
@@ -37,8 +35,9 @@ in
               description = mdDoc "The kind of name server to use.";
             };
             domain = mkOption {
-              type = types.singleLineStr;
+              example = "example.com";
               description = mdDoc "The domain to create DNS records for.";
+              type = cluster.types.digitalStorageUnit;
             };
             records = mkOption {
               description = mdDoc "Dns records of the cluster";
@@ -76,7 +75,7 @@ in
   config = {
     domain.cluster.networks.dns = {
       inherit (cluster) domain;
-      records = cfg.lib.mkRecords {
+      records = cfg.mkRecords {
         inherit (cluster) domain;
         inherit (cluster) nodes;
       };

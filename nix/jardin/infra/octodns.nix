@@ -1,14 +1,17 @@
-{ lib
+{ flake-parts-lib
+, lib
 , config
 , ...
 }:
 let
   inherit (lib) mkOption mdDoc types mkIf mkMerge;
-  cfg = config.jardin.infra.back.octodns;
+  inherit (flake-parts-lib) mkPerSystemOption;
+  cfg = config.infra.octodns;
+  inherit (config) infra;
 in
 {
   options = {
-    jardin.infra.octodns = {
+    infra.octodns = {
       enabled = mkOption {
         description = mdDoc "Enable the octodns task";
         type = types.bool;
@@ -18,22 +21,62 @@ in
         description = mdDoc "List of DNS records to create";
       };
       provider = mkOption {
-        description = mdDoc "";
-        type = types.enum [ "cloudflare" ];
+        description = mdDoc "The dns cloud provider to use";
+        type = types.enum [ "gandi" "hetzner" ];
       };
       zone = mkOption {
         description = mdDoc "The root dns zone of your cluster";
         type = types.singleLineStr;
       };
-      octodns = mkOption {
-        description = mdDoc "The octodns package";
-        type = types.package;
-        default = "octodns";
-      };
     };
+    perSystem = mkPerSystemOption ({ config'
+                                   , lib
+                                   , pkgs'
+                                   , system
+                                   , ...
+                                   }:
+      let
+        systemInfra = config.infra;
+      in
+      {
+        options = {
+          infra.octodns = {
+            package = mkOption {
+              description = mdDoc "The octodns package";
+              type = types.package;
+              default = "octodns";
+            };
+            providerPackage = mkOption {
+              description = mdDoc "The octodns provider package";
+              type = types.package;
+            };
+            mkJob = mkOption {
+              description = mdDoc "The task to run";
+              type = types.package;
+              default = systemInfra.job.mkJob {
+                name = "octodns";
+                runTimeDependencies =
+                  # TODO: export it in config
+                  let
+                    provider = pkgs'.octodns-providers.${cfg.provider};
+                  in
+                  [ cfg.package provider ];
+              };
+            };
+          };
+        };
+      });
   };
   config = {
     debug = true;
+    perSystem = {
+      # octodns = {
+      #   enable = cfg.enabled;
+      #   records = cfg.records;
+      #   provider = cfg.provider;
+      #   zone = cfg.zone;
+      # };
+    };
     # flake = {
     #   lib = mkMerge [
     #     {

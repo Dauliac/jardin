@@ -22,7 +22,7 @@
             rust-analyzer
             go-task
             lefthook
-            assh # TODO: add module to write ssh config file
+            convco
             cargo-udeps
             rust.packages.stable.rustPlatform.rustLibSrc
             # BUG: this package is broken

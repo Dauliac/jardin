@@ -25,4 +25,5 @@ in
       };
     };
   };
+  config = { debug = true; };
 }

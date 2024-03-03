@@ -1,11 +1,10 @@
 { config
 , lib
 , flake-parts-lib
-, outputs
 , ...
 }:
 let
-  inherit (lib) mkOption mkPackageOption types mdDoc;
+  inherit (lib) mkOption types mdDoc;
   inherit (flake-parts-lib) mkSubmoduleOptions;
 in
 {

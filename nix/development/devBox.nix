@@ -21,7 +21,6 @@
             services.openssh.enable = true;
             services.openssh.settings.PermitRootLogin = "yes";
             users.extraUsers.root.initialPassword = "";
-            # users.users.root.openssh.authorizedKeys.keys = authorized-keys;
             virtualisation.forwardPorts = [
               {
                 from = "host";

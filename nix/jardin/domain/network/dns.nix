@@ -4,10 +4,10 @@
 , ...
 }:
 let
-  cfg = config.domain.cluster.networks.dns;
   inherit (config.domain) cluster;
   inherit (lib) mkOption types mkIf mdDoc;
   inherit (flake-parts-lib) mkSubmoduleOptions;
+  cfg = config.domain.cluster.networks.dns;
 in
 {
   options = {

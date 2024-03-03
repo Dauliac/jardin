@@ -4,7 +4,7 @@
 , ...
 }:
 let
-  inherit (lib) mkOption mdDoc types mkIf mkMerge;
+  inherit (lib) mkOption mdDoc types mkIf;
   inherit (flake-parts-lib) mkPerSystemOption;
   cfg = config.infra.octodns;
   inherit (config) infra;
@@ -12,9 +12,10 @@ in
 {
   options = {
     infra.octodns = {
-      enabled = mkOption {
+      enable = mkOption {
         description = mdDoc "Enable the octodns task";
         type = types.bool;
+        default = false;
       };
       records = mkOption {
         type = types.list (types.attrsOf types.str);
@@ -68,7 +69,6 @@ in
       });
   };
   config = {
-    debug = true;
     perSystem = {
       # octodns = {
       #   enable = cfg.enabled;

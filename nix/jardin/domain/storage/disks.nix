@@ -75,28 +75,67 @@ in
             })
             nodes;
       };
+      mkBootPartitionStart = mkOption {
+        description = mdDoc "The start of the boot partition";
+        default = 0;
+      };
+      mkBootPartitionEnd = mkOption {
+        description = mdDoc "The end of the boot partition";
+        default = node:
+          let
+            bootSize = cluster.types.convertToMiB node.boot;
+          in
+          bootSize;
+      };
+      mkRootPartitionStart = mkOption {
+        description = mdDoc "The start of the root partition";
+        default = node: node.boot;
+      };
+      mkRootPartitionEnd = mkOption {
+        description = mdDoc "The end of the root partition";
+        default = node: node.boot + node.root;
+      };
+      mkSwapPartitionStart = mkOption {
+        description = mdDoc "The start of the swap partition";
+        default = node:
+          let
+            bootSize = cluster.types.convertToMiB node.boot;
+            rootSize = cluster.types.convertToMiB node.root;
+          in
+          bootSize + rootSize;
+      };
+      mkSwapPartitionEnd = mkOption {
+        description = mdDoc "The end of the swap partition";
+        default = node:
+          let
+            bootSize = cluster.types.convertToMiB node.boot;
+            rootSize = cluster.types.convertToMiB node.root;
+            swapSize = cluster.types.convertToMiB node.swap;
+          in
+          bootSize + rootSize + swapSize;
+      };
       boot = {
         perKernelSize = mkOption {
           description = mdDoc "The size of the kernel";
           type = cluster.types.digitalStorageUnit;
-          default = "25MB";
+          default = "25MiB";
         };
         uefiClaimSize = mkOption {
           description = mdDoc "The size of the uefi partition";
           type = cluster.types.digitalStorageUnit;
-          default = "300MB";
+          default = "300MiB";
         };
         nonUefiClaimSize = mkOption {
           description = mdDoc "The size of the non uefi partition";
           type = cluster.types.digitalStorageUnit;
-          default = "100MB";
+          default = "100MiB";
         };
       };
       swap = {
         maxSize = mkOption {
           description = mdDoc "The base size of the swap";
           type = cluster.types.digitalStorageUnit;
-          default = "4096MB";
+          default = "4096MiB";
         };
       };
       numberOfKernels = mkOption {

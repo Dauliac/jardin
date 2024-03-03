@@ -1,17 +1,14 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-
-/target
-result*
-
-.vscode
-*.swp
-
+terraform.tfstate*
 secrets/
+result*
+mutants.out*
+/target
+.vscode
 .vagrant/
 .terraform*
-terraform.tfstate*
-.direnv/
 .task
-
-mutants.out*
 .nixos-test-history
+.gdb_history
+.direnv/
+*.swp

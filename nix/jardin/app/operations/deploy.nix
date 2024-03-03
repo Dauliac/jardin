@@ -7,23 +7,25 @@
 }:
 let
   inherit (lib) mkIf mkOption types mdDoc mkMerge;
-  cluster = config.flake.nixCluster;
-  inherit (config.flake.lib) jardin;
-  cfg = jardin.app.operations.deploy;
+  cfg = config.app.operations.deploy;
 in
 {
-  options = {
-    jardin.app.operations.deploy = {
-      dns = {
-        iacService = mkOption {
-          type = types.attrsOf types.any;
-          description = mdDoc "The dns iac service to use";
-          default = jardin.infra.octodns;
-        };
-      };
-    };
-  };
+  # options = {
+  #   jardin.app.operations.deploy = {
+  #     dns = {
+  #       iacService = mkOption {
+  #         type = types.attrsOf types.any;
+  #         description = mdDoc "The dns iac service to use";
+  #         default = jardin.infra.octodns;
+  #       };
+  #     };
+  #   };
+  # };
   config = {
+    infra = {
+      disko.enable = true;
+      octodns.enable = true;
+    };
     flake = {
       jardin = {
         infra = {
@@ -35,17 +37,6 @@ in
           };
         };
       };
-      lib = mkMerge [
-        {
-          deploy = {
-            # mkTasks = { pkgs }: { dns = jardin.infra.octodns.task; };
-          };
-        }
-      ];
-      # perSystem = { pkgs, ... }: {
-      #   apps.jardin-tasks-deploy = jardin.deploy.mkTasks { inherit pkgs; };
-      # };
     };
-    # }];
   };
 }

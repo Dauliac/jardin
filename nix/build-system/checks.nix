@@ -1,4 +1,7 @@
-{ inputs, ... }: {
+{ inputs
+, config
+, ...
+}: {
   perSystem =
     { system
     , inputs'
@@ -16,6 +19,10 @@
         cargoExtraArgs = "nextest";
       };
       checks = {
+        # TODO: wrtie function to inherit all tests in checks
+        inherit
+          (package.test.infra.nixOs)
+          ;
         typos = pkgs.mkShell {
           buildInputs = with pkgs; [ typos ];
           shellHook = ''

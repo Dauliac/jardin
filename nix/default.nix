@@ -4,5 +4,5 @@
 , inputs
 , ...
 }: {
-  imports = [ ./build-system ./development ./jardin ];
+  imports = [ ./build-system ./development ./sources ./tests ];
 }

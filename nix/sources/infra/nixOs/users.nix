@@ -1,37 +1,43 @@
-{ lib
-, config
-, pkgs
-, inputs
-, system
-, ...
-}:
-let
-  inherit (lib) mkOption mdDoc types mkIf;
-  cfg = config.infra.nixOs;
-  inherit (config) infra;
-  inherit (config.domain) cluster;
-in
 {
+  lib,
+  config,
+  ...
+}: let
+  inherit (lib) mkOption types;
+  cfg = config.infra.nixOs;
+  inherit (config.domain) cluster;
+in {
   options = {
     infra.nixOs = {
-      users = mkOption {
-        type = types.attrsOf types.attrs;
-        description = "Basic and constant nixOS configuration for the cluster nodes";
-        default = {
-          users = {
-            mutableUsers = false;
-            root = { authorizedKeys.keys = cluster.accounts; };
-            inherit
-              (builtins.mapAttrs (userName: node: cfg.common)
-                cluster.account.admins)
-              ;
+      mkUserConfig = mkOption {
+        description = "NixOS configuration for the cluster nodes";
+        default = admins: {
+          security.sudo = {
+            # NOTE: this is unescure, we maybe need to define debug boolean argument
+            wheelNeedsPassword = false;
           };
+          users =
+            {
+              mutableUsers = false;
+            }
+            // {
+              users =
+                builtins.mapAttrs
+                (userName: node: {
+                  isNormalUser = true;
+                  createHome = true;
+                  description = "Admin ${userName} user account";
+                  extraGroups = ["wheel" cluster.account.adminGroup];
+                })
+                admins;
+            };
         };
       };
+      # users = mkOption {
+      #   type = types.attrsOf types.attrs;
+      #   description = "Basic and constant nixOS configuration for the cluster nodes";
+      #   default = cfg.mkUserConfig cluster.account.admins;
+      # };
     };
-  };
-  config = {
-    infra.nixOs.nodes =
-      builtins.mapAttrs (nodeName: node: cfg.common) cluster.nodes;
   };
 }

@@ -1,5 +1,3 @@
-{ lib, ... }:
-let
+{lib, ...}: let
   inherit (lib) types mkOption mkOptionType;
-in
-{ imports = [ ./disks.nix ]; }
+in {imports = [./disks.nix];}

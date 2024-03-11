@@ -1,8 +1,9 @@
-{ flake-parts-lib
-, config
-, pkgs
-, inputs
-, ...
+{
+  flake-parts-lib,
+  config,
+  pkgs,
+  inputs,
+  ...
 }: {
-  imports = [ ./build-system ./development ./sources ./tests ];
+  imports = [./build-system ./development ./sources ./tests];
 }

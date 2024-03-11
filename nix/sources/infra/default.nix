@@ -1,1 +1,1 @@
-{ ... }: { imports = [ ./disko ./octodns.nix ./job.nix ./nixOs ]; }
+{...}: {imports = [./disko ./octodns.nix ./job.nix ./nixOs];}

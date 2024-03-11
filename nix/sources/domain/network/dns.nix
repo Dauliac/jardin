@@ -1,15 +1,14 @@
-{ flake-parts-lib
-, lib
-, config
-, ...
-}:
-let
+{
+  flake-parts-lib,
+  lib,
+  config,
+  ...
+}: let
   inherit (config.domain) cluster;
   inherit (lib) mkOption types mkIf mdDoc;
   inherit (flake-parts-lib) mkSubmoduleOptions;
   cfg = config.domain.cluster.networks.dns;
-in
-{
+in {
   options = {
     domain = {
       cluster = {
@@ -17,20 +16,19 @@ in
           dns = {
             mkRecords = mkOption {
               description = mdDoc "Create DNS records for the cluster.";
-              default =
-                { domain
-                , nodes
-                ,
-                }:
+              default = {
+                domain,
+                nodes,
+              }:
                 builtins.mapAttrs
-                  (hostname: node: {
-                    key = "${hostname}.${domain}";
-                    inherit (node) ip;
-                  })
-                  nodes;
+                (hostname: node: {
+                  key = "${hostname}.${domain}";
+                  inherit (node) ip;
+                })
+                nodes;
             };
             nameServerKind = mkOption {
-              type = types.enum [ "privacyFriendly" "privacyLess" ];
+              type = types.enum ["privacyFriendly" "privacyLess"];
               default = "privacyFriendly";
               description = mdDoc "The kind of name server to use.";
             };
@@ -56,7 +54,7 @@ in
                   kind = mkOption {
                     description =
                       mdDoc "The address ip use as record value for dns";
-                    type = types.enum [ "A" "CNAME" ];
+                    type = types.enum ["A" "CNAME"];
                     default = "A";
                   };
                   ttl = mkOption {

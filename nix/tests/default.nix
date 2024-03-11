@@ -1,1 +1,1 @@
-{ ... }: { imports = [ ./infra ]; }
+{...}: {imports = [./infra];}

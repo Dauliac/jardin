@@ -25,15 +25,15 @@
     };
   };
 
-  outputs =
-    inputs @ { self
-    , flake-parts
-    , terranix
-    , disko
-    , ...
-    }:
-    flake-parts.lib.mkFlake { inherit inputs; } (_: {
-      systems = [ "x86_64-linux" ];
-      imports = [ ./nix ];
+  outputs = inputs @ {
+    self,
+    flake-parts,
+    terranix,
+    disko,
+    ...
+  }:
+    flake-parts.lib.mkFlake {inherit inputs;} (_: {
+      systems = ["x86_64-linux"];
+      imports = [./nix];
     });
 }

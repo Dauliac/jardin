@@ -1,13 +1,12 @@
-{ config
-, lib
-, flake-parts-lib
-, ...
-}:
-let
+{
+  config,
+  lib,
+  flake-parts-lib,
+  ...
+}: let
   inherit (lib) mkOption types mdDoc;
   inherit (flake-parts-lib) mkSubmoduleOptions;
-in
-{
+in {
   # TODO: We maybe should generate this file from rust
   flake = {
     flakeModules = {
@@ -25,23 +24,23 @@ in
               };
               provider = mkOption {
                 description = mdDoc "";
-                type = types.enum [ "cloudflare" ];
+                type = types.enum ["cloudflare"];
               };
             };
             nodes = mkSubmoduleOptions {
-              default = { };
+              default = {};
               description = mdDoc "The nodes of your cluster";
               types = types.attrsOf {
                 role = mkOption {
                   description = mdDoc "The role of the node";
-                  type = types.enum [ "node" ];
+                  type = types.enum ["node"];
                 };
                 ip = mkOption {
                   description = mdDoc "The ip of the node";
                   type = types.singleLineStr;
                 };
                 resources = mkSubmoduleOptions {
-                  default = { };
+                  default = {};
                   description = mdDoc "The resources of the node";
                   types = types.attrsOf {
                     cpu = mkOption {
@@ -53,7 +52,7 @@ in
                       type = types.ints.positive;
                     };
                     storage = mkSubmoduleOptions {
-                      default = { };
+                      default = {};
                       description = mdDoc "The storage of the node";
                       types = types.attrsOf {
                         disks = types.listOf {
@@ -75,7 +74,7 @@ in
                 };
               };
             };
-            pipeline = { fresh_install = mkOption { }; };
+            pipeline = {fresh_install = mkOption {};};
           };
         };
       };

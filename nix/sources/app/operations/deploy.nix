@@ -1,15 +1,14 @@
-{ lib
-, config
-, pkgs
-, inputs
-, system
-, ...
-}:
-let
+{
+  lib,
+  config,
+  pkgs,
+  inputs,
+  system,
+  ...
+}: let
   inherit (lib) mkIf mkOption types mdDoc mkMerge;
   cfg = config.app.operations.deploy;
-in
-{
+in {
   # options = {
   #   jardin.app.operations.deploy = {
   #     dns = {
@@ -32,7 +31,7 @@ in
           octodns = {
             enable = true;
             # TODO:  use domain to fill this
-            records = [ "node1.nofreedisk.space" "node2.nofreedisk.space" ];
+            records = ["node1.nofreedisk.space" "node2.nofreedisk.space"];
             provider = "cloudflare";
           };
         };

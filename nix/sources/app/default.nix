@@ -1,1 +1,1 @@
-{ ... }: { imports = [ ./operations/deploy.nix ./flake-module.nix ]; }
+{...}: {imports = [./operations/deploy.nix ./flake-module.nix];}

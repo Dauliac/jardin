@@ -1,29 +1,25 @@
-{ flake-parts-lib
-, lib
-, config
-, pkgs
-, inputs
-, ...
-}:
-let
+{
+  flake-parts-lib,
+  lib,
+  ...
+}: let
   inherit (lib) mkOption types;
   inherit (flake-parts-lib) mkSubmoduleOptions;
-in
-{
-  imports = [ ./app ./infra ./domain ];
+in {
+  imports = [./app ./infra ./domain];
   options = {
     flake = mkSubmoduleOptions {
       lib = mkSubmoduleOptions {
-        infra = mkOption { description = "Infrastructure layer lib"; };
+        infra = mkOption {description = "Infrastructure layer lib";};
         # app = mkOption {
         #   type = types.lazyAttrsOf types.raw;
         #   description = "Application layer lib";
         # };
         domain = mkSubmoduleOptions {
-          cluster = mkOption { description = "Cluster lib"; };
+          cluster = mkOption {description = "Cluster lib";};
         };
       };
     };
   };
-  config = { debug = true; };
+  config = {debug = true;};
 }

@@ -13,7 +13,7 @@ Files: .*
 Copyright: 2022 Conformism  <conformism@nofreedisk.space>
 License: AGPL-3.0-or-later
 
-Files: *.yaml *.yml *.toml flake.nix
+Files: *.yaml *.yml *.toml flake.nix *.nix
 Copyright: 2022 Conformism  <conformism@nofreedisk.space>
 License: AGPL-3.0-or-later
 

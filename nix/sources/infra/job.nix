@@ -1,10 +1,11 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 {
   flake-parts-lib,
   lib,
   config,
   ...
 }: let
-  inherit (lib) mkOption mdDoc types mkIf mkMerge;
+  inherit (lib) mkOption mdDoc;
   inherit (flake-parts-lib) mkPerSystemOption;
   cfg = config.infra.job;
 in {

@@ -1,7 +1,2 @@
-{
-  inputs,
-  config,
-  options,
-  pkgs,
-  ...
-}: {imports = [./devShell.nix];}
+# SPDX-License-Identifier: AGPL-3.0-or-later
+{...}: {imports = [./devShell.nix];}

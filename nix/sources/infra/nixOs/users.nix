@@ -1,10 +1,10 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 {
   lib,
   config,
   ...
 }: let
-  inherit (lib) mkOption types;
-  cfg = config.infra.nixOs;
+  inherit (lib) mkOption;
   inherit (config.domain) cluster;
 in {
   options = {

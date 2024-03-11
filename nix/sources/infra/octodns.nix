@@ -1,13 +1,13 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 {
   flake-parts-lib,
   lib,
   config,
   ...
 }: let
-  inherit (lib) mkOption mdDoc types mkIf;
+  inherit (lib) mkOption mdDoc types;
   inherit (flake-parts-lib) mkPerSystemOption;
   cfg = config.infra.octodns;
-  inherit (config) infra;
 in {
   options = {
     infra.octodns = {

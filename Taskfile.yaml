@@ -66,12 +66,26 @@ tasks:
     cmds:
       - |
         typos --write-changes .
+  lint:reuse:
+    silent: true
+    cmds:
+      - reuse lint
+  lint:cargo:
+    silent: true
+    cmds:
+      - cargo fmt
+  lint:yamlfmt:
+    silent: true
+    cmds:
+      - yamlfmt -lint
   lint:
     silent: true
     desc: 💄Lint jardin
     deps:
       # - task: lint:rust:clippy
-      - task: lint:typos
+      - lint:yamlfmt
+      - lint:typos
+      - lint:reuse
   build:
     silent: true
     desc: Build jardin

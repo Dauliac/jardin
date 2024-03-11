@@ -1,12 +1,11 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 {
-  flake-parts-lib,
   lib,
   config,
   ...
 }: let
   inherit (config.domain) cluster;
-  inherit (lib) mkOption types mkIf mdDoc;
-  inherit (flake-parts-lib) mkSubmoduleOptions;
+  inherit (lib) mkOption types mdDoc;
   cfg = config.domain.cluster.networks.dns;
 in {
   options = {

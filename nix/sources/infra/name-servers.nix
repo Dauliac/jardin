@@ -1,13 +1,13 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 {
   lib,
   config,
   ...
 }: let
-  inherit (lib) mkOption types mkIf mdDoc;
+  inherit (lib) types mkIf mdDoc;
   cloudflare = ["1.1.1.1" "1.0.0.1"];
   google = "8.8.8.8";
   quad9 = ["9.9.9.9"];
-  nonPrivacy = privacy ++ [google];
   cfg = config.infra.nameServers;
   inherit (config.domain.cluster.networks) dns;
 in {

@@ -1,14 +1,5 @@
-{
-  lib,
-  config,
-  pkgs,
-  inputs,
-  system,
-  ...
-}: let
-  inherit (lib) mkIf mkOption types mdDoc mkMerge;
-  cfg = config.app.operations.deploy;
-in {
+# SPDX-License-Identifier: AGPL-3.0-or-later
+_: {
   # options = {
   #   jardin.app.operations.deploy = {
   #     dns = {

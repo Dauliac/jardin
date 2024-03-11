@@ -1,13 +1,10 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 {
-  flake-parts-lib,
   lib,
   config,
-  pkgs,
-  inputs,
   ...
 }: let
-  inherit (lib) mkOption mdDoc types mkIf;
-  inherit (flake-parts-lib) mkPerSystemOption;
+  inherit (lib) mkOption mdDoc mkIf;
   cfg = config.infra.disko;
   disks = config.domain.cluster.storage.disk;
 in {

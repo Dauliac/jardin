@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 {inputs, ...}: {
   perSystem = {
     system,
@@ -14,14 +15,19 @@
       cargoExtraArgs = "nextest";
     };
     checks = {
-      # TODO: wrtie function to inherit all tests in checks
+      # TODO: write function to inherit all tests in checks
       inherit
         (package.test.infra.nixOs)
         ;
-      typos = pkgs.mkShell {
-        buildInputs = with pkgs; [typos];
+      lint = pkgs.mkShell {
+        buildInputs = with pkgs; [
+          typos
+          go-task
+          reuse
+          yamlfmt
+        ];
         shellHook = ''
-          typos .
+          task lint
         '';
       };
       yamlfmt = pkgs.mkShell {

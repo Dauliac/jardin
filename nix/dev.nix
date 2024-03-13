@@ -18,8 +18,6 @@ _: {
             convco
             cargo-udeps
             rust.packages.stable.rustPlatform.rustLibSrc
-            # TODO: move it into flake
-            autoflake
             # BUG: this package is broken
             # vscode-extensions.llvm-org.lldb-vscode
           ]

@@ -1,24 +1,62 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
+{ lib
+, inputs
+, ...
+}:
+let
+  inherit (lib) mkOption mdDoc;
+  inherit (inputs.flake-parts.lib) mkPerSystemOption;
+in
 {
-  inputs,
-  system,
-}: let
-  fenixPackage = inputs.fenix.packages.${system}.latest;
-  toolchain = fenixPackage.withComponents [
-    "rustc"
-    "cargo"
-    "clippy"
-    "rust-analysis"
-    "rust-src"
-    "rustfmt"
-    "llvm-tools-preview"
-  ];
-  craneLib = inputs.crane.lib.${system};
-  compiler = craneLib.overrideToolchain toolchain;
-  sources = compiler.cleanCargoSource (craneLib.path ./../../.);
-  dependencies = compiler.buildDepsOnly {src = sources;};
-  artifact = compiler.buildPackage {
-    inherit dependencies;
-    src = sources;
+  options = {
+    perSystem = mkPerSystemOption ({ config
+                                   , lib'
+                                   , pkgs
+                                   , system
+                                   , ...
+                                   }: {
+      options = {
+        fenixPackage = mkOption {
+          description = mdDoc "Fenix package";
+          default = inputs.fenix.packages.${system}.latest;
+        };
+        toolchain = mkOption {
+          description = mdDoc "Rust toolchain";
+          default = config.fenixPackage.withComponents [
+            "rustc"
+            "cargo"
+            "clippy"
+            "rust-analysis"
+            "rust-src"
+            "rustfmt"
+            "llvm-tools-preview"
+          ];
+        };
+        craneLib = mkOption {
+          description = mdDoc "Crane library";
+          default = inputs.crane.lib.${system};
+        };
+        compiler = mkOption {
+          description = mdDoc "Rust toolchain";
+          default = config.craneLib.overrideToolchain config.toolchain;
+        };
+        sources = mkOption {
+          description = mdDoc "Crane sources";
+          default =
+            config.compiler.cleanCargoSource (config.craneLib.path ./../../.);
+        };
+        dependencies = mkOption {
+          description = mdDoc "Rust dependencies";
+          default = config.compiler.buildDepsOnly { src = config.sources; };
+        };
+        artifact = mkOption {
+          description = mdDoc "Built rust artifact";
+          default = config.compiler.buildPackage {
+            inherit (config) dependencies;
+            src = config.sources;
+          };
+        };
+      };
+    });
   };
-in {inherit dependencies artifact toolchain compiler sources;}
+}

@@ -3,7 +3,8 @@
   description = "Jardin";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    flake-parts.url = "github:hercules-ci/flake-parts";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
     crane = {
@@ -25,15 +26,14 @@
     };
   };
 
-  outputs = inputs @ {
-    self,
-    flake-parts,
-    terranix,
-    disko,
-    ...
-  }:
-    flake-parts.lib.mkFlake {inherit inputs;} (_: {
-      systems = ["x86_64-linux"];
-      imports = [./nix];
+  outputs =
+    inputs @ { flake-parts
+    , terranix
+    , disko
+    , ...
+    }:
+    flake-parts.lib.mkFlake { inherit inputs; } (_: {
+      systems = [ "x86_64-linux" ];
+      imports = [ ./nix ];
     });
 }

@@ -1,21 +1,35 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-{inputs, ...}: {
-  perSystem = {
-    system,
-    inputs',
-    pkgs,
-    ...
-  }: let
-    formatterPackages = import ./formatter-dependencies.nix {inherit pkgs;};
-  in {
-    formatter = pkgs.writeShellApplication {
-      name = "normalise_nix";
-      runtimeInputs = formatterPackages;
-      text = ''
-        set -o xtrace
-        ${pkgs.alejandra}/bin/alejandra "$@"
-        ${pkgs.statix}/bin/statix fix "$@"
-      '';
+{ lib
+, inputs
+, ...
+}:
+let
+  inherit (lib) mkOption mdDoc;
+  inherit (inputs.flake-parts.lib) mkPerSystemOption;
+in
+{
+  options.perSystem = mkPerSystemOption ({ pkgs, ... }: {
+    options = {
+      formatterPackages = mkOption {
+        description = mdDoc "Packages used to format the repo";
+        default = with pkgs; [ nixpkgs-fmt alejandra statix ];
+      };
     };
-  };
+  });
+  config.perSystem =
+    { config
+    , pkgs
+    , ...
+    }: {
+      formatter = pkgs.writeShellApplication {
+        name = "normalise-nix";
+        runtimeInputs = config.formatterPackages;
+        text = ''
+          set -o xtrace
+          ${pkgs.alejandra}/bin/alejandra "$@"
+          ${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt "$@"
+          ${pkgs.statix}/bin/statix fix "$@"
+        '';
+      };
+    };
 }

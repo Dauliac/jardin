@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-{...}: {
-  imports = [./nix-os.nix];
+{ ... }: {
+  imports = [ ./nix-os.nix ];
   options = {
     # TODO: write helper and mock tool to write infrastructure tests
     # test.infra.lib = mkOption {

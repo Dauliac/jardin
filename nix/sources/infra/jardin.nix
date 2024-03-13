@@ -1,11 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-{
-  jardin,
-  config,
-  action,
-  globalFlags,
-  localFlags,
-}: let
+{ jardin
+, config
+, action
+, globalFlags
+, localFlags
+,
+}:
+let
   command = ../adapters/command.nix;
   bin = "${jardin}/bin/jardin";
   configArg = {
@@ -14,6 +15,7 @@
   };
   command = command.build {
     inherit bin action localFlags;
-    globalFlags = [configArg] ++ globalFlags;
+    globalFlags = [ configArg ] ++ globalFlags;
   };
-in {}
+in
+{ }

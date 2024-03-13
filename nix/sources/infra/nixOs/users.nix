@@ -1,12 +1,13 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-{
-  lib,
-  config,
-  ...
-}: let
+{ lib
+, config
+, ...
+}:
+let
   inherit (lib) mkOption;
   inherit (config.domain) cluster;
-in {
+in
+{
   options = {
     infra.nixOs = {
       mkUserConfig = mkOption {
@@ -23,13 +24,13 @@ in {
             // {
               users =
                 builtins.mapAttrs
-                (userName: node: {
-                  isNormalUser = true;
-                  createHome = true;
-                  description = "Admin ${userName} user account";
-                  extraGroups = ["wheel" cluster.account.adminGroup];
-                })
-                admins;
+                  (userName: node: {
+                    isNormalUser = true;
+                    createHome = true;
+                    description = "Admin ${userName} user account";
+                    extraGroups = [ "wheel" cluster.account.adminGroup ];
+                  })
+                  admins;
             };
         };
       };

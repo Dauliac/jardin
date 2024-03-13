@@ -1,7 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-{lib, ...}: let
+{ lib, ... }:
+let
   inherit (lib) mkOption mdDoc;
-in {
+in
+{
   options = {
     infra.nixOs = {
       common = mkOption {
@@ -10,7 +12,7 @@ in {
         description = mdDoc "Basic and constant nixOS configuration for the cluster nodes";
         default = {
           nix.settings = {
-            experimental-features = ["nix-command" "flakes"];
+            experimental-features = [ "nix-command" "flakes" ];
             auto-optimise-store = true;
           };
           # TODO: change it into perSystem option

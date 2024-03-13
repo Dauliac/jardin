@@ -1,14 +1,15 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-{
-  flake-parts-lib,
-  lib,
-  config,
-  ...
-}: let
+{ inputs
+, lib
+, config
+, ...
+}:
+let
   inherit (lib) mkOption mdDoc types;
-  inherit (flake-parts-lib) mkPerSystemOption;
+  inherit (inputs.flake-parts.lib) mkPerSystemOption;
   cfg = config.infra.octodns;
-in {
+in
+{
   options = {
     infra.octodns = {
       enable = mkOption {
@@ -22,48 +23,52 @@ in {
       };
       provider = mkOption {
         description = mdDoc "The dns cloud provider to use";
-        type = types.enum ["gandi" "hetzner"];
+        type = types.enum [ "gandi" "hetzner" ];
       };
       zone = mkOption {
         description = mdDoc "The root dns zone of your cluster";
         type = types.singleLineStr;
       };
     };
-    perSystem = mkPerSystemOption ({
-      config',
-      lib,
-      pkgs',
-      system,
-      ...
-    }: let
-      systemInfra = config.infra;
-    in {
-      options = {
-        infra.octodns = {
-          package = mkOption {
-            description = mdDoc "The octodns package";
-            type = types.package;
-            default = "octodns";
-          };
-          providerPackage = mkOption {
-            description = mdDoc "The octodns provider package";
-            type = types.package;
-          };
-          mkJob = mkOption {
-            description = mdDoc "The task to run";
-            type = types.package;
-            default = systemInfra.job.mkJob {
-              name = "octodns";
-              runTimeDependencies =
-                # TODO: export it in config
-                let
-                  provider = pkgs'.octodns-providers.${cfg.provider};
-                in [cfg.package provider];
+    perSystem =
+      mkPerSystemOption
+        ({ config'
+         , lib
+         , pkgs'
+         , system
+         , ...
+         }:
+          let
+            systemInfra = config.infra;
+          in
+          {
+            options = {
+              infra.octodns = {
+                package = mkOption {
+                  description = mdDoc "The octodns package";
+                  type = types.package;
+                  default = "octodns";
+                };
+                providerPackage = mkOption {
+                  description = mdDoc "The octodns provider package";
+                  type = types.package;
+                };
+                mkJob = mkOption {
+                  description = mdDoc "The task to run";
+                  type = types.package;
+                  default = systemInfra.job.mkJob {
+                    name = "octodns";
+                    runTimeDependencies =
+                      # TODO: export it in config
+                      let
+                        provider = pkgs'.octodns-providers.${cfg.provider};
+                      in
+                      [ cfg.package provider ];
+                  };
+                };
+              };
             };
-          };
-        };
-      };
-    });
+          });
   };
   config = {
     perSystem = {

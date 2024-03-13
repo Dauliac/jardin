@@ -1,7 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-{lib, ...}: let
+{ lib, ... }:
+let
   inherit (lib) mkOption types mdDoc;
-in {
+in
+{
   options = {
     domain.cluster.account = {
       adminGroup = mkOption {

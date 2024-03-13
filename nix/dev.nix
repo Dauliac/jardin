@@ -16,7 +16,7 @@ _: {
             go-task
             lefthook
             convco
-            cargo-udeps
+            cargo-udeps # TODO: integrate it as check
             rust.packages.stable.rustPlatform.rustLibSrc
             # BUG: this package is broken
             # vscode-extensions.llvm-org.lldb-vscode

@@ -25,7 +25,7 @@ _: {
           ]
           ++ config.formatterPackages;
         shellHook = ''
-          export GAMBLE_TEST_COMMAND="true" # replace `true` with the command to run your tests
+          task init
         '';
       };
     };

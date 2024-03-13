@@ -13,6 +13,9 @@ includes:
   vm: 
     taskfile: taskfiles/Dev.yaml
     dir: .
+  docs:
+    taskfile: taskfiles/Docs.yaml
+    dir: .
 
 tasks:
   init:

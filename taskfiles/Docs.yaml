@@ -1,12 +1,8 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
-
 ---
-
+# SPDX-License-Identifier: AGPL-3.0-or-later
 version: "3"
-
 set: [errexit, pipefail, nounset]
 shopt: [globstar]
-
 tasks:
   changelog:
     silent: true

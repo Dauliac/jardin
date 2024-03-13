@@ -1,9 +1,6 @@
+---
 version: "3"
-
 tasks:
   default:
     cmds:
-      - |
-        nix run \
-          '.#testInfraNixOs.driverInteractive' -- \
-          --keep-vm-state 
+      - "nix run \\\n  '.#testInfraNixOs.driverInteractive' -- \\\n  --keep-vm-state \n"

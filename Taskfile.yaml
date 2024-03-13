@@ -1,22 +1,16 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
-
 ---
-
+# SPDX-License-Identifier: AGPL-3.0-or-later
 version: "3"
-
 set: [errexit, pipefail, nounset]
 shopt: [globstar]
-
 dotenv: [".env.local", ".env"]
-
 includes:
-  vm: 
+  vm:
     taskfile: taskfiles/Dev.yaml
     dir: .
   docs:
     taskfile: taskfiles/Docs.yaml
     dir: .
-
 tasks:
   init:
     silent: true
@@ -79,8 +73,14 @@ tasks:
       - cargo fmt
   lint:yamlfmt:
     silent: true
+    vars:
+      YAMLFMT_TO_LINT: '{{.YAMLFMT_TO_LINT | default "./**/*.yaml"}}'
     cmds:
-      - yamlfmt -lint
+      - |
+        yamlfmt -lint {{.YAMLFMT_TO_LINT}} || (
+          yamlfmt {{.YAMLFMT_TO_LINT}}
+          exit 1
+        )
   lint:
     silent: true
     desc: 💄Lint jardin

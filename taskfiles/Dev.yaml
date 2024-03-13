@@ -5,5 +5,5 @@ tasks:
     cmds:
       - |
         nix run \
-          '.#packages.x86_64-linux.kube.driverInteractive' -- \
+          '.#testInfraNixOs.driverInteractive' -- \
           --keep-vm-state 

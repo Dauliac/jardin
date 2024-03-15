@@ -2,5 +2,4 @@
 [files]
 extend-exclude = [
   "CHANGELOG.md", 
-  "./docs/mermaid" 
 ]

@@ -40,9 +40,6 @@ compareUrlFormat: '{{@root.host}}/{{@root.owner}}/{{@root.repository}}/compare/{
 issueUrlFormat: '{{@root.host}}/{{@root.owner}}/{{@root.repository}}/issues/{{issue}}'
 userUrlFormat: '{{host}}/{{user}}'
 releaseCommitMessageFormat: 'chore(release): {{currentTag}}'
-issuePrefixes:
-- '#OPS'
-- '#SAAS'
 host: null
 owner: null
 repository: null

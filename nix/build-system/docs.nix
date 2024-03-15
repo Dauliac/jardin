@@ -88,20 +88,18 @@ in {
     valeWriteGood = pkgs.runCommand "vale-write-good-links" {} ''
       ln -s ${inputs.valeWriteGood}/write-good $out
     '';
-    mdbookMermaidStyles = pkgs.stdenv.mkDerivation {
+    packages.mdbookMermaidStyles = pkgs.stdenv.mkDerivation {
       name = "mdbook-mermaid-styles";
-      src = ../.././book.toml;
-      phases = ["installPhase"];
-      installPhase = ''
+      src = config.packages.mdbookConfiguration;
+      dontUnpack = true;
+      buildPhase = ''
         ln -s $src book.toml
-        # ls
-        # exit 1
         ${pkgs.mdbook-mermaid}/bin/mdbook-mermaid install
         mkdir -p $out
         mv mermaid-init.js mermaid.min.js $out
       '';
     };
-    valeConfiguration = pkgs.writeText ".vale.ini" ''
+    packages.valeConfiguration = pkgs.writeText ".vale.ini" ''
       # SPDX-License-Identifier: AGPL-3.0-or-later
       StylesPath = styles
       MinAlertLevel = suggestion
@@ -118,18 +116,60 @@ in {
       [*.mermaid]
       BasedOnStyles = Vale, write-good, Joblint
     '';
+    packages.mdbookConfiguration = pkgs.writeText "book.toml" ''
+      # SPDX-License-Identifier: AGPL-3.0-or-later
+      [book]
+      authors = ["jdauliac"]
+      language = "en"
+      multilingual = false
+      src = "./docs"
+      title = "Jardin technical documentation"
+      description = "As code documentation, managed with mdBook, mermaid, and vale."
+      [preprocessor]
+      [preprocessor.index]
+      renderer = ["html"]
+      [preprocessor.links]
+      renderer = ["html"]
+      [preprocessor.footnote]
+      renderer = ["html"]
+      command = "${pkgs.mdbook-footnote}/bin/mdbook-footnote"
+      [preprocessor.katex]
+      after = ["links"]
+      command = "${pkgs.mdbook-katex}/bin/mdbook-katex"
+      [preprocessor.mermaid]
+      command = "${pkgs.mdbook-mermaid}/bin/mdbook-mermaid"
+      renderer = ["html"]
+      [preprocessor.cmdrun]
+      command = "${pkgs.mdbook-cmdrun}/bin/mdbook-cmdrun"
+      [preprocessor.emojicodes]
+      command = "${pkgs.mdbook-emojicodes}/bin/mdbook-emojicodes"
+      [preprocessor.toc]
+      marker = "[[_TOC_]]"
+      [output]
+      [output.html]
+      renderer = ["html"]
+      additional-js = [
+        "${config.mdbookMermaidStylesPath}/mermaid.min.js",
+        "${config.mdbookMermaidStylesPath}/mermaid-init.js"
+      ]
+      [output.linkcheck]
+      renderer = ["html"]
+      follow-web-links = true
+    '';
     documentationShellHookScript = ''
       rm -rf \
         ${config.valeStylesPath}/Microsoft \
         ${config.valeStylesPath}/Joblint \
         ${config.valeStylesPath}/write-good \
         ${config.mdbookMermaidStylesPath} \
-        .vale.ini
-      ln -s ${config.valeConfiguration} .vale.ini
+        .vale.ini \
+        book.toml
       ln -s ${config.valeMicrosoft} ${config.valeStylesPath}/Microsoft
       ln -s ${config.valeJoblint} ${config.valeStylesPath}/Joblint
       ln -s ${config.valeWriteGood} ${config.valeStylesPath}/write-good
-      ln -s ${config.mdbookMermaidStyles} ${config.mdbookMermaidStylesPath}
+      ln -s ${config.packages.valeConfiguration} .vale.ini
+      ln -s ${config.packages.mdbookConfiguration} book.toml
+      ln -s ${config.packages.mdbookMermaidStyles} ${config.mdbookMermaidStylesPath}
     '';
   };
 }

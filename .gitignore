@@ -9,6 +9,7 @@ mutants.out*
 .terraform*
 .task
 .vale.ini
+book.toml
 .nixos-test-history
 .gdb_history
 .direnv

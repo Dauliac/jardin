@@ -7,33 +7,9 @@ tasks:
   default:
     desc: 📚 Build the documentation
     run: once
-    deps:
-      - init
     cmds:
       - task: lint
       - task: build
-  init:
-    silent: true
-    internal: true
-    run: once
-    deps:
-      - init:mdbook-mermaid
-  init:mdbook-mermaid:
-    silent: true
-    internal: true
-    run: once
-    vars:
-      MERMAIDS_STYLE_FILE_NAME: mermaid.min.js
-      MERMMAIDS_INIT_FILE_NAME: mermaid-init.js
-      MERMAIDS_STYLE_PATH: docs/mermaid
-    cmds:
-      - |
-        mdbook-mermaid install
-        mkdir -p "{{.MERMAIDS_STYLE_PATH}}"
-        mv \
-          "{{.MERMMAIDS_INIT_FILE_NAME}}" \
-          "{{.MERMAIDS_STYLE_FILE_NAME}}" \
-          "{{.MERMAIDS_STYLE_PATH}}"
   build:
     silent: true
     internal: true
@@ -41,7 +17,6 @@ tasks:
     deps:
       - build:changelog
       - build:vhs
-      - init:mdbook-mermaid
     cmds:
       - mdbook build
   lint:

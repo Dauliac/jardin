@@ -1,5 +1,3 @@
-// SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
-
 pub mod bootstrap_operating_system;
 pub mod default_identifier;
 pub mod platformize;

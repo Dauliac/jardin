@@ -1,5 +1,3 @@
-// SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
-
 use crate::domain::models::entities::{job::JobIdentifier, step::StepIdentifier};
 
 const BOOTSTRAP_OPERATING_SYSTEMS_IDENTIFIER: &str = "bootstrap_operating_systems";

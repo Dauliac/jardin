@@ -1,5 +1,3 @@
-// SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
-
 pub mod core;
 pub mod models;
 pub mod repositories;

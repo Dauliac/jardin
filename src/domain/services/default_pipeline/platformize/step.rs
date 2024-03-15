@@ -1,5 +1,3 @@
-// SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
-
 use crate::domain::models::{
     entities::{
         job::{get_none_post_check_jobs, get_none_pre_check_jobs, Job},

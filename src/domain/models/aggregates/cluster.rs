@@ -1,5 +1,3 @@
-// SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
-
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use thiserror::Error;

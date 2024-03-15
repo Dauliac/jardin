@@ -1,5 +1,3 @@
-// SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
-
 use std::{collections::HashMap, time::SystemTime};
 
 use serde::{Deserialize, Serialize};

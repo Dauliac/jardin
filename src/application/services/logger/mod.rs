@@ -1,5 +1,3 @@
-// SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
-
 // use flexi_logger::{FlexiLoggerError, Logger, WriteMode, LoggerHandle};
 
 // use self::{formatter::logger_formatter_human};

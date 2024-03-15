@@ -1,5 +1,3 @@
-// SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
-
 use clap::{value_parser, Arg, Command};
 use clap_complete::Shell;
 use thiserror::Error;

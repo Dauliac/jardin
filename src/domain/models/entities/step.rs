@@ -1,5 +1,3 @@
-// SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
-
 use super::job::{Executable, Job, JobIdentifier, PostCheckJobs, PreCheckJobs};
 use crate::domain::{
     core::{Entity, Identifier, ValueObject},

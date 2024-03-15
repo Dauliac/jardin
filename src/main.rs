@@ -1,5 +1,3 @@
-// SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
-
 #![feature(result_flattening)]
 #![allow(clippy::option_map_unit_fn)]
 

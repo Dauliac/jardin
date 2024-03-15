@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
 {
   lib,
   inputs,
@@ -100,7 +99,6 @@ in {
       '';
     };
     packages.valeConfiguration = pkgs.writeText ".vale.ini" ''
-      # SPDX-License-Identifier: AGPL-3.0-or-later
       StylesPath = styles
       MinAlertLevel = suggestion
       Packages = Microsoft, write-good, Joblint
@@ -117,7 +115,6 @@ in {
       BasedOnStyles = Vale, write-good, Joblint
     '';
     packages.mdbookConfiguration = pkgs.writeText "book.toml" ''
-      # SPDX-License-Identifier: AGPL-3.0-or-later
       [book]
       authors = ["jdauliac"]
       language = "en"

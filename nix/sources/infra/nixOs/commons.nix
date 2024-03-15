@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
 {lib, ...}: let
   inherit (lib) mkOption mdDoc;
 in {
@@ -21,7 +20,10 @@ in {
               defaultNetwork.settings.dns_enabled = true;
             };
             oci-containers.backend = "podman";
+            libvirtd.enable = true;
           };
+          # required by libvirtd
+          security.polkit.enable = true;
           services.openssh.enable = true;
           networking.useDHCP = true;
           networking.firewall.enable = true;

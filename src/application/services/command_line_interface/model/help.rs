@@ -1,5 +1,3 @@
-// SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
-
 use clap::ArgMatches;
 
 use crate::application::services::command_line_interface::presenter::CliError;

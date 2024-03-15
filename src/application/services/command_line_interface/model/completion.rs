@@ -1,5 +1,3 @@
-// SPDX-FileCopyrightText: 2023 AGPL-3.0-or-later
-
 use std::io;
 
 use clap::{ArgMatches, Command};

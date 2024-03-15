@@ -15,22 +15,21 @@
         RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
         nativeBuildInputs = with pkgs;
           [
-            config.toolchain
             rust-analyzer
             go-task
             lefthook
             convco
-            mdbook
-            cargo-udeps # TODO: integrate it as check
             rust.packages.stable.rustPlatform.rustLibSrc
             # BUG: this package is broken
             # vscode-extensions.llvm-org.lldb-vscode
           ]
+          ++ config.linters
+          ++ config.rustCheckers
           ++ config.formatterPackages
           ++ config.docsPackages;
         shellHook = ''
           ${config.documentationShellHookScript}
-           task init
+          task init
         '';
       };
     };

@@ -1,14 +1,13 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-{ lib
-, config
-, ...
-}:
-let
+{
+  lib,
+  config,
+  ...
+}: let
   inherit (lib) mkOption types mdDoc mkOptionType;
   cfg = config.domain;
-in
-{
-  imports = [ ./network ./storage ./account ];
+in {
+  imports = [./network ./storage ./account];
   options = {
     domain.cluster = {
       types = {
@@ -18,38 +17,36 @@ in
         };
         convertToMiB = mkOption {
           description = "Converts the digitalStorageUnit type value to MiB.";
-          default = value:
-            let
-              unitBase2Padding = 1024;
-              unitBase10Padding = 1000;
-              numericPart =
-                builtins.head (builtins.match "([0-9.]+)[A-Za-z]+" value);
-              unit = builtins.head (builtins.match "[0-9.]+([A-Za-z]+)" value);
-              mbToMiBFactor = 0.95367431640625;
-              multiplier =
-                if unit == "TiB"
-                then unitBase2Padding * unitBase2Padding
-                else if unit == "GiB"
-                then unitBase2Padding
-                else if unit == "MiB"
-                then 1
-                else if unit == "TB"
-                then unitBase10Padding * unitBase10Padding * mbToMiBFactor
-                else if unit == "GB"
-                then unitBase10Padding * mbToMiBFactor
-                else if unit == "MB"
-                then mbToMiBFactor
-                else 1;
-            in
+          default = value: let
+            unitBase2Padding = 1024;
+            unitBase10Padding = 1000;
+            numericPart =
+              builtins.head (builtins.match "([0-9.]+)[A-Za-z]+" value);
+            unit = builtins.head (builtins.match "[0-9.]+([A-Za-z]+)" value);
+            mbToMiBFactor = 0.95367431640625;
+            multiplier =
+              if unit == "TiB"
+              then unitBase2Padding * unitBase2Padding
+              else if unit == "GiB"
+              then unitBase2Padding
+              else if unit == "MiB"
+              then 1
+              else if unit == "TB"
+              then unitBase10Padding * unitBase10Padding * mbToMiBFactor
+              else if unit == "GB"
+              then unitBase10Padding * mbToMiBFactor
+              else if unit == "MB"
+              then mbToMiBFactor
+              else 1;
+          in
             builtins.floor ((lib.strings.toInt numericPart) * multiplier);
         };
         digitalStorageUnit = mkOption {
           description = "Digital storage unit Size type to manage values in GB, MB, TB, GiB, MiB or TiB,.";
-          default =
-            let
-              isValidFormat = value:
-                builtins.match "[0-9.]+(GB|MB|TB|GiB|MiB|TiB)" value != null;
-            in
+          default = let
+            isValidFormat = value:
+              builtins.match "[0-9.]+(GB|MB|TB|GiB|MiB|TiB)" value != null;
+          in
             mkOptionType {
               name = "digital storage unit";
               description = "Digital storage unit size in GB, MB, TB, GiB, MiB, TiB, converted to MiB, ensuring the value is greater than 0.";
@@ -58,9 +55,9 @@ in
                 isValidFormat value && (cfg.cluster.types.convertToMiB value > 0);
               merge = loc: defs:
                 lib.foldl'
-                  (acc: def: acc + (cfg.cluster.types.convertToMiB def.value))
-                  0
-                  defs;
+                (acc: def: acc + (cfg.cluster.types.convertToMiB def.value))
+                0
+                defs;
             };
         };
         domainName = mkOption {
@@ -86,7 +83,7 @@ in
           options = {
             role = mkOption {
               description = mdDoc "";
-              type = types.enum [ "node" ];
+              type = types.enum ["node"];
             };
             ip = mkOption {
               description = mdDoc "";
@@ -95,7 +92,7 @@ in
             resources = mkOption {
               default = null;
               description = mdDoc "";
-              type = types.submodule ({ config, ... }: {
+              type = types.submodule ({config, ...}: {
                 options = {
                   cpu = mkOption {
                     description = mdDoc "The number of cpu cores";
@@ -138,5 +135,5 @@ in
       };
     };
   };
-  config = { flake = { lib.domain = cfg; }; };
+  config = {flake = {lib.domain = cfg;};};
 }

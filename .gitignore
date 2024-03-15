@@ -14,8 +14,7 @@ mutants.out*
 .direnv
 *.swp
 book
-docs/mermaid/
+docs/mermaid
 docs/styles/Joblint
 docs/styles/Microsoft
 docs/styles/write-good
-

@@ -48,8 +48,7 @@ tasks:
     generates:
       - "**/*.nix"
     cmds:
-      - |
-        nix fmt
+      - nix fmt
   formatter:
     silent: true
     desc: 💄 Format jardin

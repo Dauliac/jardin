@@ -4,9 +4,107 @@ version: "3"
 set: [errexit, pipefail, nounset]
 shopt: [globstar]
 tasks:
-  changelog:
+  default:
+    desc: 📚 Build the documentation
+    run: once
+    deps:
+      - init
+    cmds:
+      - task: lint
+      - task: build
+  init:
     silent: true
+    internal: true
+    run: once
+    deps:
+      - init:mdbook-mermaid
+  init:mdbook-mermaid:
+    silent: true
+    internal: true
+    run: once
+    vars:
+      MERMAIDS_STYLE_FILE_NAME: mermaid.min.js
+      MERMMAIDS_INIT_FILE_NAME: mermaid-init.js
+      MERMAIDS_STYLE_PATH: docs/mermaid
+    cmds:
+      - |
+        mdbook-mermaid install
+        mkdir -p "{{.MERMAIDS_STYLE_PATH}}"
+        mv \
+          "{{.MERMMAIDS_INIT_FILE_NAME}}" \
+          "{{.MERMAIDS_STYLE_FILE_NAME}}" \
+          "{{.MERMAIDS_STYLE_PATH}}"
+  build:
+    silent: true
+    internal: true
+    run: once
+    deps:
+      - build:changelog
+      - build:vhs
+      - init:mdbook-mermaid
+    cmds:
+      - mdbook build
+  lint:
+    silent: true
+    internal: true
+    run: once
+    deps:
+      - lint:vale
+      - lint:markdownlint
+  lint:markdownlint:
+    silent: true
+    internal: true
+    run: once
+    sources:
+      - "./docs/**/*.md"
+      - README.md
+    cmds:
+      - |
+        markdownlint-cli2 --fix \
+          "./docs/**/*.md" \
+          "./README.md" \
+          "#./docs/CHANGELOG.md" \
+          "#./docs/SUMMARY.md" \
+          "#./docs/styles" \
+  lint:vale:
+    silent: true
+    internal: true
+    run: once
+    sources:
+      - "./docs/**/*"
+      - README.md
+    vars:
+      MULTILINES_FILES:
+        sh: |
+          fd \
+            --exclude="styles" \
+            --exclude="SUMMARY.md" \
+            --exclude="CHANGELOG.md" \
+            --exclude="target" md docs
+      FILES: '{{.MULTILINES_FILES | replace "\n" " "}}'
+    cmds:
+      - vale {{.FILES}} README.md
+  lint:mdformat:
+    silent: true
+    internal: true
+    run: once
+    sources:
+      - "./docs/**/*.md"
+      - README.md
+    cmds:
+      - mdformat .
+  build:changelog:
+    silent: true
+    internal: true
     run: "once"
     desc: Generate changelog
     cmds:
-      - convco changelog > CHANGELOG.md
+      - convco changelog > docs/CHANGELOG.md
+  build:vhs:
+    silent: true
+    internal: true
+    run: once
+    sources:
+      - ./docs/vhs/**/*.tape
+    cmds:
+      - vhs ./docs/vhs/getting-started.tape

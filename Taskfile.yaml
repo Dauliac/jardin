@@ -15,7 +15,7 @@ tasks:
   init:
     silent: true
     run: "once"
-    desc: Setup project
+    desc: ✅  Setup project
     cmds:
       - |
         lefthook install
@@ -25,7 +25,7 @@ tasks:
   formatter:rust:
     silent: true
     run: "once"
-    desc: 💄Format rust files
+    desc: 💄 Format rust files
     sources:
       - "**/*.rs"
       - "Cargo.toml"
@@ -42,7 +42,7 @@ tasks:
   formatter:nix:
     silent: true
     run: "once"
-    desc: 💄Format nix files
+    desc: 💄 Format nix files
     sources:
       - "**/*.nix"
     generates:
@@ -52,7 +52,7 @@ tasks:
         nix fmt
   formatter:
     silent: true
-    desc: 💄Format jardin
+    desc: 💄 Format jardin
     aliases:
       - fmt
     deps:
@@ -60,15 +60,18 @@ tasks:
       - task: formatter:nix
   lint:typos:
     silent: true
+    internal: true
     cmds:
       - |
         typos --write-changes .
   lint:reuse:
     silent: true
+    internal: true
     cmds:
       - reuse lint
   lint:cargo:
     silent: true
+    internal: true
     cmds:
       - cargo fmt
   lint:yamlfmt:
@@ -85,6 +88,7 @@ tasks:
     silent: true
     desc: 💄Lint jardin
     deps:
+      # FIXME: Add cargo fmt
       # - task: lint:rust:clippy
       - lint:yamlfmt
       - lint:typos
@@ -156,7 +160,7 @@ tasks:
   run:
     silent: true
     run: "once"
-    desc: Run jardin
+    desc: 🤸 Run jardin
     cmds:
       - |
         nix run

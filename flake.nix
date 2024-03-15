@@ -24,16 +24,31 @@
       url = "github:terranix/terranix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    valeMicrosoft = {
+      url = "github:errata-ai/Microsoft";
+      flake = false;
+    };
+    valeWriteGood = {
+      url = "github:errata-ai/write-good";
+      flake = false;
+    };
+    valeJoblint = {
+      url = "github:errata-ai/Joblint";
+      flake = false;
+    };
   };
 
-  outputs =
-    inputs @ { flake-parts
-    , terranix
-    , disko
-    , ...
-    }:
-    flake-parts.lib.mkFlake { inherit inputs; } (_: {
-      systems = [ "x86_64-linux" ];
-      imports = [ ./nix ];
+  outputs = inputs @ {
+    flake-parts,
+    terranix,
+    disko,
+    valeMicrosoft,
+    valeWriteGood,
+    valeJoblint,
+    ...
+  }:
+    flake-parts.lib.mkFlake {inherit inputs;} (_: {
+      systems = ["x86_64-linux"];
+      imports = [./nix];
     });
 }

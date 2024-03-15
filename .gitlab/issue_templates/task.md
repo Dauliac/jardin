@@ -3,7 +3,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
 # Task
----
 <!-- vim-markdown-toc GitLab -->
 
 * [Summary](#summary)
@@ -11,11 +10,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <!-- vim-markdown-toc -->
 
-
 ## Summary
 
-
-## Resources:
+## Resources
 <!---
 * Mockups: [Here goes a URL to or the name of the mockup(s) in inVision];
 * Testing URL: [Here goes a URL to the testing branch or IP];

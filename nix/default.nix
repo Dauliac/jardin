@@ -2,7 +2,7 @@
   imports = [
     ./build-system
     ./dev.nix
-    ./sources
+    ./src
     ./tests
   ];
 }

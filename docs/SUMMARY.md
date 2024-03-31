@@ -22,3 +22,6 @@
 # Developer guides
 
 * [Contributing](./guide/contributing.md)
+
+# Licenses
+<!-- TODO: Add cmdrun to generate licenses pages -->

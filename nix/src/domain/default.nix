@@ -82,7 +82,7 @@ in {
           options = {
             role = mkOption {
               description = mdDoc "";
-              type = types.enum ["node"];
+              type = types.enum ["node" "master"];
             };
             ip = mkOption {
               description = mdDoc "";

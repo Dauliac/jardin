@@ -1,5 +1,4 @@
 ---
-
 version: "3"
 set: [errexit, pipefail, nounset]
 shopt: [globstar]

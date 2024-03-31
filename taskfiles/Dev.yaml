@@ -2,5 +2,24 @@
 version: "3"
 tasks:
   default:
+    desc: ⚡ Run e2e nixOs tests vm for development
+    silent: true
+    run: "once"
+    deps:
+      - build
     cmds:
-      - "nix run \\\n  '.#testInfraNixOs.driverInteractive' -- \\\n  --keep-vm-state \n"
+      - |
+        nix build \
+          '.#devInfraNixOs' 
+        ./result/bin/start
+  ssh:
+    desc: 🐚 Get shell
+    deps:
+      - build
+    cmds:
+      - ./result/bin/ssh
+  build:
+    internal: true
+    cmds:
+      - nix build '.#devInfraNixOs' 
+

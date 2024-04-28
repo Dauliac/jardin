@@ -1,3 +1,16 @@
+use crate::{
+    application::cqrs_es::event::{
+        Event, EventBus, EventHandler, EventHandlers, Response, ResponseKind,
+    },
+    domain::{
+        core::Aggregate,
+        models::{
+            aggregates::cluster::ClusterEvent, value_objects::cluster::name::Clustername,
+            DomainEvent,
+        },
+        repositories::ClusterRepository,
+    },
+};
 use async_trait::async_trait;
 use multimap::MultiMap;
 use std::{
@@ -5,20 +18,8 @@ use std::{
     sync::{Arc, RwLock},
 };
 
-use crate::{
-    application::services::cqrs_es::event::{Event, EventBus, EventHandler, EventHandlers},
-    domain::{
-        core::Aggregate,
-        models::{
-            aggregates::cluster::ClusterEvent, value_objects::cluster::surname::ClusterSurname,
-            DomainEvent, DomainResponse, DomainResponseKinds,
-        },
-        repositories::ClusterRepository,
-    },
-};
-
 pub struct MemoryEventBus<R: ClusterRepository> {
-    listeners: MultiMap<DomainResponseKinds, Box<EventHandlers>>,
+    listeners: MultiMap<ResponseKind, Box<EventHandlers>>,
     queue: VecDeque<Event>,
     repository: Arc<RwLock<R>>,
 }
@@ -32,11 +33,11 @@ impl<R: ClusterRepository> MemoryEventBus<R> {
         }
     }
 
-    fn get_kind(event: &DomainResponse) -> Vec<DomainResponseKinds> {
-        From::from(event.to_owned())
+    fn get_kind(response: &Response) -> Vec<ResponseKind> {
+        From::from(response.to_owned())
     }
 
-    fn notify(handlers: &mut [Box<EventHandlers>], response: DomainResponse) {
+    fn notify(handlers: &mut [Box<EventHandlers>], response: Response) {
         handlers
             .iter_mut()
             .for_each(|handler| match handler.as_mut() {
@@ -49,7 +50,7 @@ impl<R: ClusterRepository> MemoryEventBus<R> {
             });
     }
 
-    fn find_and_notify(&mut self, response: DomainResponse) {
+    fn find_and_notify(&mut self, response: Response) {
         Self::get_kind(&response).iter().for_each(|event_kind| {
             self.listeners.get_vec_mut(event_kind).map(|handlers| {
                 Self::notify(handlers, response.clone());
@@ -57,7 +58,7 @@ impl<R: ClusterRepository> MemoryEventBus<R> {
         });
     }
 
-    fn write(&self, event: &DomainEvent, identifier: ClusterSurname) {
+    fn write(&self, event: &DomainEvent, identifier: Clustername) {
         let cluster = self.repository.read().unwrap().read(identifier).unwrap();
         match event {
             DomainEvent::Cluster(event) => {
@@ -70,11 +71,11 @@ impl<R: ClusterRepository> MemoryEventBus<R> {
 
 #[async_trait]
 impl<R: ClusterRepository + Send + Sync> EventBus for MemoryEventBus<R> {
-    fn subscribe(&mut self, event: DomainResponseKinds, handler: EventHandlers) {
+    fn subscribe(&mut self, event: ResponseKind, handler: EventHandlers) {
         self.listeners.insert(event, Box::new(handler));
     }
 
-    fn unsubscribe(&mut self, event: DomainResponseKinds, handler: &EventHandlers) {
+    fn unsubscribe(&mut self, event: ResponseKind, handler: &EventHandlers) {
         let handlers = self.listeners.remove(&event);
         match handlers {
             Some(handlers) => {
@@ -104,7 +105,7 @@ impl<R: ClusterRepository + Send + Sync> EventBus for MemoryEventBus<R> {
     async fn run(&mut self) {
         self.queue.pop_front().map(|event| {
             match event.response.to_owned() {
-                DomainResponse::Event(event) => {
+                Response::Event(event) => {
                     self.write(
                         &event,
                         match event.to_owned() {
@@ -118,7 +119,7 @@ impl<R: ClusterRepository + Send + Sync> EventBus for MemoryEventBus<R> {
                         },
                     );
                 }
-                DomainResponse::Error(_error) => {}
+                Response::Error(_error) => {}
             };
             self.find_and_notify(event.response);
         });

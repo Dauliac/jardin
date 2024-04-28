@@ -10,8 +10,8 @@ use crate::domain::{
 };
 
 use self::{
-    bootstrap_operating_system::step::get_bootstrap_operating_systems_step,
-    default_identifier::DefaultIdentifier, platformize::step::get_platformize_step,
+    bootstrap_operating_system::get_bootstrap_operating_systems_step,
+    default_identifier::DefaultIdentifier, platformize::get_platformize_step,
 };
 
 pub struct DefaultPipelineIdentifier {}

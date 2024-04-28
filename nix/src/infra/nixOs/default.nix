@@ -29,19 +29,23 @@ in {
           mkNixOs = mkOption {
             description = mdDoc "NixOs node manifest";
             default = {
+              domain,
               nodes,
               admins,
             }: let
-              kubeNixOs = cfg.kubernetes.mkNixOs {inherit nodes;};
+              nixifiedNodes =
+                builtins.mapAttrs
+                (nodeName: node: (
+                  cfg.commons {inherit domain;}
+                  // (cfg.mkUserConfig admins)
+                  // (cfg.mkNodeConfig {inherit nodeName node;})
+                ))
+                nodes;
+              kubernetesNodes = cfg.kubernetes.mkNixOs {
+                nodes = nixifiedNodes;
+              };
             in
-              builtins.mapAttrs
-              (nodeName: node: (
-                cfg.common
-                // (cfg.mkUserConfig admins)
-                // (cfg.mkNodeConfig {inherit nodeName node;})
-                // kubeNixOs.${nodeName}
-              ))
-              nodes;
+              nixifiedNodes // kubernetesNodes;
           };
           nodes = mkOption {
             description = mdDoc "NixOs nodes manifests";

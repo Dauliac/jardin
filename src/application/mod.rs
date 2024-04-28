@@ -1,21 +1,23 @@
-use std::sync::{Arc, RwLock};
+pub mod command_line_interface;
+pub mod config;
+pub mod cqrs_es;
+pub mod exit;
+pub mod use_cases;
 
+use self::{
+    command_line_interface::start_cli,
+    config::parser::parse_config,
+    cqrs_es::{command::CommandBus, event::EventBus},
+    use_cases::start_domain_service,
+};
 use crate::{
-    application::services::use_cases::start_domain_service,
     infrastructure::adapters::right::{
         cqrs::MemoryCommandBus, event_bus::MemoryEventBus,
         repository_in_memory::ClusterRepositoryInMemory,
     },
     user_interface::Logger,
 };
-
-use self::services::{
-    command_line_interface::start_cli,
-    config::parser::parse_config,
-    cqrs_es::{command::CommandBus, event::EventBus},
-};
-
-pub mod services;
+use std::sync::{Arc, RwLock};
 
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 pub const NAME: &str = env!("CARGO_PKG_NAME");
@@ -23,7 +25,6 @@ pub const AUTHOR: &str = env!("CARGO_PKG_AUTHORS");
 
 pub async fn start() {
     let logger = Arc::new(RwLock::new(Logger::new(false)));
-
     let config = start_cli(parse_config);
     match config {
         Ok((config, use_case)) => {

@@ -31,10 +31,15 @@ in {
     };
     nodes =
       builtins.mapAttrs
-      (nodeName: node: node // {virtualisation.graphics = false;})
+      (nodeName: node:
+        node
+        // {
+          virtualisation.graphics = false;
+        })
       (testCfg.mkNixOs {
         inherit (domain.cluster.account.users) admins;
         nodes = domainNodes;
+        domain = null;
       });
     sshCommand = pkgs.writers.writeBashBin "ssh" ''
       ${pkgs.passh}/bin/passh \

@@ -1,12 +1,25 @@
 use crate::domain::models::{
     entities::{
-        job::{get_none_post_check_jobs, get_none_pre_check_jobs, Job},
-        step::{NextSteps, Step},
+        job::{get_none_post_check_jobs, get_none_pre_check_jobs, Job, JobIdentifier},
+        step::{NextSteps, Step, StepIdentifier},
     },
     value_objects::pipeline::steps::backend,
 };
 
-use super::identifier::{get_job_identifier, get_step_identifier};
+const BOOTSTRAP_OPERATING_SYSTEMS_IDENTIFIER: &str = "configureDomainNameService";
+const JOB_IDENTIFIER: &str = "configureDomainNameService";
+
+fn get_step_identifier() -> StepIdentifier {
+    StepIdentifier {
+        value: BOOTSTRAP_OPERATING_SYSTEMS_IDENTIFIER.to_string(),
+    }
+}
+
+fn get_job_identifier() -> JobIdentifier {
+    JobIdentifier {
+        value: JOB_IDENTIFIER.to_string(),
+    }
+}
 
 pub(in crate::domain) fn get_bootstrap_operating_systems_step(nexts: NextSteps) -> Step {
     let step_identifier = get_step_identifier();

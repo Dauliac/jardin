@@ -1,6 +1,6 @@
 use clap::ArgMatches;
 
-use crate::application::services::{
+use crate::application::{
     command_line_interface::presenter::CliError,
     config::{error::ConfigError, model::Config},
 };

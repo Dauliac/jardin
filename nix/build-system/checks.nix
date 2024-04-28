@@ -85,6 +85,20 @@ in {
         buildInputs = config.rustCheckers;
         cargoLlvmCovCommand = "nextest";
       };
+      testE2e = pkgs.mkShell {
+        buildInputs = [
+          config.packages.default
+          pkgs.go-task
+          pkgs.bats
+          pkgs.parallel
+          pkgs.bash
+          pkgs.fish
+          pkgs.zsh
+        ];
+        shellHook = ''
+          ${pkgs.go-task}/bin/task tests:e2e:cli
+        '';
+      };
     };
   };
 }

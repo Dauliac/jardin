@@ -1,0 +1,6 @@
+version = "v1"
+[cluster]
+name = "cluster"
+domain = "localhost"
+[nodes.alpha]
+[nodes.beta]

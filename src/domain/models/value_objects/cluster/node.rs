@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::net::IpAddr;
 
-use super::surname::NodeSurname;
+use super::name::Nodename;
 
 pub type NameServer = String;
 
@@ -44,12 +44,12 @@ impl Sensitive {
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Public {
-    surname: NodeSurname,
+    name: Nodename,
 }
 
 impl Public {
-    pub fn new(surname: NodeSurname) -> Self {
-        Self { surname }
+    pub fn new(name: Nodename) -> Self {
+        Self { name }
     }
 }
 
@@ -75,8 +75,8 @@ impl Node {
         self.role.eq(&Role::Leader)
     }
 
-    pub fn surname(&self) -> &NodeSurname {
-        &self.public.surname
+    pub fn name(&self) -> &Nodename {
+        &self.public.name
     }
 }
 
@@ -184,10 +184,10 @@ mod tests {
 
     #[test]
     fn test_public() {
-        let valid_surname: String = Word(EN).fake();
-        let surname = NodeSurname::new(valid_surname).unwrap();
+        let valid_name: String = Word(EN).fake();
+        let name = Nodename::new(valid_name).unwrap();
 
-        let public = Public::new(surname.clone());
+        let public = Public::new(name.clone());
         let public_clone = public.clone();
         assert_eq!(public, public_clone);
 
@@ -203,9 +203,9 @@ mod tests {
 
         assert!(!format!("{:?}", public).is_empty(),);
 
-        let valid_surname: String = Word(EN).fake();
-        let surname = NodeSurname::new(valid_surname).unwrap();
-        let public_2 = Public::new(surname.clone());
+        let valid_name: String = Word(EN).fake();
+        let name = Nodename::new(valid_name).unwrap();
+        let public_2 = Public::new(name.clone());
         assert_ne!(public, public_2);
 
         assert!(public == public_clone);
@@ -238,9 +238,9 @@ mod tests {
         let sensitive = Sensitive::new(name_server.clone(), ip_address);
 
         let private = Private::new();
-        let valid_surname: String = Word(EN).fake();
-        let surname = NodeSurname::new(valid_surname).unwrap();
-        let public = Public::new(surname.clone());
+        let valid_name: String = Word(EN).fake();
+        let name = Nodename::new(valid_name).unwrap();
+        let public = Public::new(name.clone());
         let role = Role::Leader;
         let node = Node::new(
             sensitive.clone(),

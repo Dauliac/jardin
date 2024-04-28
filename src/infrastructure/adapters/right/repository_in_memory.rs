@@ -1,14 +1,12 @@
-use std::collections::HashMap;
-
-use std::sync::{Arc, RwLock};
-
 use crate::domain::{
-    models::{aggregates::cluster::Cluster, value_objects::cluster::surname::ClusterSurname},
+    models::{aggregates::cluster::Cluster, value_objects::cluster::name::Clustername},
     repositories::{ClusterRepository, Repository},
 };
+use std::collections::HashMap;
+use std::sync::{Arc, RwLock};
 
 pub struct ClusterRepositoryInMemory {
-    clusters: HashMap<ClusterSurname, Arc<RwLock<Cluster>>>,
+    clusters: HashMap<Clustername, Arc<RwLock<Cluster>>>,
 }
 
 impl ClusterRepositoryInMemory {
@@ -20,13 +18,13 @@ impl ClusterRepositoryInMemory {
 }
 impl ClusterRepository for ClusterRepositoryInMemory {}
 
-impl Repository<ClusterSurname, Cluster> for ClusterRepositoryInMemory {
-    fn read(&self, identifier: ClusterSurname) -> Option<Arc<RwLock<Cluster>>> {
+impl Repository<Clustername, Cluster> for ClusterRepositoryInMemory {
+    fn read(&self, identifier: Clustername) -> Option<Arc<RwLock<Cluster>>> {
         let cluster = self.clusters.get(&identifier);
         cluster.cloned()
     }
     fn write(&mut self, aggregate: Arc<RwLock<Cluster>>) {
-        let identifier = aggregate.read().unwrap().get_surname().clone();
+        let identifier = aggregate.read().unwrap().get_name().clone();
         println!("identifier: {:?}", &identifier);
         self.clusters.insert(identifier, aggregate);
     }

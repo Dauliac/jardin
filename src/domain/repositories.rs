@@ -1,7 +1,7 @@
 use std::sync::{Arc, RwLock};
 
 use super::models::{
-    aggregates::cluster::Cluster, value_objects::cluster::surname::ClusterSurname,
+    aggregates::cluster::Cluster, value_objects::cluster::name::Clustername,
 };
 
 pub trait Repository<I, T>: Sync + Send {
@@ -9,4 +9,4 @@ pub trait Repository<I, T>: Sync + Send {
     fn write(&mut self, aggregate: Arc<RwLock<T>>);
 }
 
-pub trait ClusterRepository: Repository<ClusterSurname, Cluster> {}
+pub trait ClusterRepository: Repository<Clustername, Cluster> {}

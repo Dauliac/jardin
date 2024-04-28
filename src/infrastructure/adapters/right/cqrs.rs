@@ -1,8 +1,7 @@
 use async_trait::async_trait;
 use std::sync::{Arc, RwLock};
-
 use crate::{
-    application::services::cqrs_es::{
+    application::cqrs_es::{
         command::{Command, CommandBus},
         event::{Event, EventBus},
     },
@@ -10,8 +9,8 @@ use crate::{
         core::{Aggregate, Entity},
         models::{
             aggregates::cluster::{Cluster, ClusterCommand, ClusterResult},
-            value_objects::cluster::surname::ClusterSurname,
-            DomainError, DomainEvent, DomainResponse,
+            value_objects::cluster::name::Clustername,
+            DomainError, DomainEvent, Response,
         },
         repositories::ClusterRepository,
     },
@@ -36,11 +35,11 @@ impl<R: ClusterRepository> MemoryCommandBus<R> {
         &self,
         command: &ClusterCommand,
         identifier: <Cluster as Entity<Cluster>>::Identifier,
-    ) -> DomainResponse {
+    ) -> Response {
         let cluster = self.repository.read().unwrap().read(identifier).unwrap();
         match Self::handle(command, cluster) {
-            Ok(event) => DomainResponse::Event(DomainEvent::Cluster(event)),
-            Err(error) => DomainResponse::Error(DomainError::Cluster(error)),
+            Ok(event) => Response::Event(DomainEvent::Cluster(event)),
+            Err(error) => Response::Error(DomainError::Cluster(error)),
         }
     }
 
@@ -49,7 +48,7 @@ impl<R: ClusterRepository> MemoryCommandBus<R> {
         cluster.read().unwrap().handle(command.to_owned())
     }
 
-    fn extract_identifier(command: &Command) -> ClusterSurname {
+    fn extract_identifier(command: &Command) -> Clustername {
         match command.get_command() {
             ClusterCommand::CreatePipeline {
                 identifier,
@@ -63,7 +62,7 @@ impl<R: ClusterRepository> MemoryCommandBus<R> {
         }
     }
 
-    fn publish_to_event_store(&mut self, event: DomainResponse) {
+    fn publish_to_event_store(&mut self, event: Response) {
         self.event_bus.write().unwrap().publish(Event::new(event));
     }
 }

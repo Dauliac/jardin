@@ -1,11 +1,8 @@
+use super::super::config::error::ConfigError;
+use crate::application::{config::parser::get_get_default_config_path, AUTHOR, NAME, VERSION};
 use clap::{value_parser, Arg, Command};
 use clap_complete::Shell;
 use thiserror::Error;
-
-use super::super::config::error::ConfigError;
-use crate::application::{
-    services::config::parser::get_get_default_config_path, AUTHOR, NAME, VERSION,
-};
 
 #[derive(Error, Debug)]
 pub enum CliError {

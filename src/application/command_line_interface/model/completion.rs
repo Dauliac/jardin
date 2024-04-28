@@ -1,9 +1,7 @@
-use std::io;
-
+use crate::application::command_line_interface::presenter::build_cli;
 use clap::{ArgMatches, Command};
 use clap_complete::{generate, Generator, Shell};
-
-use crate::application::services::command_line_interface::presenter::build_cli;
+use std::io;
 
 fn logger_print_completion() {
     log::error!("Generate completion script ...");

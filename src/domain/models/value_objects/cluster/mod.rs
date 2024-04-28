@@ -1,2 +1,2 @@
+pub mod name;
 pub mod node;
-pub mod surname;

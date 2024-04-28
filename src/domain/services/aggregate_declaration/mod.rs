@@ -3,23 +3,23 @@ use std::net::IpAddr;
 use crate::domain::models::{
     value_objects::cluster::{
         node::{Node, Private, Public, Role, Sensitive},
-        surname::{NodeSurname, SurnameError},
+        name::{Nodename, nameError},
     },
     DomainError,
 };
 
 pub struct NodeBuilder {
-    surname: Result<NodeSurname, SurnameError>,
+    name: Result<Nodename, nameError>,
     name_server: String,
     ip: IpAddr,
     role: Role,
 }
 
 impl NodeBuilder {
-    pub fn new(surname: String, name_server: String, ip: IpAddr, role: Role) -> Self {
-        let surname: Result<NodeSurname, SurnameError> = NodeSurname::new(surname);
+    pub fn new(name: String, name_server: String, ip: IpAddr, role: Role) -> Self {
+        let name: Result<Nodename, nameError> = Nodename::new(name);
         Self {
-            surname,
+            name,
             name_server,
             ip,
             role,
@@ -27,13 +27,13 @@ impl NodeBuilder {
     }
 
     pub fn build(&self) -> Result<Node, DomainError> {
-        self.surname
+        self.name
             .as_ref()
-            .map_err(|error| DomainError::Surname(error.to_owned()))
-            .map(|surname| {
+            .map_err(|error| DomainError::name(error.to_owned()))
+            .map(|name| {
                 let sensitive = Sensitive::new(self.name_server.to_owned(), self.ip.to_owned());
                 let private = Private::new();
-                let public = Public::new(surname.to_owned());
+                let public = Public::new(name.to_owned());
                 Node::new(sensitive, private, public, self.role.to_owned())
             })
     }
@@ -41,16 +41,16 @@ impl NodeBuilder {
 
 // TODO: use this in use case
 // pub fn declare_cluster(
-//     cluster_surname: String,
-//     targets: HashMap<NodeSurname, Node>,
+//     cluster_name: String,
+//     nodes: HashMap<Nodename, Node>,
 //     callback: impl Fn(Result<(Vec<DomainEvent>, Cluster), DomainError>),
 // ) {
-//     ClusterSurname::new(cluster_surname)
+//     Clustername::new(cluster_name)
 //         .map_err(|error| {
-//             callback(Err(DomainError::Surname(error)));
+//             callback(Err(DomainError::name(error)));
 //         })
-//         .map(|surname| {
-//             Cluster::declare(surname, targets)
+//         .map(|name| {
+//             Cluster::declare(name, nodes)
 //                 .map_err(|error| callback(Err(DomainError::Cluster(error))))
 //                 .map(|(event, cluster)| {
 //                     let cluster = &mut cluster;

@@ -11,8 +11,7 @@ pub enum Role {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Node {
-    pub surname: String,
-    pub name_server: String,
+    pub name: String,
     pub role: Role,
     pub ip: IpAddr,
 }
@@ -72,13 +71,21 @@ pub struct Pipeline {
 
 #[derive(Default, Debug, Serialize, Deserialize)]
 pub struct Cluster {
-    pub surname: String,
-    pub targets: HashMap<String, Node>,
+    pub name: String,
+    pub domain: String,
+    pub nodes: HashMap<String, Node>,
 }
 
-#[derive(Default, Debug, Serialize, Deserialize)]
+#[derive(Default, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Version {
+    #[default]
+    V1,
+}
+
+#[derive(Default, Serialize, Deserialize)]
 pub struct Config {
-    pub version: u8,
+    pub version: Version,
     pub pipeline: Pipeline,
     pub cluster: Cluster,
 }

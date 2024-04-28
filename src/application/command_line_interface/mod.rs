@@ -1,7 +1,7 @@
 pub mod model;
 pub mod presenter;
 
-use crate::{application::services::exit::error_exit, domain::use_cases::UseCases};
+use crate::{application::exit::error_exit, domain::use_cases::UseCases};
 
 use self::{
     model::{

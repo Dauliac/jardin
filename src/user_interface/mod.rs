@@ -1,16 +1,15 @@
+extern crate pretty_env_logger;
+use crate::{
+    application::cqrs_es::event::EventHandler,
+    domain::models::{
+        aggregates::cluster::ClusterEvent, entities::pipeline::PipelineEvent, DomainError,
+        DomainEvent, Response,
+    },
+};
 use colored::*;
 use log::{error, info};
 use pretty_env_logger::formatted_builder;
-extern crate pretty_env_logger;
 use std::io::Write;
-
-use crate::{
-    application::services::cqrs_es::event::EventHandler,
-    domain::models::{
-        aggregates::cluster::ClusterEvent, entities::pipeline::PipelineEvent, DomainError,
-        DomainEvent, DomainResponse,
-    },
-};
 
 pub struct Logger {
     debug: bool,
@@ -18,7 +17,6 @@ pub struct Logger {
 
 impl Logger {
     pub fn new(debug: bool) -> Self {
-        //pretty_env_logger::init();
         //TODO: set formatter
         formatted_builder()
             .format(|buf, record| writeln!(buf, "{}", record.args()))
@@ -29,11 +27,8 @@ impl Logger {
     fn info(&self, event: &DomainEvent) {
         match event {
             DomainEvent::Cluster(event) => match event {
-                ClusterEvent::ClusterDeclared(surname) => {
-                    info!(
-                        "Cluster `{}` is declared",
-                        surname.get_value().bold().green()
-                    );
+                ClusterEvent::ClusterDeclared(name) => {
+                    info!("Cluster `{}` is declared", name.get_value().bold().green());
                 }
                 ClusterEvent::Pipeline {
                     identifier: _,
@@ -73,7 +68,7 @@ impl Logger {
         //println!("Error {:?}", error);
         let error_prefix = format!("{}{} ", "Error".bold().red(), ":".bold());
         let error = match error {
-            DomainError::Surname(error) => error.to_string(),
+            DomainError::name(error) => error.to_string(),
             DomainError::Cluster(error) => error.to_string(),
         };
         let message = format!("{}{}", error_prefix, error);
@@ -81,12 +76,12 @@ impl Logger {
     }
 }
 impl EventHandler for Logger {
-    fn notify(&mut self, response: DomainResponse) {
+    fn notify(&mut self, response: Response) {
         match response {
-            DomainResponse::Event(event) => {
+            Response::Event(event) => {
                 self.info(&event);
             }
-            DomainResponse::Error(error) => {
+            Response::Error(error) => {
                 self.error(&error);
             }
         }

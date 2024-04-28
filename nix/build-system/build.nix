@@ -8,7 +8,6 @@
     ...
   }: let
     inherit (config) artifact;
-    inherit (config) docsPackages;
   in {
     packages.default = artifact;
     packages.jardin = artifact;

@@ -1,8 +1,7 @@
-use std::collections::{HashMap, HashSet};
-
-use serde::{Deserialize, Serialize};
-use thiserror::Error;
-
+use super::{
+    job::{Executable, JobIdentifier},
+    step::{Step, StepIdentifier},
+};
 use crate::domain::{
     core::{Entity, Event, ValueObject},
     models::{
@@ -10,14 +9,12 @@ use crate::domain::{
             steps::{executions::Output, step::StepPreview},
             PipelineIdentifier,
         },
-        DomainResponseKinds,
+        ResponseKind,
     },
 };
-
-use super::{
-    job::{Executable, JobIdentifier},
-    step::{Step, StepIdentifier},
-};
+use serde::{Deserialize, Serialize};
+use std::collections::{HashMap, HashSet};
+use thiserror::Error;
 
 pub(in crate::domain) type Steps = HashMap<StepIdentifier, Step>;
 
@@ -30,15 +27,15 @@ pub enum PipelineError {
 }
 impl ValueObject<PipelineError> for PipelineError {}
 impl Event<PipelineError> for PipelineError {}
-impl From<PipelineError> for Vec<DomainResponseKinds> {
+impl From<PipelineError> for Vec<ResponseKind> {
     fn from(value: PipelineError) -> Self {
-        let mut kind = vec![DomainResponseKinds::ClusterPipelineError];
-        let mut specific_kind: Vec<DomainResponseKinds> = match value {
+        let mut kind = vec![ResponseKind::ClusterPipelineError];
+        let mut specific_kind: Vec<ResponseKind> = match value {
             PipelineError::InvalidNextSteps(_) => {
-                vec![DomainResponseKinds::ClusterPipelineInvalidNextStepsError]
+                vec![ResponseKind::ClusterPipelineInvalidNextStepsError]
             }
             PipelineError::CyclicStepFlow(_) => {
-                vec![DomainResponseKinds::ClusterPipelineCyclicStepFlowError]
+                vec![ResponseKind::ClusterPipelineCyclicStepFlowError]
             }
         };
         kind.append(&mut specific_kind);
@@ -67,24 +64,24 @@ pub enum PipelineEvent {
 }
 impl ValueObject<PipelineEvent> for PipelineEvent {}
 impl Event<PipelineEvent> for PipelineEvent {}
-impl From<PipelineEvent> for Vec<DomainResponseKinds> {
+impl From<PipelineEvent> for Vec<ResponseKind> {
     fn from(event: PipelineEvent) -> Self {
-        let mut kind = vec![DomainResponseKinds::ClusterPipelineEvent];
-        let mut specific_kind: Vec<DomainResponseKinds> = match event {
+        let mut kind = vec![ResponseKind::ClusterPipelineEvent];
+        let mut specific_kind: Vec<ResponseKind> = match event {
             PipelineEvent::PipelineCreated { .. } => {
-                vec![DomainResponseKinds::ClusterPipelineCreatedEvent]
+                vec![ResponseKind::ClusterPipelineCreatedEvent]
             }
             PipelineEvent::PipelineStarted {
                 identifier: _,
                 dry_run: _,
                 step_started: _,
                 job_started: _,
-            } => vec![DomainResponseKinds::ClusterPipelineStartedEvent],
+            } => vec![ResponseKind::ClusterPipelineStartedEvent],
             PipelineEvent::JobUpdated {
                 identifier: _,
                 dry_run: _,
                 output: _,
-            } => vec![DomainResponseKinds::ClusterPipelineJobUpdatedEvent],
+            } => vec![ResponseKind::ClusterPipelineJobUpdatedEvent],
         };
         kind.append(&mut specific_kind);
         kind

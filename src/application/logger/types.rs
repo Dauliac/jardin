@@ -1,5 +1,3 @@
- 
-
 use std::fmt::{self, Display};
 
 pub enum DomainLoggerType {

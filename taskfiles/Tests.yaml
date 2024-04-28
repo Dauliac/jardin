@@ -1,0 +1,17 @@
+---
+version: "3"
+set: [errexit, pipefail, nounset]
+shopt: [globstar]
+tasks:
+  e2e:cli:
+    silent: true
+    run: "once"
+    desc: 🐚 Run e2e tests using bats
+    cmds:
+      - |
+        bats \
+            --print-output-on-failure \
+            --timing \
+            --jobs 9 \
+            --trace \
+            tests/e2e/cli.bats

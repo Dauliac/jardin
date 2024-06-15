@@ -2,8 +2,8 @@ use std::net::IpAddr;
 
 use crate::domain::models::{
     value_objects::cluster::{
+        name::{nameError, Nodename},
         node::{Node, Private, Public, Role, Sensitive},
-        name::{Nodename, nameError},
     },
     DomainError,
 };

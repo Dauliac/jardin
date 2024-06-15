@@ -19,7 +19,7 @@ in {
       };
       nonPrivacyFriendly = lib.mkOption {
         type = types.listOf types.singleLineStr;
-        default = privacy ++ [google];
+        default = cfg.privacyFriendly ++ [google];
         description = mdDoc "Use non-privacy friendly DNS servers";
       };
       list = lib.mkOption {
@@ -32,7 +32,7 @@ in {
   config = {
     infra.nameServers = {
       list =
-        mkIf (dns.nameServerKind != privacyFriendly) cfg.list
+        mkIf (dns.nameServerKind != cfg.privacyFriendly) cfg.list
         cfg.nonPrivacyFriendly;
     };
   };

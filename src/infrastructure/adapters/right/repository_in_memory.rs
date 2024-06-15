@@ -2,8 +2,10 @@ use crate::domain::{
     models::{aggregates::cluster::Cluster, value_objects::cluster::name::Clustername},
     repositories::{ClusterRepository, Repository},
 };
-use std::collections::HashMap;
-use std::sync::{Arc, RwLock};
+use std::{
+    collections::HashMap,
+    sync::{Arc, RwLock},
+};
 
 pub struct ClusterRepositoryInMemory {
     clusters: HashMap<Clustername, Arc<RwLock<Cluster>>>,

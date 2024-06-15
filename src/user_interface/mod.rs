@@ -1,9 +1,9 @@
 extern crate pretty_env_logger;
 use crate::{
-    application::cqrs_es::event::EventHandler,
+    application::cqrs_es::event::{EventHandler, Response},
     domain::models::{
         aggregates::cluster::ClusterEvent, entities::pipeline::PipelineEvent, DomainError,
-        DomainEvent, Response,
+        DomainEvent, Response as DomainResponse,
     },
 };
 use colored::*;
@@ -78,12 +78,15 @@ impl Logger {
 impl EventHandler for Logger {
     fn notify(&mut self, response: Response) {
         match response {
-            Response::Event(event) => {
-                self.info(&event);
-            }
-            Response::Error(error) => {
-                self.error(&error);
-            }
+            Response::Domain(response) => match response {
+                DomainResponse::Event(event) => {
+                    self.info(&event);
+                }
+                DomainResponse::Error(error) => {
+                    self.error(&error);
+                }
+            },
+            Response::Infra(_) => {}
         }
     }
 }

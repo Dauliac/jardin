@@ -1,20 +1,20 @@
-use async_trait::async_trait;
-use std::sync::{Arc, RwLock};
 use crate::{
     application::cqrs_es::{
         command::{Command, CommandBus},
-        event::{Event, EventBus},
+        event::{Event, EventBus, Response},
     },
     domain::{
         core::{Aggregate, Entity},
         models::{
             aggregates::cluster::{Cluster, ClusterCommand, ClusterResult},
             value_objects::cluster::name::Clustername,
-            DomainError, DomainEvent, Response,
+            DomainError, DomainEvent, Response as DomainResponse,
         },
         repositories::ClusterRepository,
     },
 };
+use async_trait::async_trait;
+use std::sync::{Arc, RwLock};
 
 pub struct MemoryCommandBus<R: ClusterRepository> {
     queue: Vec<Command>,
@@ -38,8 +38,8 @@ impl<R: ClusterRepository> MemoryCommandBus<R> {
     ) -> Response {
         let cluster = self.repository.read().unwrap().read(identifier).unwrap();
         match Self::handle(command, cluster) {
-            Ok(event) => Response::Event(DomainEvent::Cluster(event)),
-            Err(error) => Response::Error(DomainError::Cluster(error)),
+            Ok(event) => From::from(DomainResponse::Event(DomainEvent::Cluster(event))),
+            Err(error) => From::from(DomainResponse::Error(DomainError::Cluster(error))),
         }
     }
 

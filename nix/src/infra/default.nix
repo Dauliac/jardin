@@ -1,1 +1,3 @@
-{...}: {imports = [./disko ./octodns.nix ./job.nix ./nixOs];}
+{...}: {
+  imports = [./octodns.nix ./job.nix ./nixOsModules];
+}

@@ -75,7 +75,7 @@ in {
           };
           mkJob = mkOption {
             description = mdDoc "Create a cluster job";
-            default = args @ {
+            default = {
               name,
               runTimeDependencies,
               files,
@@ -90,7 +90,6 @@ in {
                 cacert
                 writeBashBin
                 buildLayeredImage
-                writeText
                 ;
               bashStrictModeCmd = "set -o errexit -o nounset -o pipefail";
               depsPath = lib.makeBinPath runTimeDependencies;
@@ -147,5 +146,4 @@ in {
       };
     });
   };
-  config = {flake = {lib.infra.job = cfg;};};
 }

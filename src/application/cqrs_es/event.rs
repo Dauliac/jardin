@@ -20,20 +20,48 @@ pub enum Response {
     Infra(InfrastructureResponse),
 }
 
+impl From<DomainResponse> for Response {
+    fn from(value: DomainResponse) -> Self {
+        Response::Domain(value)
+    }
+}
+
+impl From<InfrastructureResponse> for Response {
+    fn from(value: InfrastructureResponse) -> Self {
+        Response::Infra(value)
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum ResponseKind {
     Domain(DomainResponseKind),
     Infra(InfrastructureResponseKind),
 }
 
+impl From<DomainResponseKind> for ResponseKind {
+    fn from(value: DomainResponseKind) -> Self {
+        ResponseKind::Domain(value)
+    }
+}
+
+impl From<InfrastructureResponseKind> for ResponseKind {
+    fn from(value: InfrastructureResponseKind) -> Self {
+        ResponseKind::Infra(value)
+    }
+}
+
 impl From<Response> for Vec<ResponseKind> {
     fn from(value: Response) -> Self {
-        let mut kind = vec![];
-        let kind = match value {
-            Response::Domain(response) => From::from(response),
-            Response::Infra(response) => From::from(response),
-        };
-        vec![kind]
+        match value {
+            Response::Domain(response) => {
+                let response: Vec<DomainResponseKind> = From::from(response);
+                response.into_iter().map(ResponseKind::Domain).collect()
+            }
+            Response::Infra(response) => {
+                let response: Vec<InfrastructureResponseKind> = From::from(response);
+                response.into_iter().map(ResponseKind::Infra).collect()
+            }
+        }
     }
 }
 
@@ -44,12 +72,23 @@ pub struct Event {
 }
 
 impl Event {
-    pub fn new(response: DomainResponse) -> Self {
-        let response = Response::Domain(response);
+    pub fn new(response: Response) -> Self {
         Self {
             response,
             timestamp: SystemTime::now(),
         }
+    }
+}
+
+impl From<DomainResponse> for Event {
+    fn from(response: DomainResponse) -> Self {
+        Self::new(Response::Domain(response))
+    }
+}
+
+impl From<InfrastructureResponse> for Event {
+    fn from(response: InfrastructureResponse) -> Self {
+        Self::new(Response::Infra(response))
     }
 }
 

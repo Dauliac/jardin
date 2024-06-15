@@ -1,7 +1,12 @@
+use super::{super::super::Response as InfraResponse, Response as LeftResponse};
 use crate::{
-    application::cqrs_es::{command::CommandBus, event::EventBus},
+    application::cqrs_es::{
+        command::CommandBus,
+        event::{Event, EventBus},
+    },
     domain::repositories::ClusterRepository,
 };
+use serde::{Deserialize, Serialize};
 use std::{
     process::Stdio,
     sync::{Arc, RwLock},
@@ -11,11 +16,29 @@ use tokio::{
     process::Command,
 };
 
-pub fn run(
-    repository: Arc<RwLock<dyn ClusterRepository>>,
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+pub enum Response {
+    Log(String),
+}
+
+impl From<Response> for LeftResponse {
+    fn from(response: Response) -> Self {
+        LeftResponse::Nix(response)
+    }
+}
+
+impl From<Response> for InfraResponse {
+    fn from(response: Response) -> Self {
+        let response: LeftResponse = From::from(response);
+        InfraResponse::Left(response)
+    }
+}
+
+pub async fn run(
+    _repository: Arc<RwLock<dyn ClusterRepository>>,
     event_bus: Arc<RwLock<dyn EventBus>>,
-    command_bus: Arc<RwLock<dyn CommandBus>>,
-    application: &str,
+    _command_bus: Arc<RwLock<dyn CommandBus>>,
+    _application: &str,
 ) {
     let command = "nix";
     let argument = "run";
@@ -58,8 +81,9 @@ pub async fn process_output_and_send_events(
                 if bytes_read == 0 {
                     break;
                 }
-                let event = YourEventStruct::new(line.clone());
-                event_bus.write().unwrap().send(event);
+                let response: InfraResponse = From::from(Response::Log(line.clone()));
+                let event: Event = From::from(response);
+                event_bus.write().unwrap().publish(event);
                 line.clear();
             }
             Err(e) => {

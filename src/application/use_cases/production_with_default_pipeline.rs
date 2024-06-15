@@ -3,7 +3,7 @@ use crate::{
         config,
         cqrs_es::{
             command::{Command, CommandBus},
-            event::{Event, EventBus, EventHandlers},
+            event::{EventBus, EventHandlers, ResponseKind},
         },
     },
     domain::{
@@ -13,7 +13,8 @@ use crate::{
                 name::{Clustername, Nodename},
                 node::{Node, Role},
             },
-            DomainError, DomainEvent, Response, ResponseKind,
+            DomainError, DomainEvent, Response as DomainResponse,
+            ResponseKind as DomainResponseKind,
         },
         repositories::ClusterRepository,
         services::{aggregate_declaration::NodeBuilder, default_pipeline::get_default_pipeline},
@@ -73,7 +74,8 @@ fn create_nodes(
             Nodename::new(node_identifier)
                 .map_err(|error| {
                     let error = DomainError::name(error);
-                    let event = Event::new(Response::Error(error.to_owned()));
+                    let domain_response = DomainResponse::Error(error.to_owned());
+                    let event = From::from(domain_response);
                     event_bus.write().unwrap().publish(event);
                     error
                 })
@@ -90,7 +92,7 @@ fn create_cluster_name(
 ) -> Result<Clustername, DomainError> {
     Clustername::new(config.cluster.name.to_owned()).map_err(|error| {
         let domain_error = DomainError::name(error);
-        let event = Event::new(Response::Error(domain_error.clone()));
+        let event = From::from(DomainResponse::Error(domain_error.clone()));
         event_bus.write().unwrap().publish(event);
         domain_error
     })
@@ -105,20 +107,22 @@ fn create_cluster(
 ) -> Result<Arc<RwLock<Cluster>>, DomainError> {
     let cluster_name = create_cluster_name(config, event_bus.clone())?;
     let (event, mut cluster) = Cluster::declare(cluster_name, nodes).map_err(|error| {
-        let domain_error = DomainError::Cluster(error);
-        let event = Event::new(Response::Error(domain_error.clone()));
+        let error = DomainError::Cluster(error);
+        let domain_response = DomainResponse::Error(error.to_owned());
+        let event = From::from(domain_response);
         event_bus.write().unwrap().publish(event);
-        domain_error
+        error
     })?;
-    let command = get_default_pipeline(&mut cluster).map_err(|err| {
-        let domain_error = DomainError::Cluster(err);
-        let event = Event::new(Response::Error(domain_error.clone()));
+    let command = get_default_pipeline(&mut cluster).map_err(|error| {
+        let error = DomainError::Cluster(error);
+        let domain_response = DomainResponse::Error(error.to_owned());
+        let event = From::from(domain_response);
         event_bus.write().unwrap().publish(event);
-        domain_error
+        error
     })?;
     let cluster = Arc::new(RwLock::new(cluster));
     repository.write().unwrap().write(cluster.to_owned());
-    let event = Event::new(Response::Event(DomainEvent::Cluster(event)));
+    let event = From::from(DomainResponse::Event(DomainEvent::Cluster(event)));
     event_bus.write().unwrap().publish(event);
     let command = Command::new(command);
     let handler = EventHandlers::Deploy(Arc::new(RwLock::new(ClusterDeploymentService::new(
@@ -126,10 +130,8 @@ fn create_cluster(
         command_bus.clone(),
         event_bus.clone(),
     ))));
-    event_bus
-        .write()
-        .unwrap()
-        .subscribe(ResponseKind::ClusterPipelineCreatedEvent, handler);
+    let response_kind = ResponseKind::Domain(DomainResponseKind::ClusterPipelineCreatedEvent);
+    event_bus.write().unwrap().subscribe(response_kind, handler);
     command_bus.write().unwrap().publish(command);
     Ok(cluster)
 }

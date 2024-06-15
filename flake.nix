@@ -1,11 +1,17 @@
 {
   description = "Jardin";
-
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    disko.url = "github:nix-community/disko";
-    disko.inputs.nixpkgs.follows = "nixpkgs";
+    deploy-rs.url = "github:serokell/deploy-rs";
+    nix-snapshotter = {
+      url = "github:pdtpartners/nix-snapshotter";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     crane = {
       url = "github:ipetkov/crane";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -41,9 +47,11 @@
     flake-parts,
     terranix,
     disko,
+    deploy-rs,
     valeMicrosoft,
     valeWriteGood,
     valeJoblint,
+    nix-snapshotter,
     ...
   }:
     flake-parts.lib.mkFlake {inherit inputs;} (_: {

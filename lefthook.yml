@@ -32,9 +32,3 @@ pre-commit:
       glob: "*.nix"
       run: nix fmt
       stage_fixed: true
-pre-push:
-  parallel: true
-  commands:
-    check:
-      tags: nix checks
-      run: nix flake check

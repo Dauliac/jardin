@@ -1,9 +1,8 @@
-use clap::ArgMatches;
-
 use crate::application::{
     command_line_interface::presenter::CliError,
     config::{error::ConfigError, model::Config},
 };
+use clap::ArgMatches;
 
 pub fn read_config(
     matches: &ArgMatches,

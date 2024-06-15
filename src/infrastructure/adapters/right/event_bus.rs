@@ -6,7 +6,7 @@ use crate::{
         core::Aggregate,
         models::{
             aggregates::cluster::ClusterEvent, value_objects::cluster::name::Clustername,
-            DomainEvent,
+            DomainEvent, Response as DomainResponse,
         },
         repositories::ClusterRepository,
     },
@@ -104,23 +104,30 @@ impl<R: ClusterRepository + Send + Sync> EventBus for MemoryEventBus<R> {
 
     async fn run(&mut self) {
         self.queue.pop_front().map(|event| {
-            match event.response.to_owned() {
-                Response::Event(event) => {
-                    self.write(
-                        &event,
-                        match event.to_owned() {
-                            DomainEvent::Cluster(event) => match event {
-                                ClusterEvent::ClusterDeclared(identifier) => identifier,
-                                ClusterEvent::Pipeline {
-                                    identifier,
-                                    event: _,
-                                } => identifier,
-                            },
-                        },
-                    );
+            match &event.response {
+                Response::Domain(domain_response) => {
+                    match domain_response {
+                        DomainResponse::Event(event) => {
+                            self.write(
+                                event,
+                                match event.to_owned() {
+                                    DomainEvent::Cluster(event) => match event {
+                                        ClusterEvent::ClusterDeclared(identifier) => identifier,
+                                        ClusterEvent::Pipeline {
+                                            identifier,
+                                            event: _,
+                                        } => identifier,
+                                    },
+                                },
+                            );
+                        }
+                        DomainResponse::Error(_error) => {}
+                    };
                 }
-                Response::Error(_error) => {}
-            };
+                Response::Infra(..) => {
+                    panic!("Impossible to have an infrastructure");
+                }
+            }
             self.find_and_notify(event.response);
         });
     }

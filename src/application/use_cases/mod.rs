@@ -4,12 +4,12 @@ use super::{
     config::model::Config,
     cqrs_es::{
         command::{Command, CommandBus},
-        event::{EventBus, EventHandler, EventHandlers},
+        event::{EventBus, EventHandler, EventHandlers, Response, ResponseKind},
     },
 };
 use crate::{
     domain::{
-        models::{aggregates::cluster::Cluster, Response, ResponseKind},
+        models::{aggregates::cluster::Cluster, ResponseKind as DomainResponseKind},
         repositories::ClusterRepository,
         use_cases::{deploy_use_case::UserStory as DeployUserStory, UseCases},
     },
@@ -38,10 +38,10 @@ impl ClusterDeploymentService {
     }
     fn unsubscribe(&self) {
         let handler = EventHandlers::Deploy(Arc::new(RwLock::new(self.clone())));
-        self.event_bus
-            .write()
-            .unwrap()
-            .unsubscribe(ResponseKind::ClusterPipelineCreatedEvent, &handler);
+        self.event_bus.write().unwrap().unsubscribe(
+            ResponseKind::Domain(DomainResponseKind::ClusterPipelineCreatedEvent),
+            &handler,
+        );
     }
 }
 
@@ -87,13 +87,13 @@ pub async fn start_domain_service(
 ) {
     // TODO: check if debug mode is enabled
     let logger = EventHandlers::Logger(logger);
-    let response = ResponseKind::Error;
+    let response_kind = ResponseKind::Domain(DomainResponseKind::Error);
     event_bus
         .write()
         .unwrap()
-        .subscribe(response, logger.clone());
-    let response = ResponseKind::Event;
-    event_bus.write().unwrap().subscribe(response, logger);
+        .subscribe(response_kind, logger.clone());
+    let response_kind = ResponseKind::Domain(DomainResponseKind::Event);
+    event_bus.write().unwrap().subscribe(response_kind, logger);
 
     match use_case {
         UseCases::Deploy(deploy) => {

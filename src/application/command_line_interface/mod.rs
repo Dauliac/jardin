@@ -1,8 +1,6 @@
 pub mod model;
 pub mod presenter;
 
-use crate::{application::exit::error_exit, domain::use_cases::UseCases};
-
 use self::{
     model::{
         completion::attempt_generate_completion_on_match, config::read_config,
@@ -10,8 +8,8 @@ use self::{
     },
     presenter::{build_cli, CliError},
 };
-
 use super::config::{error::ConfigError, model::Config};
+use crate::{application::exit::error_exit, domain::use_cases::UseCases};
 
 fn exit_on_cli_error(error: CliError) {
     log::error!("{}", error.to_string());

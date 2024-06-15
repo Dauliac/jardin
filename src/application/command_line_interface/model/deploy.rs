@@ -1,13 +1,11 @@
-use std::ops::Not;
-
-use clap::ArgMatches;
-
 use crate::{
     application::command_line_interface::presenter::{
         DEPLOY_ARG_DRY_RUN, DEPLOY_COMMAND_NAME, DEVELOPMENT_COMMAND_NAME,
     },
     domain::use_cases::{deploy_use_case::UserStory as DeployUserStory, UseCases},
 };
+use clap::ArgMatches;
+use std::ops::Not;
 
 fn is_development_mode(matches: &ArgMatches) -> bool {
     *matches

@@ -1,18 +1,6 @@
 _: {
-  # options = {
-  #   jardin.app.operations.deploy = {
-  #     dns = {
-  #       iacService = mkOption {
-  #         type = types.attrsOf types.any;
-  #         description = mdDoc "The dns iac service to use";
-  #         default = jardin.infra.octodns;
-  #       };
-  #     };
-  #   };
-  # };
   config = {
     infra = {
-      disko.enable = true;
       octodns.enable = true;
     };
     flake = {

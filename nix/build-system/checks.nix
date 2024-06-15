@@ -51,10 +51,6 @@ in {
       cargoExtraArgs = "nextest";
     };
     checks = {
-      # TODO: write function to inherit all tests in checks
-      inherit
-        (package.test.infra.nixOs)
-        ;
       lint = pkgs.mkShell {
         buildInputs = config.linters;
         shellHook = ''

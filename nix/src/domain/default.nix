@@ -134,5 +134,4 @@ in {
       };
     };
   };
-  config = {flake = {lib.domain = cfg;};};
 }

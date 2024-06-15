@@ -1,25 +1,23 @@
 {
   inputs,
-  lib,
+  self,
   ...
-}: let
-  inherit (lib) mkOption types;
-  inherit (inputs.flake-parts.lib) mkSubmoduleOptions;
-in {
+}: {
   imports = [./app ./infra ./domain];
-  options = {
-    flake = mkSubmoduleOptions {
-      lib = mkSubmoduleOptions {
-        infra = mkOption {description = "Infrastructure layer lib";};
-        # app = mkOption {
-        #   type = types.lazyAttrsOf types.raw;
-        #   description = "Application layer lib";
-        # };
-        domain = mkSubmoduleOptions {
-          cluster = mkOption {description = "Cluster lib";};
-        };
+  config = {
+    perSystem = {
+      lib,
+      pkgs,
+      system,
+      ...
+    }: {
+      _module.args.pkgs = import self.inputs.nixpkgs {
+        inherit system;
+        overlays = [
+          inputs.nix-snapshotter.overlays.default
+        ];
+        config.allowUnfree = true;
       };
     };
   };
-  config = {debug = true;};
 }

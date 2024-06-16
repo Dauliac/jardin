@@ -7,7 +7,7 @@
   inherit (inputs.flake-parts.lib) mkPerSystemOption;
 in {
   imports = [
-    ./compile.nix
+    ./build.nix
   ];
   options.perSystem = mkPerSystemOption ({
     pkgs,

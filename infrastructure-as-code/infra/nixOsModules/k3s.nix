@@ -16,6 +16,7 @@ in {
         k3s
         helm
         kumactl
+        flux
       ];
       networking.firewall.allowedTCPPorts = [
         config.services.kubernetes.apiserver.securePort
@@ -32,5 +33,6 @@ in {
           "--snapshotter overlayfs"
         ]);
       };
+      # /var/lib/rancher/k3s/server/manifests
     };
 }

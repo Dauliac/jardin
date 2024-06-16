@@ -1,8 +1,8 @@
 {...}: {
   imports = [
-    ./build-system/docs.nix
-    ./build-system/checks.nix
-    ./build-system/compile.nix
+    ./docs.nix
+    ./checks.nix
+    ./build.nix
   ];
   perSystem = {
     pkgs,
@@ -19,6 +19,7 @@
           lefthook
           convco
           rust.packages.stable.rustPlatform.rustLibSrc
+          fluxcd
           # BUG: this package is broken
           # vscode-extensions.llvm-org.lldb-vscode
         ]

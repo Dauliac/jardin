@@ -1,7 +1,6 @@
 {
   lib,
   inputs,
-  config,
   ...
 }: let
   inherit (lib) mkOption mdDoc types;
@@ -63,12 +62,14 @@ in {
       ];
       craneLib = inputs.crane.lib.${system};
       compiler = config.craneLib.overrideToolchain config.toolchain;
-      sources = config.compiler.cleanCargoSource (config.craneLib.path ./../../.);
+      sources = config.compiler.cleanCargoSource (config.craneLib.path ./../.);
       dependencies = config.compiler.buildDepsOnly {src = config.sources;};
       artifact = config.compiler.buildPackage {
         inherit (config) dependencies;
         src = config.sources;
       };
+      packages.default = config.artifact;
+      packages.jardin = config.artifact;
     };
   };
 }

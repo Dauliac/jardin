@@ -56,6 +56,10 @@
   }:
     flake-parts.lib.mkFlake {inherit inputs;} (_: {
       systems = ["x86_64-linux"];
-      imports = [./nix];
+      imports = [
+        ./infrastructure-as-code
+        ./build-system
+        ./tests/e2e/nixos
+      ];
     });
 }

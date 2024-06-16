@@ -4,15 +4,14 @@ set: [errexit, pipefail, nounset]
 shopt: [globstar]
 dotenv: [".env.local", ".env"]
 includes:
-  vm:
-    taskfile: taskfiles/Dev.yaml
+  dev:
+    taskfile: build-system/Dev.yaml
     dir: .
   docs:
-    taskfile: taskfiles/Docs.yaml
-    dir: .
+    taskfile: docs/Taskfile.yaml
   tests:
-    taskfile: taskfiles/Tests.yaml
-    dir: .
+    taskfile: ./infrastructure-as-code/infra/kubernetes/clusters/jardin-tests/Taskfile.yaml
+    dir: ./infrastructure-as-code/infra/kubernetes/clusters/jardin-tests/
 tasks:
   init:
     silent: true
@@ -142,22 +141,6 @@ tasks:
       - task: lint
       - task: test:rust
       - task: test:rust:audit
-  dev:
-    silent: true
-    run: "once"
-    desc: Run development mode
-    cmds:
-      - |
-        task toolchain -- --watch
-  debug:
-    silent: true
-    run: "once"
-    desc: Run jardin in debug mode
-    deps:
-      - task: build
-    cmds:
-      - |
-        ./target/debug/jardin -c jardin.toml deploy
   run:
     silent: true
     run: "once"

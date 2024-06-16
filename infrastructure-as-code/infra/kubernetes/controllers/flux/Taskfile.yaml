@@ -1,0 +1,52 @@
+---
+version: '3'
+vars:
+  SOPS_AGE_KEY_FILE: ~/.config/sops/age/keys.txt
+tasks:
+  bootstrap:
+    desc: Bootstrap flux
+    silent: true
+    cmds:
+      - task: setup-flux
+      - task: setup-sops
+  sync:
+    desc: Sync the cluster
+    silent: true
+    requires:
+      vars:
+        - CLUSTER_NAME
+    cmds:
+      - |
+        until \
+          flux reconcile kustomization operators --with-source -n operators
+        do
+          sleep 2
+        done
+  setup-sops:
+    desc: Setup sops
+    run: once
+    internal: true
+    silent: true
+    cmds:
+      - kubectl delete secret sops-age --namespace=operators || true
+      - |
+        cat {{.SOPS_AGE_KEY_FILE}} | kubectl create secret generic sops-age \
+          --namespace=operators --from-file=age.agekey=/dev/stdin
+  setup-flux:
+    desc: Setup flux
+    run: once
+    internal: true
+    silent: true
+    cmds:
+      - kubectl apply -f ../flux/subscription.yaml
+      - |
+        until kubectl get crd fluxinstances.fluxcd.controlplane.io; do
+          sleep 5
+        done
+      - kubectl wait --for condition=established crd fluxinstances.fluxcd.controlplane.io
+      - kubectl apply -f ../../clusters/{{.CLUSTER_NAME}}/instance.yaml
+      - |
+        until kubectl get crd kustomizations.kustomize.toolkit.fluxcd.io; do
+          sleep 5
+        done
+      - kubectl wait --for condition=established crd kustomizations.kustomize.toolkit.fluxcd.io

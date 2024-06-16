@@ -30,22 +30,22 @@ tasks:
     internal: true
     run: once
     sources:
-      - "./docs/**/*.md"
+      - "./**/*.md"
       - README.md
     cmds:
       - |
         markdownlint-cli2 --fix \
-          "./docs/**/*.md" \
-          "./README.md" \
-          "#./docs/CHANGELOG.md" \
-          "#./docs/SUMMARY.md" \
-          "#./docs/styles" \
+          "./**/*.md" \
+          "../README.md" \
+          "#./CHANGELOG.md" \
+          "#./SUMMARY.md" \
+          "#./styles" \
   lint:vale:
     silent: true
     internal: true
     run: once
     sources:
-      - "./docs/**/*"
+      - "./**/*"
       - README.md
     vars:
       MULTILINES_FILES:
@@ -54,16 +54,16 @@ tasks:
             --exclude="styles" \
             --exclude="SUMMARY.md" \
             --exclude="CHANGELOG.md" \
-            --exclude="target" md docs
+            --exclude="target" md .
       FILES: '{{.MULTILINES_FILES | replace "\n" " "}}'
     cmds:
-      - vale {{.FILES}} README.md
+      - vale {{.FILES}} ../README.md
   lint:mdformat:
     silent: true
     internal: true
     run: once
     sources:
-      - "./docs/**/*.md"
+      - "./**/*.md"
       - README.md
     cmds:
       - mdformat .
@@ -73,12 +73,12 @@ tasks:
     run: "once"
     desc: Generate changelog
     cmds:
-      - convco changelog > docs/CHANGELOG.md
+      - convco changelog > CHANGELOG.md
   build:vhs:
     silent: true
     internal: true
     run: once
     sources:
-      - ./docs/vhs/**/*.tape
+      - ./vhs/**/*.tape
     cmds:
-      - vhs ./docs/vhs/getting-started.tape
+      - vhs ./vhs/getting-started.tape

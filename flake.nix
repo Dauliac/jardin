@@ -25,10 +25,6 @@
       url = "github:rustsec/advisory-db";
       flake = false;
     };
-    terranix = {
-      url = "github:terranix/terranix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     valeMicrosoft = {
       url = "github:errata-ai/Microsoft";
       flake = false;
@@ -45,7 +41,6 @@
 
   outputs = inputs @ {
     flake-parts,
-    terranix,
     disko,
     deploy-rs,
     valeMicrosoft,

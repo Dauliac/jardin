@@ -2,6 +2,12 @@
 version: "3"
 set: [errexit, pipefail, nounset]
 shopt: [globstar]
+includes:
+  kubernetes:
+    aliases:
+      - k8s
+    taskfile: ./e2e/kubernetes/Taskfile.yaml
+    dir: ./e2e/kubernetes
 tasks:
   e2e:cli:
     silent: true
@@ -14,4 +20,4 @@ tasks:
             --timing \
             --jobs 9 \
             --trace \
-            tests/e2e/cli.bats
+            e2e/cli/cli.bats

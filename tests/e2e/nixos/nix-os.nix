@@ -1,9 +1,4 @@
-{
-  inputs,
-  withSystem,
-  config,
-  ...
-}: let
+{config, ...}: let
   nodeName = "test";
   inherit (config) flake;
   inherit (config.test.infra) spy;

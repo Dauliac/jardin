@@ -1,0 +1,25 @@
+---
+apiVersion: fluxcd.controlplane.io/v1
+kind: FluxInstance
+metadata:
+  name: flux
+  namespace: operators
+  annotations:
+    fluxcd.controlplane.io/reconcileEvery: 10m
+    fluxcd.controlplane.io/reconcileTimeout: 2m
+spec:
+  distribution:
+    version: "2.3.x"
+    registry: "ghcr.io/fluxcd"
+  cluster:
+    type: kubernetes
+  sync:
+    kind: GitRepository
+    url: "https://github.com/dauliac/jardin.git"
+    ref: "refs/heads/main"
+    path: "./infrastructure-as-code/infra/kubernetes/clusters/jardin-tests"
+  components:
+    - source-controller
+    - kustomize-controller
+    - helm-controller
+    - notification-controller

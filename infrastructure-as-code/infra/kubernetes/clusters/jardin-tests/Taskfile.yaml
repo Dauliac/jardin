@@ -1,0 +1,57 @@
+---
+version: '3'
+includes:
+  flux:
+    taskfile: ../../controllers/flux/Taskfile.yaml
+    dir: ../../controllers/flux
+  olm:
+    taskfile: ../../controllers/olm/Taskfile.yaml
+vars:
+  CLUSTER_NAME: jardin-tests
+  GIT_REPO_BRANCH:
+    sh: git rev-parse --abbrev-ref HEAD
+tasks:
+  kind:re-create:
+    internal: true
+    silent: true
+    run: once
+    status:
+      - kind get clusters | grep {{.CLUSTER_NAME}} -q
+    deps:
+      - kind:delete
+    cmds:
+      - kind create cluster --name={{.CLUSTER_NAME}} --config=kind-config.yaml
+  kind:setup:
+    internal: true
+    silent: true
+    run: once
+    status:
+      - kind get clusters | grep {{.CLUSTER_NAME}} -q
+    cmds:
+      - task: kind:re-create
+  kind:delete:
+    desc: Wipe the cluster
+    internal: true
+    silent: true
+    cmds:
+      - kind delete cluster --name={{.CLUSTER_NAME}}
+  create:
+    desc: Bootstrap the cluster
+    run: once
+    silent: true
+    deps:
+      - kind:setup
+    cmds:
+      - task: olm:install
+      - task: flux:bootstrap
+      - task: flux:sync
+  delete:
+    desc: Delete the cluster
+    silent: true
+    cmds:
+      - task: kind:delete
+  default:
+    desc: List all tasks
+    silent: true
+    cmds:
+      - task --list-all

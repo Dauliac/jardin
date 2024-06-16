@@ -1,0 +1,11 @@
+---
+version: '3'
+tasks:
+  install:
+    internal: true
+    run: once
+    silent: true
+    status:
+      - operator-sdk olm status
+    cmds:
+      - operator-sdk olm install

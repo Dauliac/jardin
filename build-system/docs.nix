@@ -79,20 +79,20 @@ in {
     ...
   }: {
     valeMicrosoft = pkgs.runCommand "vale-microsoft-links" {} ''
-      ln -s ${inputs.valeMicrosoft}/Microsoft $out
+      ln -sf ${inputs.valeMicrosoft}/Microsoft $out
     '';
     valeJoblint = pkgs.runCommand "vale-joblint-links" {} ''
-      ln -s ${inputs.valeJoblint}/Joblint $out
+      ln -sf ${inputs.valeJoblint}/Joblint $out
     '';
     valeWriteGood = pkgs.runCommand "vale-write-good-links" {} ''
-      ln -s ${inputs.valeWriteGood}/write-good $out
+      ln -sf ${inputs.valeWriteGood}/write-good $out
     '';
     packages.mdbookMermaidStyles = pkgs.stdenv.mkDerivation {
       name = "mdbook-mermaid-styles";
       src = config.packages.mdbookConfiguration;
       dontUnpack = true;
       buildPhase = ''
-        ln -s $src book.toml
+        ln -sf $src book.toml
         ${pkgs.mdbook-mermaid}/bin/mdbook-mermaid install
         mkdir -p $out
         mv mermaid-init.js mermaid.min.js $out

@@ -8,7 +8,10 @@ tasks:
     deps:
       - build
     cmds:
-      - "nix build \\\n  '.#devInfraNixOs' \n./result/bin/start\n"
+      - |
+        nix build \
+          '.#devInfraNixOs'
+          ./result/bin/start
   ssh:
     desc: 🐚 Get shell
     deps:
@@ -19,3 +22,12 @@ tasks:
     internal: true
     cmds:
       - nix build '.#devInfraNixOs'
+  debug:
+    silent: true
+    run: "once"
+    desc: Run jardin in debug mode
+    deps:
+      - task: build
+    cmds:
+      - |
+        ./target/debug/jardin -c jardin.toml deploy

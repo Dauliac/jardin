@@ -1,4 +1,4 @@
-{...}: {
+{inputs, ...}: {
   imports = [
     ./docs.nix
     ./checks.nix
@@ -20,6 +20,10 @@
           convco
           rust.packages.stable.rustPlatform.rustLibSrc
           fluxcd
+          operator-sdk
+          kind
+          docker
+          kubectl
           # BUG: this package is broken
           # vscode-extensions.llvm-org.lldb-vscode
         ]

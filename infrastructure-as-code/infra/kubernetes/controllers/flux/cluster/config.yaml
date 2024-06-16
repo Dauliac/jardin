@@ -2,19 +2,21 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: flux-system
-  namespace: flux-system
+  name: config
+  namespace: operators
 spec:
   interval: 30m
-  timeout: 5m
+  timeout: 10m
   retryInterval: 1m
-  path: ./deploy/controllers/flux-installation
+  dependsOn:
+    - name: operators
+  path: infrastructure-as-code/infra/kubernetes/clusters/${CLUSTER_NAME}/config
   prune: true
-  wait: true
   force: true
+  wait: true
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: operators
   decryption:
     provider: sops
     secretRef:

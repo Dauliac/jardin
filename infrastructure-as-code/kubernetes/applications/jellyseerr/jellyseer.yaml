@@ -5,7 +5,7 @@ metadata:
   name: jellyseerr
   namespace: operators
 spec:
-  path: ./infrastructure-as-code/infra/kubernetes/applications/jellyseerr/app
+  path: ./infrastructure-as-code/kubernetes/applications/jellyseerr/app
   postBuild:
     substitute:
       APP_NAME: jellyseerr

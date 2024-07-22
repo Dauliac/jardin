@@ -10,7 +10,7 @@ spec:
   retryInterval: 1m
   prune: true
   force: true
-  path: "./infrastructure-as-code/infra/kubernetes/controllers/flux"
+  path: "./infrastructure-as-code/kubernetes/controllers/flux"
   sourceRef:
     kind: GitRepository
     name: operators

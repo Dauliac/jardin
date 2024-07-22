@@ -17,7 +17,7 @@ spec:
     kind: GitRepository
     url: "https://github.com/dauliac/jardin.git"
     ref: "refs/heads/main"
-    path: "./infrastructure-as-code/infra/kubernetes/clusters/jardin-tests"
+    path: "./infrastructure-as-code/kubernetes/clusters/jardin-tests"
   components:
     - source-controller
     - kustomize-controller

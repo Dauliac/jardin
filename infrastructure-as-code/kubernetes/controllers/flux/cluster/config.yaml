@@ -10,7 +10,7 @@ spec:
   retryInterval: 1m
   dependsOn:
     - name: operators
-  path: infrastructure-as-code/infra/kubernetes/clusters/${CLUSTER_NAME}/config
+  path: infrastructure-as-code/kubernetes/clusters/${CLUSTER_NAME}/config
   prune: true
   force: true
   wait: true

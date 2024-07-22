@@ -10,8 +10,8 @@ includes:
   docs:
     taskfile: docs/Taskfile.yaml
   tests:
-    taskfile: ./infrastructure-as-code/infra/kubernetes/clusters/jardin-tests/Taskfile.yaml
-    dir: ./infrastructure-as-code/infra/kubernetes/clusters/jardin-tests/
+    taskfile: ./infrastructure-as-code/kubernetes/clusters/jardin-tests/Taskfile.yaml
+    dir: ./infrastructure-as-code/kubernetes/clusters/jardin-tests/
 tasks:
   init:
     silent: true

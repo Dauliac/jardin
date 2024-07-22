@@ -5,7 +5,7 @@ metadata:
   name: ingress-nginx
   namespace: operators
 spec:
-  path: ./infrastructure-as-code/infra/kubernetes/controllers/ingress-nginx/app
+  path: ./infrastructure-as-code/kubernetes/controllers/ingress-nginx/app
   dependsOn:
     - name: helm
   prune: true

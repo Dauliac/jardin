@@ -2,19 +2,20 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: controllers
+  name: applications
   namespace: operators
 spec:
-  interval: 1m
+  interval: 30m
   timeout: 5m
   retryInterval: 1m
   dependsOn:
-    - name: config
+    - name: controllers
     - name: operators
-  path: infrastructure-as-code/infra/kubernetes/clusters/${CLUSTER_NAME}/controllers
+    - name: config
+  path: infrastructure-as-code/kubernetes/clusters/${CLUSTER_NAME}/applications
   prune: true
   force: true
-  wait: true
+  wait: false
   sourceRef:
     kind: GitRepository
     name: operators
@@ -45,7 +46,9 @@ spec:
           retryInterval: 1m
           force: true
           prune: true
-          wait: true
+          dependsOn:
+            - name: config
+            - name: controllers
           sourceRef:
             kind: GitRepository
             name: operators

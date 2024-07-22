@@ -5,6 +5,6 @@ metadata:
   name: jellyfin
   namespace: operators
 spec:
-  path: ./infrastructure-as-code/infra/kubernetes/applications/transmission/app
+  path: ./infrastructure-as-code/kubernetes/applications/jellyfin/app
   dependsOn:
     - name: helm

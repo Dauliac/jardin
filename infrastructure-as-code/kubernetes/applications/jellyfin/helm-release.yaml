@@ -16,3 +16,11 @@ spec:
         namespace: operators
       version: 2.0.0
   interval: 1h
+  values:
+    ingress:
+      enabled: true
+      hosts:
+        - host: jellyfin.${DOMAIN}
+          paths:
+            - path: /
+              pathType: ImplementationSpecific

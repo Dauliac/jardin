@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
   - ../../../controllers/helm
   - ../../../controllers/cert-manager
-  # - ../../../controllers/ingress-nginx
+  - ../../../controllers/ingress-nginx
   # - ../../../controllers/kyverno
 patches:
   - target:

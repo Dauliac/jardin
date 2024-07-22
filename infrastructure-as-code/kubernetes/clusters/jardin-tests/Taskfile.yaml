@@ -10,8 +10,6 @@ vars:
   CLUSTER_NAME: jardin-tests
   GIT_REPO_BRANCH:
     sh: git rev-parse --abbrev-ref HEAD
-env:
-  KUBECONFIG: '{{.KUBECONFIG}}'
 tasks:
   kind:re-create:
     internal: true
@@ -25,7 +23,6 @@ tasks:
       - |
         kind create cluster \
           --name={{.CLUSTER_NAME}} \
-          --kubeconfig={{.KUBECONFIG}} \
           --config=kind-config.yaml
   kind:setup:
     internal: true

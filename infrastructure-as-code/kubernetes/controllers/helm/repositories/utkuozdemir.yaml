@@ -1,7 +1,7 @@
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
 metadata:
-  name: sstarcher
+  name: utkuozdemir
   namespace: operators
 kind: HelmRepository
 spec:

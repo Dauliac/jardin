@@ -154,19 +154,20 @@ in {
       follow-web-links = true
     '';
     documentationShellHookScript = ''
+      export FLAKE_ROOT="$(git rev-parse --show-toplevel)"
       rm -rf \
-        ${config.valeStylesPath}/Microsoft \
-        ${config.valeStylesPath}/Joblint \
-        ${config.valeStylesPath}/write-good \
-        ${config.mdbookMermaidStylesPath} \
-        .vale.ini \
-        book.toml
-      ln -s ${config.valeMicrosoft} ${config.valeStylesPath}/Microsoft
-      ln -s ${config.valeJoblint} ${config.valeStylesPath}/Joblint
-      ln -s ${config.valeWriteGood} ${config.valeStylesPath}/write-good
-      ln -s ${config.packages.valeConfiguration} .vale.ini
-      ln -s ${config.packages.mdbookConfiguration} book.toml
-      ln -s ${config.packages.mdbookMermaidStyles} ${config.mdbookMermaidStylesPath}
+        "$FLAKE_ROOT/${config.valeStylesPath}/Microsoft" \
+        "$FLAKE_ROOT/${config.valeStylesPath}/Joblint" \
+        "$FLAKE_ROOT/${config.valeStylesPath}/write-good" \
+        "$FLAKE_ROOT/${config.mdbookMermaidStylesPath}" \
+        "$FLAKE_ROOT/.vale.ini" \
+        "$FLAKE_ROOT/book.toml"
+      ln -s ${config.valeMicrosoft} "$FLAKE_ROOT/${config.valeStylesPath}/Microsoft"
+      ln -s ${config.valeJoblint} "$FLAKE_ROOT/${config.valeStylesPath}/Joblint"
+      ln -s ${config.valeWriteGood} "$FLAKE_ROOT/${config.valeStylesPath}/write-good"
+      ln -s ${config.packages.valeConfiguration} "$FLAKE_ROOT/.vale.ini"
+      ln -s ${config.packages.mdbookConfiguration} "$FLAKE_ROOT/book.toml"
+      ln -s ${config.packages.mdbookMermaidStyles} "$FLAKE_ROOT/${config.mdbookMermaidStylesPath}"
     '';
   };
 }

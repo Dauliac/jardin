@@ -33,7 +33,11 @@
         ++ config.docsPackages;
       shellHook = ''
         ${config.documentationShellHookScript}
-        task init
+
+        export FLAKE_ROOT="$(git rev-parse --show-toplevel)"
+        task \
+          --taskfile "$FLAKE_ROOT/Taskfile.yaml" \
+          init
       '';
     };
   };

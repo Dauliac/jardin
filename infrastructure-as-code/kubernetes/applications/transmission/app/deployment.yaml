@@ -16,24 +16,24 @@ spec:
         app: transmission
     spec:
       containers:
-      - name: transmission
-        image: linuxserver/transmission:4.0.6
-        ports:
-        - containerPort: 9091
-        env:
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        # - name: TZ
-        #   value: "Europe/Paris"
-        volumeMounts:
-        - name: config
-          mountPath: /config
-        - name: downloads
-          mountPath: /downloads
+        - name: transmission
+          image: linuxserver/transmission:4.0.6
+          ports:
+            - containerPort: 9091
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          # - name: TZ
+          #   value: "Europe/Paris"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: downloads
+              mountPath: /downloads
       volumes:
-      - name: config
-        emptyDir: {}
-      - name: downloads
-        emptyDir: {}
+        - name: config
+          emptyDir: {}
+        - name: downloads
+          emptyDir: {}

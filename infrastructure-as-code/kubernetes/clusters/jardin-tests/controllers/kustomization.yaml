@@ -5,7 +5,7 @@ resources:
   - ../../../controllers/helm
   - ../../../controllers/cert-manager
   - ../../../controllers/ingress-nginx
-  # - ../../../controllers/kyverno
+  - ../../../controllers/kyverno
 patches:
   - target:
       group: kustomize.toolkit.fluxcd.io

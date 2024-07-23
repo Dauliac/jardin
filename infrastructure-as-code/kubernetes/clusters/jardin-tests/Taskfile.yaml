@@ -17,6 +17,8 @@ tasks:
     run: once
     status:
       - kind get clusters | grep {{.CLUSTER_NAME}} -q
+    sources:
+      - ./kind-config.yaml
     deps:
       - kind:delete
     cmds:

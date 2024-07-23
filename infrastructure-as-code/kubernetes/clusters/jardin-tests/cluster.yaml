@@ -18,3 +18,4 @@ spec:
     substitute:
       CLUSTER_NAME: jardin-tests
       DOMAIN: localhost
+      LOADBALANCER_IP: 127.0.0.1

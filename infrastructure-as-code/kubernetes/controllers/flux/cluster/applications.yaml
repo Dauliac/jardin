@@ -27,6 +27,7 @@ spec:
     substitute:
       CLUSTER_NAME: ${CLUSTER_NAME}
       DOMAIN: ${DOMAIN}
+      LOADBALANCER_IP: ${LOADBALANCER_IP}
     substituteFrom:
       - kind: Secret
         name: cluster-secrets

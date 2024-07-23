@@ -6,4 +6,5 @@ resources:
   - ../../../controllers/cert-manager
   - ../../../controllers/ingress-nginx
   - ../../../controllers/kyverno
+  - ../../../controllers/kong
   - ./ingress

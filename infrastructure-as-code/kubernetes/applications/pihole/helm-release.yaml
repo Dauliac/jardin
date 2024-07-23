@@ -12,21 +12,25 @@ spec:
       chart: pihole
       sourceRef:
         kind: HelmRepository
-        name: savepointsam
+        name: mojo2600
         namespace: operators
-      version: 0.2.0
+      version: 2.26.0
   interval: 1h
   values:
-    pihole:
-      timezone: Europe/Paris
-      upstream:
-        - 9.9.9.9
-        - 1.1.1.1
-      webui:
-        admin:
-          # TODO: use sops secrets to manage configs
-          email: fake@pihole.com
-          password: "!@bhex!!@sss/.2@@Asb1@97"
-    persistence:
+    dnsmasq:
+      # customDnsEntries:
+      #   - address=/nas/192.168.178.10
+      # customCnameEntries:
+      #   - cname=foo.nas,nas
+    persistentVolumeClaim:
       enabled: true
-      existingClaim: "pihole-config"
+    serviceWeb:
+      loadBalancerIP: 192.168.178.252
+      # annotations:
+      #   metallb.universe.tf/allow-shared-ip: pihole-svc
+      # type: LoadBalancer
+    serviceDns:
+      loadBalancerIP: ${LOADBALANCER_IP}
+      # annotations:
+      #   metallb.universe.tf/allow-shared-ip: pihole-svc
+      type: LoadBalancer

@@ -2,8 +2,8 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: savepointsam
+  name: mojo2600
   namespace: operators
 spec:
   interval: 24h
-  url: https://savepointsam.github.io/charts
+  url: https://mojo2600.github.io/pihole-kubernetes/

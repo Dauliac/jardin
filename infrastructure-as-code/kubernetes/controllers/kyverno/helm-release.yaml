@@ -15,4 +15,8 @@ spec:
         name: kyverno
         namespace: operators
       version: 3.2.5-rc.2
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
   interval: 1h

@@ -1,21 +1,50 @@
 ---
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
+networking:
+  apiServerAddress: 0.0.0.0
+  apiServerPort: 8443
+  disableDefaultCNI: true
 nodes:
   - role: control-plane
     kubeadmConfigPatches:
-      - |
-        kind: InitConfiguration
-        nodeRegistration:
-          kubeletExtraArgs:
-            node-labels: "ingress-ready=true"
-    extraMounts:
-      - hostPath: /tmp/data
-        containerPath: /data
+    - |
+      kind: ClusterConfiguration
+      apiServer:
+        certSANs:
+        - "localhost"
+        - "0.0.0.0"
+        - "KONG_HOSTNAME"
     extraPortMappings:
-      - containerPort: 80
-        hostPort: 80
-        protocol: TCP
-      - containerPort: 443
-        hostPort: 443
-        protocol: TCP
+    - listenAddress: "0.0.0.0"
+      protocol: TCP
+      hostPort: 30000
+      containerPort: 30000
+    - listenAddress: "0.0.0.0"
+      protocol: TCP
+      hostPort: 30001
+      containerPort: 30001
+    - listenAddress: "0.0.0.0"
+      protocol: TCP
+      hostPort: 30002
+      containerPort: 30002
+    - listenAddress: "0.0.0.0"
+      protocol: TCP
+      hostPort: 30003
+      containerPort: 30003
+    - listenAddress: "0.0.0.0"
+      protocol: TCP
+      hostPort: 30004
+      containerPort: 30004
+    - listenAddress: "0.0.0.0"
+      protocol: TCP
+      hostPort: 30005
+      containerPort: 30005
+    - listenAddress: "0.0.0.0"
+      protocol: TCP
+      hostPort: 30006
+      containerPort: 30006
+    - listenAddress: "0.0.0.0"
+      protocol: TCP
+      hostPort: 30443
+      containerPort: 30443

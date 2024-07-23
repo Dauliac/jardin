@@ -4,4 +4,3 @@ kind: Kustomization
 resources:
   - ./subscription.yaml
   - ./kong.yaml
-  - ./namespace.yaml

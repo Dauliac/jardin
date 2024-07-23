@@ -1,0 +1,22 @@
+---
+apiVersion: charts.konghq.com/v1alpha1
+kind: Kong
+metadata:
+  name: kong
+  namespace: kong
+spec:
+  proxy:
+    type: NodePort
+  # env:
+  #   prefix: /kong_prefix/
+  resources:
+    limits:
+      cpu: 500m
+      memory: 2G
+    requests:
+      cpu: 100m
+      memory: 512Mi
+  ingressController:
+    enabled: true
+    ingressClass: kong-ingress-class
+    installCRDs: false

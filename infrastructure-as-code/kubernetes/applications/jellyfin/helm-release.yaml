@@ -23,6 +23,7 @@ spec:
         - host: jellyfin.${DOMAIN}
           paths:
             - path: /
+              pathType: ImplementationSpecific
     persistence:
       # config:
       #   enabled: true

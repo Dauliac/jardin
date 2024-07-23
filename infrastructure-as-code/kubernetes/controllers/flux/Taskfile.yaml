@@ -38,6 +38,7 @@ tasks:
     internal: true
     silent: true
     cmds:
+      - kubectl apply -f ../flux/namespace.yaml
       - kubectl apply -f ../flux/subscription.yaml
       - |
         until kubectl get crd fluxinstances.fluxcd.controlplane.io; do

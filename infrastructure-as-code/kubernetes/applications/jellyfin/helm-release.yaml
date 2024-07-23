@@ -25,9 +25,9 @@ spec:
             - path: /
               pathType: ImplementationSpecific
     persistence:
-      config:
-        enabled: true
-        existingClaim: "jellyfin-config"
+      # config:
+      #   enabled: true
+      #   existingClaim: "jellyfin-config"
       data:
         enabled: true
         existingClaim: "media"

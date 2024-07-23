@@ -23,6 +23,7 @@ in {
           go-task
           reuse
           yamlfmt
+          trufflehog
         ];
       };
       rustCheckers = mkOption {

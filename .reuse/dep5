@@ -4,23 +4,7 @@ Upstream-Contact: conformism  <conformism@nofreedisk.space>
 Source: https://gitlab.com/conformism/jardin
 
 # Sample paragraph, commented out:
-Files: src/*
-Copyright: 2022 Conformism  <conformism@nofreedisk.space>
-License: AGPL-3.0-or-later
-
-Files: nix/*
-Copyright: 2022 Conformism  <conformism@nofreedisk.space>
-License: AGPL-3.0-or-later
-
-Files: tests/*
-Copyright: 2022 Conformism  <conformism@nofreedisk.space>
-License: AGPL-3.0-or-later
-
-Files: .*
-Copyright: 2022 Conformism  <conformism@nofreedisk.space>
-License: AGPL-3.0-or-later
-
-Files: *.yaml *.yml *.toml flake.nix *.nix
+Files: src/* nix/* tests/* **/.* *.yaml *.yml *.toml flake.nix *.nix .*
 Copyright: 2022 Conformism  <conformism@nofreedisk.space>
 License: AGPL-3.0-or-later
 

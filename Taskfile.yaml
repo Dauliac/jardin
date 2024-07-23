@@ -84,6 +84,15 @@ tasks:
           yamlfmt {{.YAMLFMT_TO_LINT}}
           exit 1
         )
+  lint:secrets:
+    silent: true
+    internal: true
+    cmds:
+      - |
+        trufflehog \
+          --no-update \
+          git file://. \
+          --exclude-paths nix/tests/infra/nix-os/id_ed25519
   lint:
     silent: true
     desc: 💄Lint jardin
@@ -93,6 +102,7 @@ tasks:
       - lint:yamlfmt
       - lint:typos
       - lint:reuse
+      - lint:secrets
   build:
     silent: true
     desc: Build jardin

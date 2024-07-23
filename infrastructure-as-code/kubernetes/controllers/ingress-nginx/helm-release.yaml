@@ -16,6 +16,9 @@ spec:
         namespace: operators
       version: 4.9.0
   interval: 1h
+  valuesFrom:
+    - kind: ConfigMap
+      name: ingress-nginx-values
   values:
     installCRDs: true
     global:

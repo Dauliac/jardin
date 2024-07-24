@@ -6,7 +6,7 @@ resources:
   - ./namespace.yaml
   - ./pvc-media.yaml
   - ./jellyfin
-  - ./adguard
+  # - ./adguard
   - ./homarr
   - ./jellyseerr
   # - ./radarr

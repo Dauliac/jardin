@@ -31,14 +31,16 @@ spec:
     DNS1: 9.9.9.9
     DNS2: 1.1.1.1
     podDnsConfig:
-    enabled: true
-    policy: "None"
-    nameservers:
-      - 127.0.0.1
-      - 9.9.9.9
+      enabled: true
+      policy: "None"
+      nameservers:
+        - 127.0.0.1
+        - 9.9.9.9
     serviceWeb:
       type: ClusterIP
     serviceDns:
+      enabled: true
       nodePort: "30950"
     serviceDhcp:
+      enabled: true
       nodePort: "30951"

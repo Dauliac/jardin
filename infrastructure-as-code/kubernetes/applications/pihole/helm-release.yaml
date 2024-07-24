@@ -17,7 +17,7 @@ spec:
       version: 2.26.0
   interval: 1h
   values:
-    dnsmasq:
+    # dnsmasq:
       # customDnsEntries:
       #   - address=/nas/192.168.178.10
       # customCnameEntries:
@@ -25,6 +25,9 @@ spec:
     persistentVolumeClaim:
       enabled: true
       existingClaim: pihole
+    ingress:
+      enabled: true
+
     DNS1: 9.9.9.9
     DNS2: 1.1.1.1
     podDnsConfig:

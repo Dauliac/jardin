@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pihole-config
+  name: pihole
   namespace: pihole
 spec:
   accessModes:
@@ -10,4 +10,4 @@ spec:
   storageClassName: standard
   resources:
     requests:
-      storage: 2Gi
+      size: "500Mi"

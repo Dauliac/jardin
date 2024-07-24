@@ -2,38 +2,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: transmission-deployment
-  labels:
-    app: transmission
+  name: jackett
+  namespace: applications
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: transmission
+      app: jackett
   template:
     metadata:
       labels:
-        app: transmission
+        app: jackett
     spec:
       containers:
-        - name: transmission
-          image: linuxserver/transmission:4.0.6
+        - name: jackett
+          image: linuxserver/jackett:0.22.362
           ports:
-            - containerPort: 9091
+            - containerPort: 9117
           env:
             - name: PUID
               value: "1000"
             - name: PGID
               value: "1000"
-          # - name: TZ
-          #   value: "Europe/Paris"
+            - name: TZ
+              value: "Europe/Paris"
           volumeMounts:
             - name: config
               mountPath: /config
-            - name: downloads
-              mountPath: /downloads
       volumes:
         - name: config
-          emptyDir: {}
-        - name: downloads
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: jackett-pvc

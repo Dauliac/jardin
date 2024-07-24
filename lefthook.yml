@@ -23,6 +23,9 @@ pre-commit:
     check:
       tags: check
       run: nix flake check
+    # lint:
+    #   tags: check lint
+    #   run: task lint
     docs:
       tags: check
       run: task docs

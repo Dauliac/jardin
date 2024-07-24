@@ -1,0 +1,35 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prowlarr
+  namespace: applications
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prowlarr
+  template:
+    metadata:
+      labels:
+        app: prowlarr
+    spec:
+      containers:
+        - name: prowlarr
+          image: linuxserver/prowlarr:1.21.2-nightly
+          ports:
+            - containerPort: 9696
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Europe/Paris"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: prowlarr-pvc

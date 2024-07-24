@@ -2,18 +2,19 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: transmission-ingress
+  name: jellyseerr
+  namespace: applications
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-    - host: transmission.example.com
+    - host: jellyseerr.example.com
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: transmission-service
+                name: jellyseerr
                 port:
-                  number: 80
+                  number: 5055

@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: jellyfin-config
+  name: media
   namespace: applications
 spec:
   accessModes:
@@ -10,4 +10,4 @@ spec:
   storageClassName: standard
   resources:
     requests:
-      storage: 10Gi
+      storage: 3000Gi

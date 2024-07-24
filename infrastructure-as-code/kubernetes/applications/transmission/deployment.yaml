@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transmission
+  namespace: applications
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: transmission
+  template:
+    metadata:
+      labels:
+        app: transmission
+    spec:
+      containers:
+        - name: transmission
+          image: linuxserver/transmission:4.0.6
+          ports:
+            - containerPort: 9091
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Europe/Paris"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: downloads
+              mountPath: /downloads
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: transmission-config
+        - name: downloads
+          persistentVolumeClaim:
+            claimName: transmission-downloads

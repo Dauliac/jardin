@@ -8,7 +8,7 @@ resources:
   - ./adguard
   - ./homarr
   - ./jellyseerr
-  - ./radarr
+  # - ./radarr
   - ./transmission
   - ./prowlarr
   # - ./jackett

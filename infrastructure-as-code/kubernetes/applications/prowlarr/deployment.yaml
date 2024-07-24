@@ -29,7 +29,13 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
+            - name: static-config
+              mountPath: /config
+              subPath: /config/config.xml
       volumes:
         - name: config
           persistentVolumeClaim:
             claimName: prowlarr-pvc
+        - name: static-config
+          persistentVolumeClaim:
+            claimName: prowlarr-config

@@ -2,39 +2,45 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: transmission
+  name: radarr
   namespace: applications
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: transmission
+      app: radarr
   template:
     metadata:
       labels:
-        app: transmission
+        app: radarr
     spec:
       containers:
-        - name: transmission
-          image: linuxserver/transmission:4.0.6
+        - name: radarr
+          # TODO:  add version
+          image: linuxserver/radarr:latest
           ports:
-            - containerPort: 9091
+            - containerPort: 7878
           env:
             - name: PUID
               value: "1000"
             - name: PGID
               value: "1000"
-              # - name: TZ
-              #   value: "Europe/Paris"
+            - name: TZ
+              value: "Europe/Paris"
           volumeMounts:
             - name: config
               mountPath: /config
-            - name: downloads
+            - name: download
               mountPath: /downloads
+            - name: movies
+              mountPath: /movies
       volumes:
         - name: config
           persistentVolumeClaim:
-            claimName: transmission-config
-        - name: downloads
+            claimName: radarr-pvc
+        - name: download
+          persistentVolumeClaim:
+            claimName: download
+        - name: movies
           persistentVolumeClaim:
             claimName: media

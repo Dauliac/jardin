@@ -5,11 +5,12 @@ namespace: applications
 resources:
   - ./namespace.yaml
   - ./pvc-media.yaml
+  - ./pvc-download.yaml
   - ./jellyfin
   # - ./adguard
   - ./homarr
   - ./jellyseerr
-  # - ./radarr
+  - ./radarr
   - ./transmission
   - ./prowlarr
   # - ./jackett

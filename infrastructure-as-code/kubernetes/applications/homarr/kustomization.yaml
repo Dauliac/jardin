@@ -5,4 +5,5 @@ resources:
   - ./deployment.yaml
   - ./config-pvc.yaml
   - ./service.yaml
+  - ./ingress.yaml
   # - ./pvc-config.yaml

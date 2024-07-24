@@ -27,7 +27,6 @@ spec:
       existingClaim: pihole
     ingress:
       enabled: true
-
     DNS1: 9.9.9.9
     DNS2: 1.1.1.1
     podDnsConfig:
@@ -40,7 +39,7 @@ spec:
       type: ClusterIP
     serviceDns:
       enabled: true
-      nodePort: "30950"
+      nodePort: "30959"
     serviceDhcp:
       enabled: true
-      nodePort: "30951"
+      nodePort: "30960"

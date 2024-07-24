@@ -10,4 +10,4 @@ spec:
   storageClassName: standard
   resources:
     requests:
-      size: "500Mi"
+      storage: "500Mi"

@@ -39,6 +39,7 @@ spec:
       type: ClusterIP
     serviceDns:
       enabled: true
+      mixedService: true
       nodePort: "30953"
     # serviceDhcp:
     #   enabled: true

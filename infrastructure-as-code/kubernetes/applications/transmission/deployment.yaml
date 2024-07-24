@@ -24,8 +24,8 @@ spec:
               value: "1000"
             - name: PGID
               value: "1000"
-            - name: TZ
-              value: "Europe/Paris"
+            # - name: TZ
+            #   value: "Europe/Paris"
           volumeMounts:
             - name: config
               mountPath: /config
@@ -37,4 +37,4 @@ spec:
             claimName: transmission-config
         - name: downloads
           persistentVolumeClaim:
-            claimName: transmission-downloads
+            claimName: media

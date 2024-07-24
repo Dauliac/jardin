@@ -8,7 +8,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-    - host: radarr.example.com
+    - host: radarr.${DOMAIN}
       http:
         paths:
           - path: /

@@ -6,7 +6,7 @@ metadata:
   namespace: operators
 spec:
   releaseName: jellyfin
-  targetnamespace: applications
+  targetNamespace: applications
   chart:
     spec:
       chart: jellyfin

@@ -4,4 +4,7 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./pvc.yaml
-  - ./helm-release.yaml
+  - ./deployment.yaml
+  - ./service-dns.yaml
+  - ./service-web.yaml
+  - ./configmap.yaml

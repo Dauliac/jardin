@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: transmission-ingress
+  name: transmission
   namespace: applications
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /

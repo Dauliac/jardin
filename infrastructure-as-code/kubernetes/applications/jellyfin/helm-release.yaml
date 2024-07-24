@@ -19,7 +19,6 @@ spec:
   values:
     ingress:
       enabled: true
-      className: kong-ingress-class
       hosts:
         - host: jellyfin.${DOMAIN}
           paths:

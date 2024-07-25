@@ -18,3 +18,23 @@ spec:
                 name: homarr
                 port:
                   number: 80
+    - host: homarr.jardin
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: homarr
+                port:
+                  number: 80
+    - host: homarr.jardin.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: homarr
+                port:
+                  number: 80

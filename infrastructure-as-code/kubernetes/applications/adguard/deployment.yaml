@@ -17,12 +17,13 @@ spec:
       containers:
         - name: adguard-home
           image: adguard/adguardhome:latest
-          env:
-            - name: AGH_CONFIG
-              valueFrom:
-                configMapKeyRef:
-                  name: adguard-config
-                  key: AdGuardHome.yaml
+          command:
+            - "sh"
+            - "-c"
+            - >
+              cp /etc/adguard/conf/AdGuardHome.yaml /opt/adguardhome/conf &&
+              sleep 10 &&
+              /opt/adguardhome/AdGuardHome --no-check-update --config /opt/adguardhome/conf/AdGuardHome.yaml
           ports:
             - containerPort: 53 #dns
               name: dns
@@ -35,7 +36,16 @@ spec:
           volumeMounts:
             - name: adguard-data
               mountPath: /opt/adguardhome/work
+            - name: config
+              mountPath: /etc/adguard/conf/AdGuardHome.yaml
+              # mountPath: /opt/adguardhome/conf/AdGuardHome.yaml
+              # mountPath: /tmp/AdGuardHome.yaml
+              subPath: AdGuardHome.yaml
+              readOnly: true
       volumes:
         - name: adguard-data
           persistentVolumeClaim:
             claimName: adguard
+        - name: config
+          configMap:
+            name: adguard-config

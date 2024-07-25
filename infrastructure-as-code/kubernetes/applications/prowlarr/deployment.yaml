@@ -37,5 +37,5 @@ spec:
           persistentVolumeClaim:
             claimName: prowlarr-pvc
         - name: static-config
-          persistentVolumeClaim:
-            claimName: prowlarr-config
+          configMap:
+            name: prowlarr-config

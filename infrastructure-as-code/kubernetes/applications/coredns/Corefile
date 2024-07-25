@@ -1,0 +1,11 @@
+.:53 {
+    forward . 9.9.9.9
+    log
+    errors
+}
+
+nofreedisk.space:53 {
+    file /etc/coredns/domain.zone
+    log
+    errors
+}

@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coredns
+  labels:
+    app: coredns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coredns
+  template:
+    metadata:
+      labels:
+        app: coredns
+    spec:
+      containers:
+        - name: coredns
+          image: coredns/coredns:latest
+          volumeMounts:
+            - name: config
+              mountPath: /etc/coredns
+              subPath: ./Corefile
+              readOnly: true
+            - name: zone
+              mountPath: /etc/coredns/
+              subPath: ./domain.zone
+              readOnly: true
+          ports:
+            - containerPort: 53
+              protocol: UDP
+      volumes:
+        - name: config
+          configMap:
+            name: coredns-config
+        - name: zone
+          configMap:
+            name: coredns-zone

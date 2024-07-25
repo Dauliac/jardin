@@ -20,16 +20,17 @@ dns:
   ratelimit_subnet_len_ipv6: 56
   ratelimit_whitelist: []
   refuse_any: true
+  # upstream_dns:
+  #   - https://dns10.quad9.net/dns-query
+  # upstream_dns_file: ""
   upstream_dns:
-    - https://dns10.quad9.net/dns-query
-  upstream_dns_file: ""
-  upstream_dns:
-    - 10.96.0.10
+    - 10.96.255.250
+    - 9.9.9.9
   bootstrap_dns:
     - 9.9.9.10
-    - 149.112.112.10
-    - 2620:fe::10
-    - 2620:fe::fe:10
+    # - 149.112.112.10
+    # - 2620:fe::10
+    # - 2620:fe::fe:10
   fallback_dns: []
   upstream_mode: load_balance
   fastest_timeout: 1s

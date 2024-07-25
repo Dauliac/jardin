@@ -11,6 +11,11 @@ spec:
     - protocol: UDP
       port: 53
       targetPort: 53
-      name: dns
+      name: udp
+      nodePort: 30053
+    - protocol: TCP
+      port: 53
+      targetPort: 53
+      name: tcp
       nodePort: 30053
   type: NodePort

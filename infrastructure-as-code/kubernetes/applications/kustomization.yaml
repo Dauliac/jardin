@@ -7,10 +7,11 @@ resources:
   - ./pvc-media.yaml
   - ./pvc-download.yaml
   - ./jellyfin
-  # - ./adguard
+  - ./adguard
   - ./homarr
   - ./jellyseerr
   - ./radarr
   - ./transmission
   - ./prowlarr
+  - ./core-dns
   # - ./jackett

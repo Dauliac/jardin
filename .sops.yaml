@@ -1,0 +1,11 @@
+---
+# yamllint disable rule:line-length
+keys:
+  - &admin age1tfu8jht2uv5pwp2lfzyp0hqkcfxgpdty6ayg4c3ze030uche6u8sk6r66k
+# yamllint enable rule:line-length
+creation_rules:
+  - path_regex: .*.sops.yaml
+    encrypted_regex: ^(data|stringData)$
+    key_groups:
+      - age:
+          - *admin

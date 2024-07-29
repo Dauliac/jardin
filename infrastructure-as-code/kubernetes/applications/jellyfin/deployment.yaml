@@ -1,0 +1,116 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: jellyfin
+    app.kubernetes.io/name: jellyfin
+  name: jellyfin
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: jellyfin
+      app.kubernetes.io/name: jellyfin
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: jellyfin
+        app.kubernetes.io/name: jellyfin
+    spec:
+      initContainers:
+        - name: init-db
+          image: alpine:latest
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "sh /scripts/init-db.sh"
+          env:
+            - name: JELLYFIN_SERVICES_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: jellyfin-token-secret
+                  key: JELLYFIN_SERVICES_TOKEN
+          volumeMounts:
+            - name: init-script
+              mountPath: /scripts
+            - name: config-data
+              mountPath: /config/data
+            - mountPath: /tmp/authentication.db
+              subPath: authentication.db
+              name: config-auth-db
+      containers:
+        - image: docker.io/linuxserver/jellyfin:10.7.7
+          imagePullPolicy: IfNotPresent
+          name: jellyfin
+          envFrom:
+            - configMapRef:
+                name: jellyfin
+            - secretRef:
+                name: jellyfin
+          ports:
+            - containerPort: 8096
+              name: http
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: http
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+          volumeMounts:
+            - mountPath: /config/data
+              name: config-data
+            - mountPath: /data
+              name: data
+            - mountPath: /config/networks.xml
+              subPath: networks.xml
+              name: jellyfin-config-networks
+            - mountPath: /config/system.xml
+              subPath: system.xml
+              name: jellyfin-config-system
+            - mountPath: /config/options.xml
+              subPath: options.xml
+              name: jellyfin-config-options
+            - mountPath: /config/encoding.xml
+              subPath: encoding.xml
+              name: jellyfin-config-encoding
+            - mountPath: /config-auth-db/authentication.db
+              subPath: authentication.db
+              name: config-auth-db
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: media
+        - name: jellyfin-config-networks
+          configMap:
+            name: jellyfin-config-networks
+        - name: jellyfin-config-system
+          configMap:
+            name: jellyfin-config-system
+        - name: jellyfin-config-options
+          configMap:
+            name: jellyfin-config-options
+        - name: jellyfin-config-encoding
+          configMap:
+            name: jellyfin-config-encoding
+        - name: init-script
+          configMap:
+            name: jellyfin-init-script
+        - name: config-data
+          persistentVolumeClaim:
+            claimName: jellyfin-config-data
+        - name: config-auth-db
+          persistentVolumeClaim:
+            claimName: jellyfin-config-auth-db

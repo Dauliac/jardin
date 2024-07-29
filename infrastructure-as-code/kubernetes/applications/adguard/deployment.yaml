@@ -21,9 +21,9 @@ spec:
             - "sh"
             - "-c"
             - >
-              cp /etc/adguard/conf/AdGuardHome.yaml /opt/adguardhome/conf &&
-              sleep 10 &&
-              /opt/adguardhome/AdGuardHome --no-check-update --config /opt/adguardhome/conf/AdGuardHome.yaml
+              cp /etc/adguard/conf/AdGuardHome.yaml /opt/adguardhome/conf && sleep 10 && /opt/adguardhome/AdGuardHome --no-check-update
+              --config /opt/adguardhome/conf/AdGuardHome.yaml
+
           ports:
             - containerPort: 53 #dns
               name: dns

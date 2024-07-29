@@ -24,8 +24,7 @@
           kind
           docker
           kubectl
-          # BUG: this package is broken
-          # vscode-extensions.llvm-org.lldb-vscode
+          sops
         ]
         ++ config.linters
         ++ config.rustCheckers

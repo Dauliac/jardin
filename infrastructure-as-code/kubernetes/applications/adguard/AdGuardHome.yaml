@@ -2,9 +2,9 @@
 http:
   address: 0.0.0.0:80
   session_ttl: 720h
-# users:
-#   - name: admin
-#     password: $2a$10$mXCkdfdKo8DtV3VRJqbTkOm6cjthieKZEXSAaU2W.LPZgo83FE0gG
+users:
+  - name: admin
+    password: $2a$10$mXCkdfdKo8DtV3VRJqbTkOm6cjthieKZEXSAaU2W.LPZgo83FE0gG
 auth_attempts: 5
 block_auth_min: 15
 http_proxy: ""
@@ -149,7 +149,9 @@ filtering:
   blocking_mode: default
   parental_block_host: family-block.dns.adguard.com
   safebrowsing_block_host: standard-block.dns.adguard.com
-  rewrites: []
+  # rewrites:
+  #   - domain: '*.nofreedisk.space'
+  #     answer: localhost
   safebrowsing_cache_size: 1048576
   safesearch_cache_size: 1048576
   parental_cache_size: 1048576

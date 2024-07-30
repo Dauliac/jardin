@@ -1,7 +1,7 @@
 ---
 version: '3'
 vars:
-  SOPS_AGE_KEY_FILE: ~/.config/sops/age/keys.txt
+  SOPS_AGE_KEY_FILE: '{{.SOPS_AGE_KEY_FILE}}'
 tasks:
   bootstrap:
     desc: Bootstrap flux

@@ -17,5 +17,5 @@ spec:
   postBuild:
     substitute:
       CLUSTER_NAME: jardin-tests
-      DOMAIN: localhost
+      DOMAIN: jardin.io
       LOADBALANCER_IP: 127.0.0.1

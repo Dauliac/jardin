@@ -34,6 +34,7 @@
         ${config.documentationShellHookScript}
 
         export FLAKE_ROOT="$(git rev-parse --show-toplevel)"
+        export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/jardin.txt"
         task \
           --taskfile "$FLAKE_ROOT/Taskfile.yaml" \
           init

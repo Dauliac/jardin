@@ -28,9 +28,6 @@ spec:
       CLUSTER_NAME: ${CLUSTER_NAME}
       DOMAIN: ${DOMAIN}
       LOADBALANCER_IP: ${LOADBALANCER_IP}
-    substituteFrom:
-      - kind: Secret
-        name: cluster-secrets
   patches:
     - target:
         group: kustomize.toolkit.fluxcd.io
@@ -58,7 +55,3 @@ spec:
             provider: sops
             secretRef:
               name: sops-age
-          postBuild:
-            substituteFrom:
-              - kind: Secret
-                name: cluster-secrets

@@ -1,4 +1,5 @@
 ---
+# BUG: core dns do not answer on nofreedisk.space domain records A
 apiVersion: apps/v1
 kind: Deployment
 metadata:

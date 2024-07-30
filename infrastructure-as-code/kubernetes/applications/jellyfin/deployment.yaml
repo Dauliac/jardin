@@ -40,8 +40,8 @@ spec:
               mountPath: /scripts
             - name: config-data
               mountPath: /config/data
-            - mountPath: /tmp/authentication.db
-              subPath: authentication.db
+            - mountPath: /tmp/auth/
+              readonly: false
               name: config-auth-db
       containers:
         - image: docker.io/linuxserver/jellyfin:10.7.7
@@ -89,7 +89,7 @@ spec:
             - mountPath: /config/encoding.xml
               subPath: encoding.xml
               name: jellyfin-config-encoding
-            - mountPath: /config-auth-db/authentication.db
+            - mountPath: /config/authentication.db
               subPath: authentication.db
               name: config-auth-db
       volumes:

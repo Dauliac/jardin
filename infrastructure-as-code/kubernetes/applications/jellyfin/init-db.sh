@@ -1,13 +1,17 @@
 #!/bin/sh
 set -e
+set -x
 
-DATABASE_PATH="/tmp/authentication.db"
+WORKDIR="/tmp/auth"
+DATABASE_PATH="$WORKDIR/authentication.db"
 
 # TODO: build container with all packages in
 apk update
 apk add sqlite
 
 CURRENT_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+rm -rf "$WORKDIR/*"
 
 sqlite3 $DATABASE_PATH <<EOF
 CREATE TABLE IF NOT EXISTS Devices (

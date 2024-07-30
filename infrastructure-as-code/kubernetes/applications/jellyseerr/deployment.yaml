@@ -22,10 +22,10 @@ spec:
           env:
             - name: LOG_LEVEL
               value: "debug"
-            - name: TZ
-              value: "Europe/Paris"
             - name: PORT
               value: "5055"
+            - name: TZ
+              value: ${CONFIG_TIMEZONE}
           volumeMounts:
             - name: config
               mountPath: /app/config

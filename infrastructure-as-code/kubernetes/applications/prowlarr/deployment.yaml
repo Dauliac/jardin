@@ -25,7 +25,7 @@ spec:
             - name: PGID
               value: "1000"
             - name: TZ
-              value: "Europe/Paris"
+              value: ${CONFIG_TIMEZONE}
           volumeMounts:
             - name: config
               mountPath: /config

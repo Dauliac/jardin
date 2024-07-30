@@ -1,0 +1,9 @@
+---
+# !yamlfmt!:ignore
+# yamllint disable rule:document-start
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-settings
+data:
+  CONFIG_TIMEZONE: "Europe/Paris"

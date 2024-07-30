@@ -47,6 +47,9 @@ spec:
         - image: docker.io/linuxserver/jellyfin:10.7.7
           imagePullPolicy: IfNotPresent
           name: jellyfin
+          env:
+            - name: TZ
+              value: ${CONFIG_TIMEZONE}
           envFrom:
             - configMapRef:
                 name: jellyfin

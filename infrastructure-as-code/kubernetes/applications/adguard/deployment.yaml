@@ -33,6 +33,9 @@ spec:
             - containerPort: 80 #web gui
               name: http
               protocol: TCP
+          env:
+            - name: TZ
+              value: ${CONFIG_TIMEZONE}
           volumeMounts:
             - name: adguard-data
               mountPath: /opt/adguardhome/work

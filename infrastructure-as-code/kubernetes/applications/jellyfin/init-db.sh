@@ -2,16 +2,14 @@
 set -e
 set -x
 
-WORKDIR="/tmp/auth"
-DATABASE_PATH="$WORKDIR/authentication.db"
+DATABASE_WORKDIR="/tmp/auth"
+DATABASE_PATH="$DATABASE_WORKDIR/authentication.db"
 
 # TODO: build container with all packages in
 apk update
 apk add sqlite
 
 CURRENT_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-
-rm -rf "$WORKDIR/*"
 
 sqlite3 $DATABASE_PATH <<EOF
 CREATE TABLE IF NOT EXISTS Devices (
@@ -43,4 +41,10 @@ VALUES
 (2, '$JELLYFIN_SERVICES_TOKEN', 'c4c864def4ac4a3fbe6b1348dfaa5357', 'services', '10.7.7', 'jellyfin-app', NULL, NULL, 1, '$CURRENT_TIMESTAMP', '0001-01-01 00:00:00Z');
 EOF
 
+rm -rf /config/data/data
+mkdir -p /config/data/data
+cp -f "$DATABASE_PATH" /config/data/data
+
 echo "Database initialized successfully"
+
+cp -f /tmp/config/* /config/

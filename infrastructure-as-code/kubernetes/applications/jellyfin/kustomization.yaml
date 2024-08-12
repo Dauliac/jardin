@@ -2,26 +2,20 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./data-pvc.yaml
-  - ./auth-db-pvc.yaml
-  - ./token-secret.sops.yaml
-  - ./admin-secret.sops.yaml
+  - ./config-pvc.yaml
   - ./deployment.yaml
   - ./service.yaml
   - ./ingress.yaml
+  - ./job.yaml
 configMapGenerator:
-  - name: jellyfin-config-networks
+  - name: configure-jellyfin-config
     files:
-      - ./configs/networks.xml
-  - name: jellyfin-config-system
+      - movies.json=./movies.json
+      - tv_shows.json=./tv_shows.json
+  - name: configure-jellyfin-script
     files:
-      - ./configs/system.xml
-  - name: jellyfin-config-options
-    files:
-      - ./configs/options.xml
-  - name: jellyfin-config-encoding
-    files:
-      - ./configs/encoding.xml
-  - name: jellyfin-init-script
-    files:
-      - init-db.sh
+      - ./configure.sh
+secretGenerator:
+  - name: jellyfin-admin-secrets
+    envs:
+      - ./admin.sops.env

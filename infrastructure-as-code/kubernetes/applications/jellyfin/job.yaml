@@ -1,0 +1,33 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: configure-jellyfin
+spec:
+  template:
+    spec:
+      containers:
+        - name: configure-jellyfin
+          image: docker.io/linuxserver/jellyfin:10.7.7
+          command: ["/bin/sh", "-c", "/configure.sh"]
+          envFrom:
+            - secretRef:
+                name: jellyfin-admin-secrets
+          volumeMounts:
+            - name: script
+              mountPath: /configure.sh
+              subPath: configure.sh
+            - name: config
+              mountPath: /etc/configure-jellyfin/movies.json
+              subPath: movies.json
+            - name: config
+              mountPath: /etc/configure-jellyfin/tv_show.json
+              subPath: tv_shows.json
+      restartPolicy: OnFailure
+      volumes:
+        - name: config
+          configMap:
+            name: configure-jellyfin-config
+        - name: script
+          configMap:
+            name: configure-jellyfin-script

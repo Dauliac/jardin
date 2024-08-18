@@ -52,7 +52,7 @@
     "SubtitleFetcherOrder": [],
     "PathInfos": [
       {
-        "Path": "/srv/storage/Movies"
+        "Path": "/data/complete/movies"
       }
     ]
   }

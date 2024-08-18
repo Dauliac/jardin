@@ -12,3 +12,7 @@ creation_rules:
     key_groups:
       - age:
           - *key
+  - path_regex: .*.sops.conf
+    key_groups:
+      - age:
+          - *key

@@ -86,7 +86,7 @@
     "SubtitleFetcherOrder": [],
     "PathInfos": [
       {
-        "Path": "/srv/storage/TVShows"
+        "Path": "/data/complete/tvshows"
       }
     ]
   }

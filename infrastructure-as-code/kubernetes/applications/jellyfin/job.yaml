@@ -4,12 +4,14 @@ kind: Job
 metadata:
   name: configure-jellyfin
 spec:
+  backoffLimit: 10
   template:
     spec:
       containers:
         - name: configure-jellyfin
           image: docker.io/linuxserver/jellyfin:10.7.7
-          command: ["/bin/sh", "-c", "/configure.sh"]
+          command: ["/usr/bin/env", "bash", "/configure.sh"]
+          # command: ["/usr/bin/env", "bash", "-c", "sleep infinity"]
           envFrom:
             - secretRef:
                 name: jellyfin-admin-secrets

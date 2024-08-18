@@ -45,7 +45,7 @@ spec:
           volumeMounts:
             - mountPath: /config
               name: config
-            - mountPath: /data
+            - mountPath: /data/complete/movies
               name: data
       volumes:
         - name: data

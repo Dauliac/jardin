@@ -3,7 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: transmission
-  namespace: applications
 spec:
   replicas: 1
   selector:
@@ -15,26 +14,83 @@ spec:
         app: transmission
     spec:
       containers:
-        - name: transmission
-          image: linuxserver/transmission:4.0.6
-          ports:
-            - containerPort: 9091
-          env:
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
-            - name: TZ
-              value: ${CONFIG_TIMEZONE}
-          volumeMounts:
-            - name: config
-              mountPath: /config
-            - name: downloads
-              mountPath: /downloads
+      - name: wireguard
+        image: linuxserver/wireguard
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+            - SYS_MODULE
+        env:
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: modules
+          mountPath: /lib/modules
+          readOnly: true
+        - name: dev-tun
+          mountPath: /dev/net/tun
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - "/bin/bash"
+              - "-c"
+              - >-
+                apt update
+                && apt install iproute2 -y
+                && ip route del default
+                && ip route add default via $VPN_IP"
+        livenessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - "wg show | grep -q transfer"
+          initialDelaySeconds: 90
+          periodSeconds: 90
+      - name: transmission
+        image: linuxserver/transmission
+        env:
+          # - name: PUID
+          #   value: "1000"
+          # - name: PGID
+          #   value: "1000"
+          - name: TZ
+            value: ${CONFIG_TIMEZONE}
+          - name: TRANSMISSION_WEB_HOME
+            value: "/combustion-release/"
+        networkMode: "container:wireguard"  # Utilisation du réseau du conteneur WireGuard
+        ports:
+          - containerPort: 9091
+          - containerPort: 51413
+        lifecycle:
+          postStart:
+            exec:
+              command:
+                - "/bin/bash"
+                - "-c"
+                - >-
+                  apt update
+                  && apt install iproute2 -y
+                  && ip route del default && ip route add default via $VPN_IP"
+        volumeMounts:
+          - name: config
+            mountPath: /config
+          - name: downloads
+            mountPath: /downloads
+          - name: watch
+            mountPath: /watch
       volumes:
         - name: config
           persistentVolumeClaim:
             claimName: transmission-config
         - name: downloads
           persistentVolumeClaim:
+            claimName: download
+        - name: watch
+          persistentVolumeClaim:
             claimName: media
+        - name: dev-tun
+          hostPath:
+            path: /dev/net/tun

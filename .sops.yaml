@@ -4,15 +4,7 @@ keys:
   - &key age10hjhp6r39p9qkqd5eny55lqhy2frrsndmq0dwgufw8r8vu7u5ajq4skyh2
 # yamllint enable rule:line-length
 creation_rules:
-  - path_regex: .*.sops.env
-    key_groups:
-      - age:
-          - *key
-  - path_regex: .*.sops.yaml
-    key_groups:
-      - age:
-          - *key
-  - path_regex: .*.sops.conf
+  - path_regex: .*.sops.(ovpn|txt|conf|env|yaml)
     key_groups:
       - age:
           - *key

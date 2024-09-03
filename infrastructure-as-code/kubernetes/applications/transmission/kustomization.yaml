@@ -5,4 +5,11 @@ resources:
   - ./deployment.yaml
   - ./ingress.yaml
   - ./service.yaml
-  - ./pvc-config.yaml
+  # - ./pvc-config.yaml
+secretGenerator:
+  - name: transmission-vpn-credentials
+    envs:
+      - ./credentials.sops.env
+  - name: transmission-vpn-openvpn-config
+    files:
+      - ./udp.ovpn=./udp.sops.ovpn

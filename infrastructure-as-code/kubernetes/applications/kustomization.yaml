@@ -16,4 +16,3 @@ resources:
   # - ./bind9
   - ./coredns
   # - ./jackett
-  - ./wireguard

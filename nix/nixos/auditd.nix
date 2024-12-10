@@ -1,4 +1,4 @@
-{}: {
+{...}: {
   security.auditd.enable = true;
   security.audit.enable = true;
   security.audit.rules = [

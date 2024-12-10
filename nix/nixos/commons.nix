@@ -1,7 +1,5 @@
 {
   config,
-  lib,
-  jardinLib,
   ...
 }: {
     nix = {
@@ -29,16 +27,7 @@
       loader.systemd-boot.configurationLimit = 5;
       tmp.cleanOnBoot = true;
     };
-    # virtualisation = {
-    #   podman = {
-    #     enable = true;
-    #     defaultNetwork.settings.dns_enabled = true;
-    #   };
-    #   oci-containers.backend = "podman";
-    #   libvirtd.enable = true;
-    # };
     security.polkit.enable = true;
     networking.useDHCP = true;
-    networking.hostName = jardinLib.currentNodeHostname config.jardin.nodes;
     networking.firewall.enable = true;
 }

@@ -1,4 +1,4 @@
-{}: {
+{...}: {
   imports = [
     ./docs.nix
   ];
@@ -20,7 +20,6 @@
           sops
           k9s
         ]
-        ++ config.linters
         ++ config.formatterPackages
         ++ config.docsPackages;
       shellHook = ''

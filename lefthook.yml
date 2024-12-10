@@ -23,13 +23,6 @@ pre-commit:
     check:
       tags: check
       run: nix flake check
-    # lint:
-    #   tags: check lint
-    #   run: task lint
-    docs:
-      tags: check
-      run: task docs
-      glob: "docs/**/*" # TODO: improve glob including, nix and taskfile dependencies
     formatter-nix:
       tags: formatter
       glob: "*.nix"

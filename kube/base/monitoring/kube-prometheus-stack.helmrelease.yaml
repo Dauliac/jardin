@@ -6,12 +6,12 @@ metadata:
   namespace: monitoring
 spec:
   releaseName: kube-prometheus-stack
+  interval: 1h
   chart:
     spec:
+      version: "61.2.0"
+      chart: kube-prometheus-stack
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
         namespace: default
-      version: "61.2.0"
-      chart: kube-prometheus-stack
-  interval: 1h

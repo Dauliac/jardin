@@ -64,7 +64,7 @@ tasks:
     rune: "once"
     vars:
       JSON:
-        sh: nix flake show --json | jq '.packages._{{OS}}'
+        sh: nix flake show --json | jq '.packages.*_{{OS}}'
       FOO:
         ref: "fromJson .JSON"
     cmds:

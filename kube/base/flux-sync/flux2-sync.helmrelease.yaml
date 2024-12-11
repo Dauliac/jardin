@@ -5,7 +5,10 @@ metadata:
   name: flux2-sync
   namespace: flux-system
 spec:
-  interval: 3m
+  interval: 1m
+  releaseName: flux2-sync
+  driftDetection:
+    mode: enabled
   chart:
     spec:
       chart: flux2-sync

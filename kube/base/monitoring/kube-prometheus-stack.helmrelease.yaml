@@ -7,6 +7,8 @@ metadata:
 spec:
   releaseName: kube-prometheus-stack
   interval: 1m
+  driftDetection:
+    mode: enabled
   chart:
     spec:
       version: "61.2.0"
@@ -14,4 +16,4 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
-        namespace: default
+        namespace: monitoring

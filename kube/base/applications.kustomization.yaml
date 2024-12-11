@@ -5,7 +5,7 @@ metadata:
   name: applications
   namespace: flux-system
 spec:
-  interval: 30m
+  interval: 3m
   timeout: 5m
   retryInterval: 1m
   prune: true

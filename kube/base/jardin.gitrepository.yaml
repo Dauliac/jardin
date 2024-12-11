@@ -5,7 +5,7 @@ metadata:
   name: jardin
   namespace: flux-system
 spec:
-  interval: 2m
+  interval: 1m
   ref:
     branch: main
   url: https://github.com/Dauliac/jardin.git

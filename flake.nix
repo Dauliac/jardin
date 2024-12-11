@@ -44,7 +44,7 @@
       systems = ["x86_64-linux"];
       imports = [
         ./nix
-        ./tests/e2e/nixos
+        ./tests/e2e/os
       ];
     });
 }

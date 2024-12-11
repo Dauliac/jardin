@@ -14,12 +14,17 @@
           lefthook
           convco
           fluxcd
-          kind
-          docker
+          kustomize
           kubectl
+          trufflehog
+          fd
+          yamlfmt
+          reuse
           sops
           kubernetes-helm
           k9s
+          kube-linter
+          kubeconform
         ]
         ++ config.formatterPackages
         ++ config.docsPackages;

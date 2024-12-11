@@ -1,9 +1,0 @@
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: kedacore
-  namespace: operators
-spec:
-  interval: 24h
-  url: https://kedacore.github.io/charts

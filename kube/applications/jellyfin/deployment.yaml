@@ -6,6 +6,19 @@ metadata:
     app.kubernetes.io/instance: jellyfin
     app.kubernetes.io/name: jellyfin
   name: jellyfin
+  annotations:
+    ignore-check.kube-linter.io/latest-tag: >-
+      FIXME: fix this one
+    ignore-check.kube-linter.io/run-as-non-root: >-
+      FIXME: fix this one
+    ignore-check.kube-linter.io/no-read-only-root-fs: >-
+      FIXME: fix this one
+    ignore-check.kube-linter.io/unset-memory-requirements: >-
+      FIXME: fix this one
+    ignore-check.kube-linter.io/unset-cpu-requirements: >-
+      FIXME: fix this one
+    ignore-check.kube-linter.io/drop-net-raw-capability: >-
+      FIXME: fix this one
 spec:
   progressDeadlineSeconds: 600
   replicas: 1

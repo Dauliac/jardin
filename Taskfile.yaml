@@ -9,9 +9,6 @@ includes:
     dir: .
   docs:
     taskfile: docs/Taskfile.yaml
-  tests:
-    taskfile: ./kube/clusters/jardin-tests/Taskfile.yaml
-    dir: ./kube/clusters/jardin-tests/
 tasks:
   init:
     silent: true

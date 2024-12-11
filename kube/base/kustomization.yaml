@@ -1,0 +1,11 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: flux-system
+resources:
+  - ./jardin.gitrepository.yaml
+  - ./base.kustomization.yaml
+  - ./controllers.kustomization.yaml
+  - ./applications.kustomization.yaml
+  - ./flux-sync
+  - ./monitoring

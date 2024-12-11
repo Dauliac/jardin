@@ -36,16 +36,20 @@
         };
       };
       gitrepo = {
-        target = "jardin.gitrepo.yaml";
-        source = ../../kube/gitrepo.yaml;
+        target = "jardin.gitrepository.yaml";
+        source = ../../kube/base/jardin.gitrepository.yaml;
+      };
+      base = {
+        target = "base.kustomization.yaml";
+        source = ../../kube/base/base.kustomization.yaml;
       };
       controllers = {
         target = "controllers.kustomization.yaml";
-        source = ../../kube/controllers.yaml;
+        source = ../../kube/base/controllers.kustomization.yaml;
       };
       application = {
         target = "applications.kustomization.yaml";
-        source = ../../kube/applications.yaml;
+        source = ../../kube/base/applications.kustomization.yaml;
       };
     };
   };

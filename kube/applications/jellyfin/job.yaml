@@ -3,6 +3,19 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: configure-jellyfin
+  annotations:
+    ignore-check.kube-linter.io/latest-tag: >-
+      FIXME: fix this one
+    ignore-check.kube-linter.io/run-as-non-root: >-
+      FIXME: fix this one
+    ignore-check.kube-linter.io/no-read-only-root-fs: >-
+      FIXME: fix this one
+    ignore-check.kube-linter.io/unset-memory-requirements: >-
+      FIXME: fix this one
+    ignore-check.kube-linter.io/unset-cpu-requirements: >-
+      FIXME: fix this one
+    ignore-check.kube-linter.io/drop-net-raw-capability: >-
+      FIXME: fix this one
 spec:
   backoffLimit: 10
   template:

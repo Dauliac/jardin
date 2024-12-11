@@ -32,11 +32,69 @@ tasks:
         trufflehog \
           --no-update \
           git file://. \
-          --exclude-paths nix/tests/infra/nix-os/id_ed25519
+          --exclude-paths tests/e2e/os
+  kustomize:
+    silent: true
+    # internal: true
+    run: "once"
+    vars:
+      KUSTOMIZATIONS_PATHS:
+        sh: fd '^kustomization.yaml$' ./kube --exec dirname {}
+    deps:
+      - for:
+          var: KUSTOMIZATIONS_PATHS
+        task: kustomize:build
+        vars:
+          KUSTOMIZATION_PATH: "{{ .ITEM }}"
+  kustomize:build:
+    silent: true
+    internal: true
+    prefix: kustomize:build:{{.KUSTOMIZATION_PATH}}
+    vars:
+      OUTPUT_DIRECTORY: '{{joinPath .KUSTOMIZATION_PATH "build"}}'
+      OUTPUT_FILE: '{{joinPath .OUTPUT_DIRECTORY "kustomization.yaml"}}'
+    requires:
+      vars:
+        - KUSTOMIZATION_PATH
+    cmds:
+      - rm -rf "{{.OUTPUT_FILE}}"
+      - mkdir -p "{{.OUTPUT_DIRECTORY}}"
+      - kustomize build {{.KUSTOMIZATION_PATH}} --output {{.OUTPUT_FILE}}
+      - task: kubeconform
+        vars:
+          KUBECONFORM_PATH: "{{.OUTPUT_FILE}}"
+      - task: kube-linter
+        vars:
+          KUBE_LINTER_PATH: "{{.OUTPUT_FILE}}"
+  kube-linter:
+    silent: true
+    internal: true
+    prefix: kube-linter:{{.KUBE_LINTER_PATH}}
+    requires:
+      vars:
+        - KUBE_LINTER_PATH
+    cmds:
+      - kube-linter lint "{{.KUBE_LINTER_PATH}}"
+  kubeconform:
+    silent: true
+    internal: true
+    prefix: kubeconform:{{.KUBECONFORM_PATH}}
+    requires:
+      vars:
+        - KUBECONFORM_PATH
+    cmds:
+      - |
+        kubeconform \
+          -schema-location default \
+          -schema-location \
+            'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{"{{"}}.Group{{"}}"}}/{{"{{"}}.ResourceKind{{"}}"}}_{{"{{"}}.ResourceAPIVersion{{"}}"}}.json' \
+          -skip apiextensions.k8s.io/v1/CustomResourceDefinition \
+          "{{.KUBECONFORM_PATH}}"
   default:
     silent: true
     desc: 💄Lint jardin
     deps:
+      - kustomize
       - yamlfmt
       - typos
       - reuse

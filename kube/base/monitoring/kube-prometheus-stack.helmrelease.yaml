@@ -6,7 +6,7 @@ metadata:
   namespace: monitoring
 spec:
   releaseName: kube-prometheus-stack
-  interval: 1h
+  interval: 1m
   chart:
     spec:
       version: "61.2.0"

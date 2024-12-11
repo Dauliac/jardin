@@ -16,7 +16,3 @@ spec:
     name: jardin
   dependsOn:
     - name: base
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age

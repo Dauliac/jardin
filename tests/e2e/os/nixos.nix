@@ -29,14 +29,19 @@ in {
           ...
         }: {
           virtualisation = {
-            diskSize = 1024 * 1024;
-            memorySize = 2048;
-            cores = 3;
+            diskSize = 512 * 1024;
+            memorySize = 3048;
+            cores = 4;
             forwardPorts = [
               {
                 from = "host";
                 host.port = spy.sshHostPort;
                 guest.port = 22;
+              }
+              {
+                from = "host";
+                host.port = 6443;
+                guest.port = 6443;
               }
             ];
           };

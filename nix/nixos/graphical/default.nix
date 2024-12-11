@@ -1,8 +1,4 @@
-{
-  pkgs,
-  config,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
     ./sound.nix
     # ./gaming.nix # TODO: add unfree option to get steam
@@ -76,13 +72,15 @@
   environment.systemPackages = with pkgs; [
     gnome.gnome-tweaks
   ];
-  users.users.jardin = {
-    isNormalUser = true;
-    description = "Jardin 🏡";
-    group = "jardin";
-    extraGroups = ["networkmanager" "audio" "video"];
-    shell = pkgs.bashInteractive;
-    # hashedPasswordFile = config.sops.secrets.dauliac_hashed_password.path;
+  users = {
+    mutableUsers = false;
+    users.jardin = {
+      isNormalUser = true;
+      description = "Jardin 🏡";
+      group = "jardin";
+      extraGroups = ["networkmanager" "audio" "video"];
+      shell = pkgs.bashInteractive;
+    };
   };
   users.groups.jardin = {};
   programs.zsh.enable = true;

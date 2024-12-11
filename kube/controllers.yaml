@@ -14,5 +14,3 @@ spec:
   sourceRef:
     kind: GitRepository
     name: jardin
-  dependsOn:
-    - name: base

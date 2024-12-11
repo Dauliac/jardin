@@ -59,6 +59,17 @@ tasks:
         lefthook -- run pre-commit pre-push
     sources:
       - "lefthook.yml"
+  build:
+    silent: true
+    rune: "once"
+    vars:
+      JSON:
+        sh: nix flake show --json | jq '.packages._{{OS}}'
+      FOO:
+        ref: "fromJson .JSON"
+    cmds:
+      - |
+
   default:
     silent: true
     run: "once"

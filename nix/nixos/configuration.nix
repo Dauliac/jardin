@@ -20,5 +20,6 @@
     unzip
     fd
     vim
+    htop
   ];
 }

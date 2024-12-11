@@ -81,7 +81,7 @@
     description = "Jardin 🏡";
     group = "jardin";
     extraGroups = ["networkmanager" "audio" "video"];
-    shell = pkgs.zsh;
+    shell = pkgs.bashInteractive;
     # hashedPasswordFile = config.sops.secrets.dauliac_hashed_password.path;
   };
   users.groups.jardin = {};

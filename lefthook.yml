@@ -27,4 +27,4 @@ pre-commit:
       stage_fixed: true
     nix:test:build:
       tags: test e2e build
-      run: nix build '.#devInfraNixOs' --no-link
+      run: nix build '.#devOs' --no-link

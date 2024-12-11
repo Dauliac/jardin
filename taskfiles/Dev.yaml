@@ -1,0 +1,14 @@
+---
+version: "3"
+set: [errexit, pipefail, nounset]
+tasks:
+  start:
+    silent: true
+    desc: 🚗 Start dev environment
+    cmds:
+      - nix run '.#devOsStart'
+  connect:
+    silent: true
+    desc: 🔗 Get a shell into dev environment
+    cmds:
+      - nix run '.#devOsConnect'

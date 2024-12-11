@@ -15,13 +15,23 @@
               nixpkgs.overlays = lib.mkForce [
                 inputs.nix-snapshotter.overlays.default
                 inputs.sops-nix.overlays.default
-                inputs.comin.overlays.default
+                inputs.comin.overlays.comin
               ];
             }
             inputs.comin.nixosModules.comin
             inputs.nix-snapshotter.nixosModules.default
             inputs.sops-nix.nixosModules.default
+            inputs.home-manager.nixosModules.default
             ./configuration.nix
+            {
+              home-manager = {
+                sharedModules = [
+                  ./graphical/home-manager
+                ];
+                extraSpecialArgs = {inherit inputs;};
+                users.jardin = ./graphical/home-manager/home.nix;
+              };
+            }
           ];
         }
       );

@@ -12,7 +12,7 @@ in {
     cfg = config.packages;
   in {
     packages = {
-      testInfraNixOs = pkgs.testers.runNixOSTest {
+      testE2eOs = pkgs.testers.runNixOSTest {
         name = "test";
         nodes.${nodeName} = {
           config,
@@ -41,13 +41,12 @@ in {
         };
         testScript = ''
           ${nodeName}.succeed("ls")
-          ${nodeName}.succeed("${pkgs.disko}/bin/disko-install --disk dev-vda /dev/vda --flake ${../../..}#${nodeName}")
           ${nodeName}.shutdown()
           ${nodeName}.start()
           ${nodeName}.succeed("${pkgs.k3s}/bin/k3s kubectl run -it jardin-nixos-test-pod --image=busybox --restart=Never -- pwd")
         '';
       };
-      devInfraNixOs = perSystem.config.test.spy.mkDevScript cfg.testInfraNixOs.driverInteractive;
+      devOs = perSystem.config.test.spy.mkDevScript cfg.testE2eOs.driverInteractive;
     };
   };
 }

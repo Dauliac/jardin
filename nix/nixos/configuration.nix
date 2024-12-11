@@ -8,8 +8,9 @@
     ./networking.nix
     ./nix-snapshotter.nix
     ./sshd.nix
+    ./graphical
   ];
-  system.stateVersion = "23.11";
+  system.stateVersion = "24.11";
   zramSwap.enable = true;
   environment.systemPackages = with pkgs; [
     git

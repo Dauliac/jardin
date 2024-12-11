@@ -1,7 +1,7 @@
 {
   description = "Jardin";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
     flake-parts.url = "github:hercules-ci/flake-parts";
     nix-snapshotter = {
       url = "github:pdtpartners/nix-snapshotter";
@@ -16,6 +16,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     sops-nix.url = "github:Mic92/sops-nix";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     valeMicrosoft = {
       url = "github:errata-ai/Microsoft";
       flake = false;
@@ -34,6 +38,7 @@
     flake-parts,
     disko,
     sops-nix,
+    home-manager,
     valeMicrosoft,
     valeWriteGood,
     valeJoblint,

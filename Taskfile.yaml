@@ -9,6 +9,9 @@ includes:
     dir: .
   docs:
     taskfile: docs/Taskfile.yaml
+  dev:
+    taskfile: taskfiles/Dev.yaml
+    dir: .
 tasks:
   init:
     silent: true

@@ -43,14 +43,6 @@
         target = "base.kustomization.yaml";
         source = ../../kube/base/base.kustomization.yaml;
       };
-      controllers = {
-        target = "controllers.kustomization.yaml";
-        source = ../../kube/base/controllers.kustomization.yaml;
-      };
-      application = {
-        target = "applications.kustomization.yaml";
-        source = ../../kube/base/applications.kustomization.yaml;
-      };
     };
   };
 }

@@ -1,16 +1,15 @@
 {
-  moduleWithSystem,
   inputs,
   lib,
   config,
   ...
 }: let
-  inherit (lib) types mkOption mkForce;
+  inherit (lib) types mkOption;
   inherit (inputs.flake-parts.lib) mkPerSystemOption;
-  cfg = config.test.infra.spy;
+  cfg = config.test.spy;
 in {
   options = {
-    test.infra.spy = {
+    test.spy = {
       sshHostPort = mkOption {
         type = types.int;
         default = 2222;
@@ -18,8 +17,8 @@ in {
       };
       user = mkOption {
         type = types.str;
-        default = "admin";
-        description = "The spy user";
+        default = "test";
+        description = "The spy user for dev and tests";
       };
     };
   };
@@ -30,10 +29,10 @@ in {
       pkgs,
       ...
     }: let
-      perSystem = config.test.infra.spy;
+      perSystem = config.test.spy;
     in {
       options = {
-        test.infra.spy = {
+        test.spy = {
           sshCommand = mkOption {
             type = types.package;
             default = pkgs.writeShellScriptBin "ssh" ''
@@ -48,7 +47,7 @@ in {
                 -o IdentityFile=${./nix-os/id_ed25519} \
                 -p ${toString cfg.sshHostPort} ${cfg.user}@localhost
             '';
-            description = "The command to connect to the spy";
+            description = "The command to connect to the test or dev vm";
           };
           startScript = mkOption {
             type = types.package;

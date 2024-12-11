@@ -1,8 +1,9 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   imports = [
     ./auditd.nix
-    ./comin.nix
-    ./common.nix
+    # ./comin.nix
+    ./nix.nix
+    ./boot.nix
     ./k3s.nix
     ./networking.nix
     ./nix-snapshotter.nix

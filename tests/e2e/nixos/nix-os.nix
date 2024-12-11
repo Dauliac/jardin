@@ -1,7 +1,11 @@
-{config, ...}: let
+{
+  config,
+  inputs,
+  ...
+}: let
   nodeName = "test";
   inherit (config) flake;
-  inherit (config.test.infra) spy;
+  inherit (config.test) spy;
 in {
   perSystem = perSystem @ {
     config,
@@ -13,7 +17,7 @@ in {
   in {
     packages = {
       testInfraNixOs = pkgs.testers.runNixOSTest {
-        name = "test-infra-nixos";
+        name = "test";
         nodes.${nodeName} = {
           config,
           pkgs,
@@ -28,13 +32,16 @@ in {
           pkgs,
           ...
         }: {
-          virtualisation.forwardPorts = [
-            {
-              from = "host";
-              host.port = spy.sshHostPort;
-              guest.port = 22;
-            }
-          ];
+          virtualisation = {
+            diskSize = 1024 * 1024;
+            forwardPorts = [
+              {
+                from = "host";
+                host.port = spy.sshHostPort;
+                guest.port = 22;
+              }
+            ];
+          };
         };
         testScript = ''
           ${nodeName}.succeed("ls")
@@ -44,7 +51,7 @@ in {
           ${nodeName}.succeed("${pkgs.k3s}/bin/k3s kubectl run -it jardin-nixos-test-pod --image=busybox --restart=Never -- pwd")
         '';
       };
-      devInfraNixOs = perSystem.config.test.infra.spy.mkDevScript cfg.testInfraNixOs.driverInteractive;
+      devInfraNixOs = perSystem.config.test.spy.mkDevScript cfg.testInfraNixOs.driverInteractive;
     };
   };
 }

@@ -18,6 +18,7 @@
           docker
           kubectl
           sops
+          kubernetes-helm
           k9s
         ]
         ++ config.formatterPackages

@@ -7,10 +7,15 @@
       url = "github:pdtpartners/nix-snapshotter";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    comin = {
+      url = "github:nlewo/comin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sops-nix.url = "github:Mic92/sops-nix";
     valeMicrosoft = {
       url = "github:errata-ai/Microsoft";
       flake = false;
@@ -28,6 +33,7 @@
   outputs = inputs @ {
     flake-parts,
     disko,
+    sops-nix,
     valeMicrosoft,
     valeWriteGood,
     valeJoblint,

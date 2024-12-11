@@ -1,0 +1,43 @@
+---
+version: "3"
+set: [errexit, pipefail, nounset]
+tasks:
+  typos:
+    silent: true
+    internal: true
+    cmds:
+      - |
+        typos --write-changes .
+  reuse:
+    silent: true
+    internal: true
+    cmds:
+      - reuse lint
+  yamlfmt:
+    silent: true
+    internal: true
+    vars:
+      YAMLFMT_TO_LINT: '{{.YAMLFMT_TO_LINT | default "./**/*.yaml"}}'
+    cmds:
+      - |
+        yamlfmt -lint {{.YAMLFMT_TO_LINT}} || (
+          yamlfmt {{.YAMLFMT_TO_LINT}}
+          exit 1
+        )
+  secrets:
+    silent: true
+    internal: true
+    cmds:
+      - |
+        trufflehog \
+          --no-update \
+          git file://. \
+          --exclude-paths nix/tests/infra/nix-os/id_ed25519
+  default:
+    silent: true
+    desc: 💄Lint jardin
+    deps:
+      - yamlfmt
+      - typos
+      - reuse
+      - secrets

@@ -1,6 +1,5 @@
-{}: {
+_: {
   networking = {
-    hostName = "jardin";
     nameservers = [
       "9.9.9.9"
       "1.1.1.1"

@@ -4,14 +4,14 @@ set: [errexit, pipefail, nounset]
 shopt: [globstar]
 dotenv: [".env.local", ".env"]
 includes:
-  dev:
-    taskfile: build-system/Dev.yaml
+  lint:
+    taskfile: taskfiles/Lint.yaml
     dir: .
   docs:
     taskfile: docs/Taskfile.yaml
   tests:
-    taskfile: ./infrastructure-as-code/kubernetes/clusters/jardin-tests/Taskfile.yaml
-    dir: ./infrastructure-as-code/kubernetes/clusters/jardin-tests/
+    taskfile: ./kube/clusters/jardin-tests/Taskfile.yaml
+    dir: ./kube/clusters/jardin-tests/
 tasks:
   init:
     silent: true
@@ -23,23 +23,6 @@ tasks:
     sources:
       - ./lefthook.yml
       - ./flake.nix
-  formatter:rust:
-    silent: true
-    run: "once"
-    desc: 💄 Format rust files
-    sources:
-      - "**/*.rs"
-      - "Cargo.toml"
-      - "Cargo.lock"
-    cmds:
-      - |
-        cargo fix --allow-staged --allow-dirty --all-targets
-      - |
-        cargo fmt --all
-      - |
-        cargo clippy --fix --allow-dirty --allow-staged
-      - |
-        cargo-deny check
   formatter:nix:
     silent: true
     run: "once"
@@ -56,53 +39,7 @@ tasks:
     aliases:
       - fmt
     deps:
-      - task: formatter:rust
       - task: formatter:nix
-  lint:typos:
-    silent: true
-    internal: true
-    cmds:
-      - |
-        typos --write-changes .
-  lint:reuse:
-    silent: true
-    internal: true
-    cmds:
-      - reuse lint
-  lint:cargo:
-    silent: true
-    internal: true
-    cmds:
-      - cargo fmt
-  lint:yamlfmt:
-    silent: true
-    vars:
-      YAMLFMT_TO_LINT: '{{.YAMLFMT_TO_LINT | default "./**/*.yaml"}}'
-    cmds:
-      - |
-        yamlfmt -lint {{.YAMLFMT_TO_LINT}} || (
-          yamlfmt {{.YAMLFMT_TO_LINT}}
-          exit 1
-        )
-  lint:secrets:
-    silent: true
-    internal: true
-    cmds:
-      - |
-        trufflehog \
-          --no-update \
-          git file://. \
-          --exclude-paths nix/tests/infra/nix-os/id_ed25519
-  lint:
-    silent: true
-    desc: 💄Lint jardin
-    deps:
-      # FIXME: Add cargo fmt
-      # - task: lint:rust:clippy
-      - lint:yamlfmt
-      - lint:typos
-      - lint:reuse
-      - lint:secrets
   build:
     silent: true
     desc: Build jardin
@@ -122,42 +59,6 @@ tasks:
         lefthook -- run pre-commit pre-push
     sources:
       - "lefthook.yml"
-  test:rust:unit:
-    silent: true
-    cmds:
-      - |
-        cargo llvm-cov nextest
-    sources:
-      - "**/*.rs"
-      - "Cargo.toml"
-      - "Cargo.lock"
-  test:rust:audit:
-    silent: true
-    run: "once"
-    cmds:
-      - |
-        cargo audit
-    sources:
-      - "**/*.rs"
-      - "Cargo.toml"
-      - "Cargo.lock"
-  test:
-    silent: true
-    run: "once"
-    desc: Run all development test toolchain
-    cmds:
-      - task: build
-      - task: formatter
-      - task: lint
-      - task: test:rust
-      - task: test:rust:audit
-  run:
-    silent: true
-    run: "once"
-    desc: 🤸 Run jardin
-    cmds:
-      - |
-        nix run
   default:
     silent: true
     run: "once"

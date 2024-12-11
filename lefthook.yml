@@ -20,11 +20,12 @@ commit-msg:
 pre-commit:
   parallel: false
   commands:
-    check:
-      tags: check
-      run: nix flake check
     formatter-nix:
       tags: formatter
       glob: "*.nix"
       run: nix fmt
       stage_fixed: true
+    nix:test:build:
+      tags: test e2e build
+      glob: "*.nix"
+      run: nix build '.#devInfraNixOs'

@@ -5,7 +5,6 @@ resources:
   - ./controllers/helm
   - ./controllers/cert-manager
   - ./controllers/ingress-nginx
-  - ./controllers/flux
   - ./controllers/kyverno
 patches:
   - target:

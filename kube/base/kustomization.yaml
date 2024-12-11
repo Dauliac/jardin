@@ -6,5 +6,4 @@ resources:
   - ./base.kustomization.yaml
   - ./controllers.kustomization.yaml
   - ./applications.kustomization.yaml
-  # - ./flux
   - ./monitoring

@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   environment.systemPackages = with pkgs; [
     systemctl-tui
     htop
@@ -6,7 +7,12 @@
   ];
   users.users.jardin = {
     password = "jardin";
-    extraGroups = ["wheel" "networkmanager" "audio" "video"];
+    extraGroups = [
+      "wheel"
+      "networkmanager"
+      "audio"
+      "video"
+    ];
     openssh.authorizedKeys.keys = [
       (builtins.readFile ./id_ed25519.pub)
     ];

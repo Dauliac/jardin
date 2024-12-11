@@ -1,7 +1,25 @@
-{...}: {
+{
+  inputs,
+  config,
+  ...
+}:
+{
   imports = [
+    inputs.treefmt-nix.flakeModule
     ./docs.nix
-    ./formatter.nix
+    ./options.nix
     ./dev.nix
+    ./treefmt.nix
   ];
+  perSystem =
+    { system, ... }:
+    {
+      _module.args.pkgs = import inputs.nixpkgs {
+        overlays = config.nixpkgsConfig.overlays ++ [
+          inputs.deadnix.overlays.default
+        ];
+        inherit system;
+        config = { };
+      };
+    };
 }

@@ -10,7 +10,7 @@ spec:
   retryInterval: 1m
   prune: true
   wait: true
-  path: ./kube/base
+  path: ./kube/base/
   sourceRef:
     kind: GitRepository
     name: jardin

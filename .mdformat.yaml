@@ -1,3 +1,2 @@
-wrap = "keep"
-number = false
-end_of_line = "lf"
+---
+wrap = "keep" number = false end_of_line = "lf"

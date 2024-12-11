@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   imports = [
     ./build-system
     ./nixos

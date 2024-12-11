@@ -1,3 +1,8 @@
-{...}: {
-  imports = [./nixos ./nixos.nix ./spy.nix];
+{ ... }:
+{
+  imports = [
+    ./nixos
+    ./nixos.nix
+    ./spy.nix
+  ];
 }

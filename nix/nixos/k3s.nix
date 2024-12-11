@@ -2,7 +2,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   environment.systemPackages = with pkgs; [
     kubectl
     k3s
@@ -12,7 +13,8 @@
   ];
   networking.firewall.allowedTCPPorts = [
     config.services.kubernetes.apiserver.securePort
-  ];
+    22
+  ] ++ config.services.openssh.ports;
   services.k3s = {
     enable = true;
     role = "server";

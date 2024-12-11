@@ -1,65 +1,76 @@
 {
   config,
-  lib,
   moduleWithSystem,
   withSystem,
   inputs,
   ...
-}: {
+}:
+let
+  cfg = config;
+in
+{
   config = {
     flake = {
       nixosModules.jardin = moduleWithSystem (
-        {config}: nixos: {
+        { config }:
+        nixos: {
           imports = [
-            {
-              nixpkgs.overlays = lib.mkForce [
-                inputs.nix-snapshotter.overlays.default
-                inputs.sops-nix.overlays.default
-                inputs.comin.overlays.comin
-              ];
-            }
+            inputs.catppuccin.nixosModules.catppuccin
             inputs.comin.nixosModules.comin
-            inputs.nix-snapshotter.nixosModules.default
-            inputs.sops-nix.nixosModules.default
             inputs.home-manager.nixosModules.default
+            inputs.impermanence.nixosModules.impermanence
+            inputs.nix-snapshotter.nixosModules.default
+            inputs.nixarr.nixosModules.default
+            inputs.nixos-hardware.nixosModules.dell-xps-13-9380
+            inputs.nur.modules.nixos.default
+            inputs.sops-nix.nixosModules.default
             ./configuration.nix
             {
+              i18n.defaultLocale = "fr_FR.UTF-8";
               home-manager = {
                 sharedModules = [
-                  ./graphical/home-manager
+                  inputs.catppuccin.homeManagerModules.catppuccin
+                  inputs.betterfox-nix.homeManagerModules.betterfox
+                  {
+                    nixpkgs.overlays = cfg.nixpkgsConfig.overlays;
+                  }
                 ];
-                extraSpecialArgs = {inherit inputs;};
-                users.jardin = ./graphical/home-manager/home.nix;
+                extraSpecialArgs = { inherit inputs; };
+                users.jardin = ../home-manager/config.nix;
               };
             }
           ];
         }
       );
       nixosModules.default = config.flake.nixOsModules.jardin;
-      nixosConfigurations.jardin = withSystem "x86_64-linux" (ctx @ {
-        config,
-        inputs',
-        lib,
-        ...
-      }:
+      nixosConfigurations.jardin = withSystem "x86_64-linux" (
+        _:
         inputs.nixpkgs.lib.nixosSystem {
           modules = [
-            ({
-              config,
-              lib,
-              packages,
-              pkgs,
-              ...
-            }: {
-              imports = [
-                ctx.config.flake.nixosModules.jardin
-                {
-                  networking.hostName = "jardin";
-                }
-              ];
-            })
+            (
+              {
+                config,
+                lib,
+                packages,
+                pkgs,
+                ...
+              }:
+              {
+                imports = [
+                  cfg.flake.nixosModules.jardin
+                  {
+                    nixpkgs.overlays = cfg.nixpkgsConfig.overlays;
+                  }
+                  ./hardware.nix
+                  {
+                    networking.hostName = "jardin";
+                  }
+                ];
+              }
+            )
           ];
-        });
+        }
+      );
     };
   };
 }

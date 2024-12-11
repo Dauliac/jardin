@@ -15,9 +15,27 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    treefmt-nix.url = "github:numtide/treefmt-nix";
     sops-nix.url = "github:Mic92/sops-nix";
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    betterfox-nix = {
+      url = "github:HeitorAugustoLN/betterfox-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    impermanence.url = "github:nix-community/impermanence";
+    nixarr.url = "github:rasmus-kirk/nixarr";
+    deadnix.url = "github:astro/deadnix";
+    catppuccin.url = "github:catppuccin/nix";
+    hyprpanel = {
+      url = "github:Jas-SinghFSU/HyprPanel";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     valeMicrosoft = {
@@ -34,19 +52,10 @@
     };
   };
 
-  outputs = inputs @ {
-    flake-parts,
-    disko,
-    sops-nix,
-    home-manager,
-    valeMicrosoft,
-    valeWriteGood,
-    valeJoblint,
-    nix-snapshotter,
-    ...
-  }:
-    flake-parts.lib.mkFlake {inherit inputs;} (_: {
-      systems = ["x86_64-linux"];
+  outputs =
+    inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } (_: {
+      systems = [ "x86_64-linux" ];
       imports = [
         ./nix
         ./tests/e2e/os

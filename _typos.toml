@@ -1,5 +1,5 @@
 [files]
 extend-exclude = [
   "CHANGELOG.md",
-   "**/*.sops.yaml"
+  "**/*.sops.yaml"
 ]

@@ -2,11 +2,14 @@
   moduleWithSystem,
   config,
   ...
-}: let
+}:
+let
   inherit (config) flake;
-in {
+in
+{
   config.flake.nixosModules.test = moduleWithSystem (
-    {config}: nixos: {
+    { config }:
+    nixos: {
       imports = [
         flake.nixosModules.jardin
         ./spy.nix

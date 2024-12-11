@@ -10,13 +10,13 @@ commit-msg:
         - merge
         - rebase
       tags: check lint commit
-      run:  cat "{1}" | convco check --from-stdin
+      run: cat "{1}" | convco check --from-stdin
     typos:
       skip:
         - merge
         - rebase
       tags: check commit typos
-      run:  cat "{1}" | head -n 1 | typos -
+      run: cat "{1}" | head -n 1 | typos -
 pre-commit:
   parallel: false
   commands:

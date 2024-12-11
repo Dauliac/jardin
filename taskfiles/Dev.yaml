@@ -5,10 +5,19 @@ tasks:
   start:
     silent: true
     desc: 🚗 Start dev environment
+    summary: |
+      Start development environment using nixos test framework.
+      This command will start a quemu vm with all the jardin config
+      and some additional test spies.
     cmds:
       - nix run '.#devOsStart'
   connect:
     silent: true
     desc: 🔗 Get a shell into dev environment
+    summary: |
+      This one require to start dev environment using:
+        task dev:start
+
+      This command will create a ssh shell into development machine.
     cmds:
       - nix run '.#devOsConnect'

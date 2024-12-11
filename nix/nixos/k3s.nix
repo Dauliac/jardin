@@ -39,10 +39,6 @@
         target = "jardin.gitrepo.yaml";
         source = ../../kube/gitrepo.yaml;
       };
-      base = {
-        target = "base.kustomization.yaml";
-        source = ../../kube/base.yaml;
-      };
       controllers = {
         target = "controllers.kustomization.yaml";
         source = ../../kube/controllers.yaml;

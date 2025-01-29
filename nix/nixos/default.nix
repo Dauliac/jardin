@@ -39,12 +39,7 @@
       );
       nixosModules.default = config.flake.nixOsModules.jardin;
       nixosConfigurations.nixos = withSystem "x86_64-linux" (
-        ctx@{
-          config,
-          inputs',
-          lib,
-          ...
-        }:
+        args@{ config, ... }:
         inputs.nixpkgs.lib.nixosSystem {
           modules = [
             (
@@ -57,7 +52,7 @@
               }:
               {
                 imports = [
-                  ctx.config.flake.nixosModules.jardin
+                  args.config.flake.nixosModules.jardin
                   {
                     networking.hostName = "jardin";
                   }

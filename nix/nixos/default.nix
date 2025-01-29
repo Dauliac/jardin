@@ -38,7 +38,7 @@
         }
       );
       nixosModules.default = config.flake.nixOsModules.jardin;
-      nixosConfigurations.jardin = withSystem "x86_64-linux" (
+      nixosConfigurations.nixos = withSystem "x86_64-linux" (
         ctx@{
           config,
           inputs',

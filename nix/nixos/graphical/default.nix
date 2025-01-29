@@ -88,6 +88,7 @@
         "networkmanager"
         "audio"
         "video"
+        "wheel"
       ];
       shell = pkgs.bashInteractive;
     };

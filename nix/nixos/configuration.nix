@@ -2,7 +2,7 @@
 {
   imports = [
     ./auditd.nix
-    # ./comin.nix
+    ./comin.nix
     ./nix.nix
     ./boot.nix
     ./k3s.nix
@@ -11,6 +11,7 @@
     ./sshd.nix
     ./graphical
     ./hardware.nix
+    ./users.nix
   ];
   system.stateVersion = "24.11";
   zramSwap.enable = true;

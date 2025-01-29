@@ -6,6 +6,9 @@
   inputs,
   ...
 }:
+let
+  cfg = config;
+in
 {
   config = {
     flake = {
@@ -39,7 +42,7 @@
       );
       nixosModules.default = config.flake.nixOsModules.jardin;
       nixosConfigurations.nixos = withSystem "x86_64-linux" (
-        args@{ config, ... }:
+        { ... }:
         inputs.nixpkgs.lib.nixosSystem {
           modules = [
             (
@@ -52,7 +55,7 @@
               }:
               {
                 imports = [
-                  args.config.flake.nixosModules.jardin
+                  cfg.flake.nixosModules.jardin
                   {
                     networking.hostName = "jardin";
                   }

@@ -5,11 +5,13 @@
   withSystem,
   inputs,
   ...
-}: {
+}:
+{
   config = {
     flake = {
       nixosModules.jardin = moduleWithSystem (
-        {config}: nixos: {
+        { config }:
+        nixos: {
           imports = [
             {
               nixpkgs.overlays = lib.mkForce [
@@ -28,7 +30,7 @@
                 sharedModules = [
                   ./graphical/home-manager
                 ];
-                extraSpecialArgs = {inherit inputs;};
+                extraSpecialArgs = { inherit inputs; };
                 users.jardin = ./graphical/home-manager/home.nix;
               };
             }
@@ -36,30 +38,35 @@
         }
       );
       nixosModules.default = config.flake.nixOsModules.jardin;
-      nixosConfigurations.jardin = withSystem "x86_64-linux" (ctx @ {
-        config,
-        inputs',
-        lib,
-        ...
-      }:
+      nixosConfigurations.jardin = withSystem "x86_64-linux" (
+        ctx@{
+          config,
+          inputs',
+          lib,
+          ...
+        }:
         inputs.nixpkgs.lib.nixosSystem {
           modules = [
-            ({
-              config,
-              lib,
-              packages,
-              pkgs,
-              ...
-            }: {
-              imports = [
-                ctx.config.flake.nixosModules.jardin
-                {
-                  networking.hostName = "jardin";
-                }
-              ];
-            })
+            (
+              {
+                config,
+                lib,
+                packages,
+                pkgs,
+                ...
+              }:
+              {
+                imports = [
+                  ctx.config.flake.nixosModules.jardin
+                  {
+                    networking.hostName = "jardin";
+                  }
+                ];
+              }
+            )
           ];
-        });
+        }
+      );
     };
   };
 }

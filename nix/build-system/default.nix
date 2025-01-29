@@ -1,7 +1,9 @@
-{...}: {
+{ inputs, ... }:
+{
   imports = [
+    inputs.treefmt-nix.flakeModule
     ./docs.nix
-    ./formatter.nix
     ./dev.nix
+    ./treefmt.nix
   ];
 }

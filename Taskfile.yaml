@@ -59,17 +59,11 @@ tasks:
         lefthook -- run pre-commit pre-push
     sources:
       - "lefthook.yml"
-  build:
+  install:
     silent: true
-    rune: "once"
-    vars:
-      JSON:
-        sh: nix flake show --json | jq '.packages.*_{{OS}}'
-      FOO:
-        ref: "fromJson .JSON"
+    run: "once"
     cmds:
-      - |
-
+      - sudo nixos-rebuild --flake . switch
   default:
     silent: true
     run: "once"

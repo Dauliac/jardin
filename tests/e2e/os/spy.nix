@@ -3,11 +3,13 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   inherit (lib) types mkOption;
   inherit (inputs.flake-parts.lib) mkPerSystemOption;
   cfg = config.test.spy;
-in {
+in
+{
   options = {
     test.spy = {
       sshHostPort = mkOption {
@@ -22,15 +24,16 @@ in {
       };
     };
   };
-  options.perSystem =
-    mkPerSystemOption
-    ({
+  options.perSystem = mkPerSystemOption (
+    {
       config,
       pkgs,
       ...
-    }: let
+    }:
+    let
       perSystem = config.test.spy;
-    in {
+    in
+    {
       options = {
         test.spy = {
           sshCommand = mkOption {
@@ -61,16 +64,17 @@ in {
           mkStartCommand = mkOption {
             type = types.functionTo types.package;
             description = "The command to start the spy";
-            default = driver: (
-              pkgs.writers.writeBashBin "start" ''
+            default =
+              driver:
+              (pkgs.writers.writeBashBin "start" ''
                 ${driver}/bin/nixos-test-driver --no-interactive  ${perSystem.startScript}/bin/start.py
-              ''
-            );
+              '');
           };
           mkDevScript = mkOption {
             type = types.functionTo types.attrs;
-            default = driver: (pkgs.stdenv.mkDerivation
-              {
+            default =
+              driver:
+              (pkgs.stdenv.mkDerivation {
                 name = "test-dev";
                 src = perSystem.mkStartCommand driver;
                 installPhase = ''
@@ -82,5 +86,6 @@ in {
           };
         };
       };
-    });
+    }
+  );
 }

@@ -15,6 +15,7 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    treefmt-nix.url = "github:numtide/treefmt-nix";
     sops-nix.url = "github:Mic92/sops-nix";
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -34,19 +35,21 @@
     };
   };
 
-  outputs = inputs @ {
-    flake-parts,
-    disko,
-    sops-nix,
-    home-manager,
-    valeMicrosoft,
-    valeWriteGood,
-    valeJoblint,
-    nix-snapshotter,
-    ...
-  }:
-    flake-parts.lib.mkFlake {inherit inputs;} (_: {
-      systems = ["x86_64-linux"];
+  outputs =
+    inputs@{
+      flake-parts,
+      disko,
+      sops-nix,
+      home-manager,
+      valeMicrosoft,
+      valeWriteGood,
+      valeJoblint,
+      nix-snapshotter,
+      treefmt-nix,
+      ...
+    }:
+    flake-parts.lib.mkFlake { inherit inputs; } (_: {
+      systems = [ "x86_64-linux" ];
       imports = [
         ./nix
         ./tests/e2e/os

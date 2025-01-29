@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   imports = [
     ./sound.nix
     # ./gaming.nix # TODO: add unfree option to get steam
@@ -12,7 +13,12 @@
       vaapiVdpau
       libvdpau-va-gl
     ];
-    extraPackages32 = with pkgs.pkgsi686Linux; [vaapiIntel vaapiVdpau intel-media-driver libvdpau-va-gl];
+    extraPackages32 = with pkgs.pkgsi686Linux; [
+      vaapiIntel
+      vaapiVdpau
+      intel-media-driver
+      libvdpau-va-gl
+    ];
   };
   services.xserver.enable = true;
   services.xserver.displayManager.gdm.enable = true;
@@ -78,11 +84,15 @@
       isNormalUser = true;
       description = "Jardin 🏡";
       group = "jardin";
-      extraGroups = ["networkmanager" "audio" "video"];
+      extraGroups = [
+        "networkmanager"
+        "audio"
+        "video"
+      ];
       shell = pkgs.bashInteractive;
     };
   };
-  users.groups.jardin = {};
+  users.groups.jardin = { };
   programs.zsh.enable = true;
   services.displayManager.autoLogin = {
     enable = true;

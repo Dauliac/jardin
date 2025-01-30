@@ -19,7 +19,8 @@
     mutableUsers = false;
     groups = {
       jardin = {
-        gid = 1000;
+      };
+      admin = {
       };
     };
     users = {

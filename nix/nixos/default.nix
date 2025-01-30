@@ -20,6 +20,7 @@ in
               nixpkgs.overlays = lib.mkForce [
                 inputs.nix-snapshotter.overlays.default
                 inputs.sops-nix.overlays.default
+                inputs.comin.overlays.default
               ];
             }
             inputs.comin.nixosModules.comin

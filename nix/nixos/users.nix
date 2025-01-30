@@ -3,7 +3,6 @@
   services.displayManager.autoLogin = {
     enable = true;
     user = "jardin";
-    relogin = true;
   };
   security.sudo.extraRules = [
     {

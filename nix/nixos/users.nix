@@ -1,4 +1,5 @@
-{pkgs, }: {
+{config, pkgs, ...}: {
+  services.displayManager.autoLogin.user = "jardin";
   users = {
     mutableUsers = false;
     users = {
@@ -13,6 +14,12 @@
         ];
         shell = pkgs.bashInteractive;
       };
+      security.sudo.extraRules = [
+        {
+          users = [ "admin" ];
+          commands = [ { command = "ALL"; options = [ "NOPASSWD" ]; } ];
+        }
+      ];
       admin = {
         isNormalUser = true;
         description = "Jardin 🏡";
@@ -25,6 +32,7 @@
         openssh.authorizedKeys.keys = [
           (builtins.readFile ./id_ed25519.pub)
         ];
+        hashedPasswordFile = config.sops.secrets.dauliac_hashed_password.path;
       };
     };
   };

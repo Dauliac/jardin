@@ -3,7 +3,7 @@
   services.displayManager.autoLogin = {
     enable = true;
     user = "jardin";
-    # relogin = true;
+    relogin = true;
   };
   security.sudo.extraRules = [
     {
@@ -28,6 +28,7 @@
         isNormalUser = true;
         description = "Jardin 🏡";
         group = "jardin";
+        initialPassword = "jardin";
         extraGroups = [
           "networkmanager"
           "audio"
@@ -37,8 +38,8 @@
       };
       admin = {
         isNormalUser = true;
-        description = "Jardin 🏡";
-        group = "jardin";
+        description = "Admin";
+        group = "admin";
         extraGroups = [
           "networkmanager"
           "wheel"

@@ -4,17 +4,17 @@
     enable = true;
     user = "jardin";
   };
-  security.sudo.extraRules = [
-    {
-      users = [ "admin" ];
-      commands = [
-        {
-          command = "ALL";
-          options = [ "NOPASSWD" ];
-        }
-      ];
-    }
-  ];
+  # security.sudo.extraRules = [
+  #   {
+  #     users = [ "admin" ];
+  #     commands = [
+  #       {
+  #         command = "ALL";
+  #         options = [ "NOPASSWD" ];
+  #       }
+  #     ];
+  #   }
+  # ];
   users = {
     mutableUsers = false;
     groups = {
@@ -28,9 +28,9 @@
         isNormalUser = true;
         description = "Jardin 🏡";
         group = "jardin";
-        initialPassword = "jardin";
+        # initialPassword = "jardin";
         extraGroups = [
-          "networkmanager"
+          "networkmanagerusers"
           "audio"
           "video"
         ];

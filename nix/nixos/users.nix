@@ -1,5 +1,21 @@
-{config, pkgs, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}:
+{
   services.displayManager.autoLogin.user = "jardin";
+  security.sudo.extraRules = [
+    {
+      users = [ "admin" ];
+      commands = [
+        {
+          command = "ALL";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }
+  ];
   users = {
     mutableUsers = false;
     users = {
@@ -14,12 +30,6 @@
         ];
         shell = pkgs.bashInteractive;
       };
-      security.sudo.extraRules = [
-        {
-          users = [ "admin" ];
-          commands = [ { command = "ALL"; options = [ "NOPASSWD" ]; } ];
-        }
-      ];
       admin = {
         isNormalUser = true;
         description = "Jardin 🏡";

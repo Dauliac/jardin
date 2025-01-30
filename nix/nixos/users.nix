@@ -1,5 +1,4 @@
 {
-  config,
   pkgs,
   ...
 }:
@@ -42,7 +41,8 @@
         openssh.authorizedKeys.keys = [
           (builtins.readFile ./id_ed25519.pub)
         ];
-        hashedPasswordFile = config.sops.secrets.dauliac_hashed_password.path;
+        # TODO: set admin password
+        # hashedPasswordFile = config.sops.secrets.admin_hashed_password.path;
       };
     };
   };

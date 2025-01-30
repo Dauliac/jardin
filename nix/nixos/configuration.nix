@@ -11,6 +11,7 @@
     ./sshd.nix
     ./graphical
     ./hardware.nix
+    ./android.nix
     ./users.nix
   ];
   system.stateVersion = "24.11";

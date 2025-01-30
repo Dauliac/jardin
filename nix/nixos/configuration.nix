@@ -5,7 +5,7 @@
     ./comin.nix
     ./nix.nix
     ./boot.nix
-    ./k3s.nix
+    # ./k3s.nix
     ./networking.nix
     ./nix-snapshotter.nix
     ./sshd.nix

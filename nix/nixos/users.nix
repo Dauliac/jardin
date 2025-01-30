@@ -3,7 +3,11 @@
   ...
 }:
 {
-  services.displayManager.autoLogin.user = "jardin";
+  services.displayManager.autoLogin = {
+    enable = true;
+    user = "jardin";
+    # relogin = true;
+  };
   security.sudo.extraRules = [
     {
       users = [ "admin" ];
@@ -17,6 +21,11 @@
   ];
   users = {
     mutableUsers = false;
+    groups = {
+      jardin = {
+        gid = 1000;
+      };
+    };
     users = {
       jardin = {
         isNormalUser = true;
@@ -37,7 +46,6 @@
           "networkmanager"
           "wheel"
         ];
-        shell = pkgs.bashInteractive;
         openssh.authorizedKeys.keys = [
           (builtins.readFile ./id_ed25519.pub)
         ];

@@ -78,26 +78,5 @@
   environment.systemPackages = with pkgs; [
     gnome.gnome-tweaks
   ];
-  users = {
-    mutableUsers = false;
-    users.jardin = {
-      isNormalUser = true;
-      description = "Jardin 🏡";
-      group = "jardin";
-      extraGroups = [
-        "networkmanager"
-        "audio"
-        "video"
-        "wheel"
-      ];
-      shell = pkgs.bashInteractive;
-    };
-  };
-  users.groups.jardin = { };
   programs.zsh.enable = true;
-  services.displayManager.autoLogin = {
-    enable = true;
-    user = "jardin";
-    # relogin = true;
-  };
 }

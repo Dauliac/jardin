@@ -4,6 +4,9 @@ _: {
     allowSFTP = false;
     settings = {
       PasswordAuthentication = false;
+      AllowUsers = [
+        "admin"
+      ];
     };
   };
 }

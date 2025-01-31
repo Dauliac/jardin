@@ -1,5 +1,8 @@
-{ pkgs, ... }:
+{ ... }:
 {
 
-  services.rustdesk-server.enable = true;
+  services.rustdesk-server = {
+    enable = true;
+    openFirewall = true;
+  };
 }

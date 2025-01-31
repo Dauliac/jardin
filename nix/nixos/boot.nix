@@ -3,7 +3,7 @@ _: {
     # kernelPackages = pkgs.linuxPackages_hardened;
     initrd.systemd.enable = true;
     loader.systemd-boot.enable = true;
-    loader.systemd-boot.configurationLimit = 5;
+    loader.systemd-boot.configurationLimit = 8;
     tmp.cleanOnBoot = true;
   };
 }

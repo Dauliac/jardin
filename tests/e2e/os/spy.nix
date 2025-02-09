@@ -19,7 +19,7 @@ in
       };
       user = mkOption {
         type = types.str;
-        default = "jardin";
+        default = "admin";
         description = "The spy user for dev and tests";
       };
     };

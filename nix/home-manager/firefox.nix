@@ -1,4 +1,8 @@
-{ pkgs, lib, ... }:
+{
+  pkgs,
+  lib,
+  ...
+}:
 {
   programs.firefox = {
     enable = true;
@@ -72,18 +76,54 @@
           name = "Bar";
           toolbar = true;
           bookmarks = [
-            { name = "MyCanal"; url = "https://www.mycanal.fr/"; }
-            { name = "Deezer"; url = "https://www.deezer.com/"; }
-            { name = "Netflix"; url = "https://www.netflix.com/"; }
-            { name = "Spotify"; url = "https://www.spotify.com/"; }
-            { name = "YouTube"; url = "https://www.youtube.com/"; }
-            { name = "Paramount"; url = "https://www.paramountplus.com/"; }
-            { name = "Crunchyroll"; url = "https://www.crunchyroll.com/"; }
-            { name = "Splitte"; url = "https://www.spliiit.com/"; }
-            { name = "Arte"; url = "https://www.arte.tv/fr/"; }
-            { name = "TF1"; url = "https://www.tf1.fr/"; }
-            { name = "Pluto TV"; url = "https://pluto.tv/"; }
-            { name = "M6"; url = "https://www.m6.fr/"; }
+            {
+              name = "MyCanal";
+              url = "https://www.mycanal.fr/";
+            }
+            {
+              name = "Deezer";
+              url = "https://www.deezer.com/";
+            }
+            {
+              name = "Netflix";
+              url = "https://www.netflix.com/";
+            }
+            {
+              name = "Spotify";
+              url = "https://www.spotify.com/";
+            }
+            {
+              name = "YouTube";
+              url = "https://www.youtube.com/";
+            }
+            {
+              name = "Paramount";
+              url = "https://www.paramountplus.com/";
+            }
+            {
+              name = "Crunchyroll";
+              url = "https://www.crunchyroll.com/";
+            }
+            {
+              name = "Splitte";
+              url = "https://www.spliiit.com/";
+            }
+            {
+              name = "Arte";
+              url = "https://www.arte.tv/fr/";
+            }
+            {
+              name = "TF1";
+              url = "https://www.tf1.fr/";
+            }
+            {
+              name = "Pluto TV";
+              url = "https://pluto.tv/";
+            }
+            {
+              name = "M6";
+              url = "https://www.m6.fr/";
+            }
           ];
         }
       ];

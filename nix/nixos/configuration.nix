@@ -13,6 +13,7 @@
     ./graphical
     ./android.nix
     ./users.nix
+    ./logind.nix
   ];
   system.stateVersion = "24.11";
   zramSwap.enable = true;

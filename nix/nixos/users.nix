@@ -39,7 +39,6 @@
       admin = {
         isNormalUser = true;
         description = "Admin";
-        initialPassword = "admin";
         group = "admin";
         extraGroups = [
           "networkmanager"

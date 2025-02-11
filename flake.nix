@@ -30,10 +30,6 @@
     nixarr.url = "github:rasmus-kirk/nixarr";
     deadnix.url = "github:astro/deadnix";
     catppuccin.url = "github:catppuccin/nix";
-    hyprpanel = {
-      url = "github:Jas-SinghFSU/HyprPanel";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     home-manager = {
       url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";

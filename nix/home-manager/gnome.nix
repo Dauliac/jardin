@@ -18,6 +18,10 @@
       "org/gnome/desktop/screensaver" = {
         lock-enabled = false;
       };
+      "org/gnome/mutter" = {
+        dynamic-workspaces = false;
+        num-workspaces = 4;
+      };
       "org/gnome/desktop/input-sources" = {
         sources = [
           (lib.hm.gvariant.mkTuple [

@@ -30,7 +30,6 @@
             "fr"
           ])
         ];
-        # xkb-options = [ "terminate:ctrl_alt_bksp" ];
       };
       "org/gnome/settings-daemon/plugins/power" = {
         sleep-inactive-ac-type = "nothing";
@@ -42,6 +41,19 @@
   };
   programs.gnome-shell = {
     enable = true;
-    extensions = [ { package = pkgs.gnomeExtensions.gsconnect; } ];
+    extensions = [
+      {
+        package = pkgs.gnomeExtensions.gsconnect;
+      }
+      {
+        package = pkgs.gnomeExtensions.wiggle;
+      }
+      {
+        package = pkgs.gnomeExtensions.wifi-qrcode;
+      }
+      {
+        package = pkgs.gnomeExtensions.volume-boost;
+      }
+    ];
   };
 }

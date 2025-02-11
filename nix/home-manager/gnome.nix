@@ -21,6 +21,7 @@
       "org/gnome/mutter" = {
         dynamic-workspaces = false;
         num-workspaces = 4;
+        experimental-features = [ "dmabuf-screen-sharing" ];
       };
       "org/gnome/desktop/input-sources" = {
         sources = [

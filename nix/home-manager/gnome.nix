@@ -18,6 +18,15 @@
       "org/gnome/desktop/screensaver" = {
         lock-enabled = false;
       };
+      "org/gnome/desktop/input-sources" = {
+        sources = [
+          (lib.hm.gvariant.mkTuple [
+            "xkb"
+            "fr"
+          ])
+        ];
+        # xkb-options = [ "terminate:ctrl_alt_bksp" ];
+      };
       "org/gnome/settings-daemon/plugins/power" = {
         sleep-inactive-ac-type = "nothing";
         sleep-inactive-ac-timeout = 0;

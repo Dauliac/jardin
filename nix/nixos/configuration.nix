@@ -18,6 +18,7 @@
   ];
   system.stateVersion = "24.11";
   zramSwap.enable = true;
+  time.timeZone = "Europe/Paris";
   environment.systemPackages = with pkgs; [
     git
     curl

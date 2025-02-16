@@ -121,6 +121,10 @@
               url = "https://pluto.tv/";
             }
             {
+              name = "Disney+";
+              url = "https://www.disneyplus.com";
+            }
+            {
               name = "M6";
               url = "https://www.m6.fr/";
             }

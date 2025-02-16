@@ -20,7 +20,6 @@ in
             inputs.home-manager.nixosModules.default
             inputs.impermanence.nixosModules.impermanence
             inputs.nix-snapshotter.nixosModules.default
-            inputs.nixarr.nixosModules.default
             inputs.nixos-hardware.nixosModules.dell-xps-13-9380
             inputs.nur.modules.nixos.default
             inputs.sops-nix.nixosModules.default

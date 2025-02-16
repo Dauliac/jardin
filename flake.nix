@@ -27,7 +27,6 @@
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     impermanence.url = "github:nix-community/impermanence";
-    nixarr.url = "github:rasmus-kirk/nixarr";
     deadnix.url = "github:astro/deadnix";
     catppuccin.url = "github:catppuccin/nix";
     home-manager = {

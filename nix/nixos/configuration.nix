@@ -13,6 +13,7 @@
     ./graphical
     ./android.nix
     ./users.nix
+    ./nixarr.nix
     ./logind.nix
     ./sleep.nix
   ];

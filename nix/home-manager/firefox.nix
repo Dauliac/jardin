@@ -124,6 +124,14 @@
               name = "M6";
               url = "https://www.m6.fr/";
             }
+            {
+              name = "Prowlarr";
+              url = "http://0.0.0.0:8096";
+            }
+            {
+              name = "Radarr";
+              url = "http://0.0.0.0:7878";
+            }
           ];
         }
       ];

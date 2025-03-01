@@ -15,6 +15,7 @@
     ./users.nix
     ./logind.nix
     ./sleep.nix
+    ./storage.nix
   ];
   system.stateVersion = "24.11";
   zramSwap.enable = true;

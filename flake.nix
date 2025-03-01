@@ -26,7 +26,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    impermanence.url = "github:nix-community/impermanence";
     deadnix.url = "github:astro/deadnix";
     catppuccin.url = "github:catppuccin/nix";
     home-manager = {

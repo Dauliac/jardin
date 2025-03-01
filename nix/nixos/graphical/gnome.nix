@@ -20,8 +20,6 @@
   environment.gnome.excludePackages = with pkgs; [
     orca
     evince
-    geary
-    gnome-disk-utility
     gnome-backgrounds
     gnome-tour
     gnome-user-docs

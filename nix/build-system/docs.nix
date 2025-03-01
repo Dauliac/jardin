@@ -165,8 +165,7 @@ in
           "$FLAKE_ROOT/${config.valeStylesPath}/Joblint" \
           "$FLAKE_ROOT/${config.valeStylesPath}/write-good" \
           "$FLAKE_ROOT/${config.mdbookMermaidStylesPath}" \
-          "$FLAKE_ROOT/.vale.ini" \
-          "$FLAKE_ROOT/book.toml"
+          "$FLAKE_ROOT/.vale.ini"
         ln -s ${config.valeMicrosoft} "$FLAKE_ROOT/${config.valeStylesPath}/Microsoft"
         ln -s ${config.valeJoblint} "$FLAKE_ROOT/${config.valeStylesPath}/Joblint"
         ln -s ${config.valeWriteGood} "$FLAKE_ROOT/${config.valeStylesPath}/write-good"

@@ -47,8 +47,8 @@ in
             {
               virtualisation = {
                 diskSize = 512 * 1024;
-                memorySize = 3048;
-                cores = 4;
+                memorySize = 8096;
+                cores = 5;
                 forwardPorts = [
                   {
                     from = "host";

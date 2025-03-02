@@ -5,10 +5,9 @@
     ./comin.nix
     ./nix.nix
     ./boot.nix
-    # ./k3s.nix
+    ./kubernetes.nix
     ./theme.nix
     ./networking.nix
-    ./nix-snapshotter.nix
     ./sshd.nix
     ./graphical
     ./android.nix

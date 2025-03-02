@@ -16,7 +16,6 @@ in
           allowBroken = true;
         };
         overlays = with inputs; [
-          nix-snapshotter.overlays.default
           sops-nix.overlays.default
           comin.overlays.default
           nur.overlays.default

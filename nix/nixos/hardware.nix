@@ -52,4 +52,20 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
+  hardware.nvidia = {
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    open = false;
+    nvidiaSettings = true;
+  };
+  hardware.nvidia-container-toolkit.enable = true;
+  # virtualisation.docker = {
+  #   # enableNvidia = true;
+  #   # extraOptions = "--default-runtime=nvidia";
+  # };
+  services.xserver.videoDrivers = [ "nvidia" ];
 }

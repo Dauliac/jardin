@@ -1,4 +1,5 @@
-{ ... }: {
+_:
+{
   disko.devices = {
     disk = {
       nvme0 = {

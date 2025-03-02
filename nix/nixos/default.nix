@@ -18,7 +18,6 @@ in
             inputs.catppuccin.nixosModules.catppuccin
             inputs.comin.nixosModules.comin
             inputs.home-manager.nixosModules.default
-            inputs.disko.nixosModules.disko
             inputs.nix-snapshotter.nixosModules.default
             inputs.nixos-hardware.nixosModules.dell-xps-13-9380
             inputs.nur.modules.nixos.default

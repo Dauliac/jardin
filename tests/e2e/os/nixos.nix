@@ -49,16 +49,6 @@ in
                 diskSize = 512 * 1024;
                 memorySize = 3048;
                 cores = 4;
-                disks = [
-                  {
-                    size = 1024;
-                    device = "nvme0n1";
-                  }
-                  {
-                    size = 1024;
-                    device = "nvme1n1";
-                  }
-                ];
                 forwardPorts = [
                   {
                     from = "host";

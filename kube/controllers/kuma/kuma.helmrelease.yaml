@@ -1,0 +1,21 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: kuma
+  namespace: kuma-system
+spec:
+  releaseName: kuma
+  interval: 5m
+  chart:
+    spec:
+      chart: kuma
+      sourceRef:
+        kind: HelmRepository
+        name: kuma
+      version: "*"
+  install:
+    createNamespace: true
+  targetNamespace: kuma-system
+  upgrade:
+    remediation:
+      remediateLastFailure: true

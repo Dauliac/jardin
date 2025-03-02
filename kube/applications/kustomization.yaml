@@ -13,6 +13,4 @@ resources:
   - ./radarr
   - ./transmission
   - ./prowlarr
-  # - ./bind9
-  - ./coredns
   # - ./jackett

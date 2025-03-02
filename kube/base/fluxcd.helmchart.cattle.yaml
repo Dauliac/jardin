@@ -17,7 +17,7 @@ spec:
       - apiVersion: source.toolkit.fluxcd.io/v1
         kind: GitRepository
         metadata:
-          name: init
+          name: jardin
           namespace: flux-system
           annotations:
             "helm.sh/hook": post-install,post-upgrade
@@ -29,7 +29,7 @@ spec:
       - apiVersion: kustomize.toolkit.fluxcd.io/v1
         kind: Kustomization
         metadata:
-          name: init
+          name: base
           namespace: flux-system
           annotations:
             "helm.sh/hook": post-install,post-upgrade
@@ -42,4 +42,4 @@ spec:
           path: ./kube/base/
           sourceRef:
             kind: GitRepository
-            name: init
+            name: jardin

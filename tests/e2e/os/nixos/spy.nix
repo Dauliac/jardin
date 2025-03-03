@@ -9,6 +9,27 @@
     htop
     k9s
   ];
+  programs.dconf = {
+    profiles.gdm.databases = lib.mkForce [
+      {
+        settings = {
+          "org/gnome/desktop/interface".scaling-factor = lib.gvariant.mkUint32 1;
+          "org/gnome/desktop/a11y/applications".screen-keyboard-enabled = true;
+          "org/gnome/desktop/session" = {
+            idle-delay = lib.gvariant.mkUint32 0;
+          };
+          "org/gnome/desktop/screensaver" = {
+            lock-enabled = false;
+          };
+          "org/gnome/settings-daemon/plugins/power" = {
+            sleep-inactive-ac-type = "nothing";
+            sleep-inactive-battery-type = "nothing";
+            idle-dim = false;
+          };
+        };
+      }
+    ];
+  };
   home-manager.users.jardin = {
     dconf = {
       settings = {

@@ -9,7 +9,7 @@
     k9s
     kubernetes-helm
     kumactl
-    fluxctl
+    fluxcd
   ];
   services.rke2 = {
     enable = true;
@@ -39,7 +39,7 @@
         ExecStart = "${script}";
       };
     };
-    systemd.services.emplace-kubeconfig =
+  systemd.services.emplace-kubeconfig =
     let
       kubeConfigSrc = "/etc/rancher/rke2/rke2.yaml";
       kubeConfigDirDst = "/home/admin/.kube";
@@ -58,23 +58,22 @@
         }
         main
       '';
-
     in
     {
-    description = "Copy RKE2 kubeconfig ${kubeConfigSrc} to ${kubeConfigDst}";
-    after = [
-      "network.target"
-    ];
-    wants = [ "rke2-server.service" ];
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      User = "root";
-      ExecStart = script;
-      Restart = "on-failure";
-      RestartSec = 5;
-      StartLimitBurst = 50;
-      StartLimitIntervalSec = 600;
+      description = "Copy RKE2 kubeconfig ${kubeConfigSrc} to ${kubeConfigDst}";
+      after = [
+        "network.target"
+      ];
+      wants = [ "rke2-server.service" ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        User = "root";
+        ExecStart = script;
+        Restart = "on-failure";
+        RestartSec = 5;
+        StartLimitBurst = 50;
+        StartLimitIntervalSec = 600;
+      };
     };
-  };
 }

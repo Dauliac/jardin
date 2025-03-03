@@ -2,9 +2,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./gateway-class
-  - ./gateway
   - ./kong.namespace.yaml
-  - ./application-kong-gateway-class.kustomization.yaml
-  - ./application-kong-gateway.kustomization.yaml
-  - ./application-kong-app.kustomization.yaml
+  - ./kong.gateway.yaml
+  - ./kong.gateway-class.yaml
+  - ./kong.helmrepository.yaml
+  - ./kong.helmrelease.yaml

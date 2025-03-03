@@ -9,7 +9,7 @@
     k9s
     kubernetes-helm
     kumactl
-    flux
+    fluxctl
   ];
   services.rke2 = {
     enable = true;

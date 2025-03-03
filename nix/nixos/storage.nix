@@ -1,5 +1,4 @@
-_:
-{
+_: {
   disko.devices = {
     disk = {
       nvme0 = {
@@ -49,7 +48,7 @@ _:
     zpool = {
       zroot = {
         type = "zpool";
-        mode = "single"; # Système sur le disque 1
+        mode = "single"; # Système sure le disque 1
         options.cachefile = "none";
         rootFsOptions = {
           compression = "zstd";

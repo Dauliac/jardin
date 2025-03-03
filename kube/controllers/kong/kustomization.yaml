@@ -5,4 +5,6 @@ resources:
   - ./gateway-class
   - ./gateway
   - ./kong.namespace.yaml
-  - ./app/application-kong-gateway.kustomization.yaml
+  - ./application-kong-gateway-class.kustomization.yaml
+  - ./application-kong-gateway.kustomization.yaml
+  - ./application-kong-app.kustomization.yaml

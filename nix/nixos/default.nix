@@ -29,7 +29,7 @@ in
                   inputs.catppuccin.homeManagerModules.catppuccin
                   inputs.betterfox-nix.homeManagerModules.betterfox
                   {
-                    nixpkgs.overlays = cfg.nixpkgsConfig.overlays;
+                    nixpkgs = cfg.nixpkgsConfig;
                   }
                 ];
                 extraSpecialArgs = { inherit inputs; };

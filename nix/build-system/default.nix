@@ -19,7 +19,7 @@
           inputs.deadnix.overlays.default
         ];
         inherit system;
-        config = { };
+        config = config.nixpkgsConfig.config;
       };
     };
 }

@@ -7,7 +7,7 @@ let
   nodeName = "test";
   inherit (config) flake;
   inherit (config.test) spy;
-  inherit (config.nixpkgsConfig) overlays;
+  inherit (config) nixpkgsConfig;
 in
 {
   perSystem =
@@ -34,7 +34,7 @@ in
               imports = [
                 flake.nixosModules.test
                 {
-                  nixpkgs.overlays = lib.mkForce overlays;
+                  nixpkgs = lib.mkForce nixpkgsConfig;
                 }
               ];
             };

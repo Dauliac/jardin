@@ -2,7 +2,7 @@
 {
   imports = [
     ./sound.nix
-    # ./gaming.nix # TODO: add unfree option to get steam
+    ./gaming.nix
     ./bluetooth.nix
     ./gnome.nix
   ];

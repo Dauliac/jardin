@@ -5,3 +5,4 @@ resources:
   - ./kuma.namespace.yaml
   - ./kuma.helmrepository.yaml
   - ./kuma.helmrelease.yaml
+  - ./kuma.mesh.yaml

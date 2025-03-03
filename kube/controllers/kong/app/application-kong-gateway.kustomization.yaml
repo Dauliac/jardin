@@ -1,0 +1,18 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: applications-kong-app
+  namespace: flux-system
+spec:
+  interval: 3m
+  timeout: 5m
+  retryInterval: 1m
+  prune: true
+  wait: true
+  path: ./kube/applications/kong/app
+  sourceRef:
+    kind: GitRepository
+    name: jardin
+  dependsOn:
+    - name: applications-kong-gateway

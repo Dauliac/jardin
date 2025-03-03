@@ -4,9 +4,8 @@ kind: Ingress
 metadata:
   name: radarr
   namespace: applications
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+  ingressClassName: kong
   rules:
     - host: radarr.${DOMAIN}
       http:

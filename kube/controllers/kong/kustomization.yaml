@@ -7,3 +7,4 @@ resources:
   - ./kong.gateway-class.yaml
   - ./kong.helmrepository.yaml
   - ./kong.helmrelease.yaml
+  - ./kong.ingressclass.yaml

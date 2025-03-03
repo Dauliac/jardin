@@ -6,6 +6,7 @@ resources:
   - ./namespace.yaml
   - ./pvc-media.yaml
   - ./pvc-download.yaml
+  - ./kuma.mesh.yaml
   - ./jellyfin
   - ./adguard
   - ./homarr

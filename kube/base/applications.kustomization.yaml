@@ -16,9 +16,10 @@ spec:
     name: jardin
   dependsOn:
     - name: controllers
-  substituteFrom:
-    - kind: ConfigMap
-      name: domain-config
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: domain-config
   # decryption:
   #   provider: sops
   #   secretRef:

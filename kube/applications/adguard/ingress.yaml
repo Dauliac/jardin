@@ -15,4 +15,3 @@ spec:
               service:
                 name: adguardhome
                 port:
-                  number: 80

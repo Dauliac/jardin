@@ -1,0 +1,8 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: domain-config
+  namespace: flux-system
+data:
+  DOMAIN: "jardin"

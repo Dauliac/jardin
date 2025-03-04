@@ -15,3 +15,15 @@ resources:
   # - ./transmission
   - ./prowlarr
   # - ./jackett
+configMapGenerator:
+  - name: domain-config
+    literals:
+      - DOMAIN=jardin
+vars:
+  - name: DOMAIN
+    objref:
+      kind: ConfigMap
+      name: domain-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.DOMAIN

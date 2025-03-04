@@ -3,6 +3,9 @@
   config,
   ...
 }:
+let
+  rkeManifestsDir = "${config.services.rke2.dataDir}/server/manifests";
+in
 {
   environment.systemPackages = with pkgs; [
     kubectl
@@ -19,7 +22,6 @@
   };
   systemd.services.emplace-rke-manifests =
     let
-      rkeManifestsDir = "${config.services.rke2.dataDir}/server/manifests";
       script = pkgs.writers.writeBash "emplace-rke-manifests" ''
         set -o errexit
         set -o pipefail
@@ -39,7 +41,7 @@
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
-        ExecStart = "${script}";
+        ExecStart = script;
       };
     };
   systemd.services.emplace-kubeconfig =
@@ -77,6 +79,45 @@
         RestartSec = 5;
         StartLimitBurst = 50;
         StartLimitIntervalSec = 600;
+      };
+    };
+  systemd.services.emplace-sops-secret =
+    let
+      sopsKeyFile = config.sops.age.keyFile;
+      outputFile="${rkeManifestsDir}/sops-age.secret.yaml";
+      script = pkgs.writers.writeBash "emplace-sops-secret" ''
+        set -o errexit
+        set -o pipefail
+        set -o nounset
+
+        main() {
+          mkdir -p ${rkeManifestsDir}
+
+          if [[ ! -f "${sopsKeyFile}" ]]; then
+            echo "ERROR: SOPS key file not found at ${sopsKeyFile}"
+            exit 1
+          fi
+          SOPS_KEY=$(cat "${sopsKeyFile}")
+
+          echo "Generating Kubernetes Secret YAML for SOPS..."
+            ${pkgs.kubectl}/bin/kubectl create secret generic sops-age -n flux-system \
+            --from-literal=sops-key="$SOPS_KEY" \
+            --dry-run=client -o yaml > ${outputFile}
+
+          echo "SOPS Secret successfully created at ${outputFile}"
+        }
+
+        main
+      '';
+    in
+    {
+      description = "Generate SOPS secret for RKE2 manifests";
+      before = [ "rke2-server.service" ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = "${script}";
       };
     };
 }

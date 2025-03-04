@@ -31,9 +31,11 @@
             kubeconform
             comin
             deadnix
+            sops
           ]
           ++ config.docsPackages;
         shellHook = ''
+          export SOPS_AGE_KEY_FILE=~/.config/sops/age/dotfiles.txt
           ${config.documentationShellHookScript}
         '';
       };
@@ -45,6 +47,10 @@
             set -o errexit
             set -o nounset
             set -o pipefail
+            rm -rf /tmp/jardin
+            declare -gx repo_path
+            repo_path=$(git rev-parse --show-toplevel)
+            cp -rf $repo_path /tmp/jardin
             ${config.packages.devOs}/bin/start
           '';
         };

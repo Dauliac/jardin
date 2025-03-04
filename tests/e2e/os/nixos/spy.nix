@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  config,
   ...
 }:
 {
@@ -9,6 +10,16 @@
     htop
     k9s
   ];
+  virtualisation.sharedDirectories = {
+    host-share = {
+      source = "/tmp/jardin";
+      target = "/mnt/host-share";
+    };
+  };
+
+  sops = {
+    age.keyFile = lib.mkForce "${config.virtualisation.sharedDirectories.host-share.target}/age.txt";
+  };
   programs.dconf = {
     profiles.gdm.databases = lib.mkForce [
       {
@@ -58,7 +69,6 @@
       ];
     };
     admin = {
-      password = "admin";
       openssh.authorizedKeys.keys = [
         (builtins.readFile ./id_ed25519.pub)
       ];

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   services.displayManager.autoLogin = {
     enable = true;
@@ -47,8 +47,7 @@
         openssh.authorizedKeys.keys = [
           (builtins.readFile ./id_ed25519.pub)
         ];
-        # TODO: set admin password
-        # hashedPasswordFile = config.sops.secrets.admin_hashed_password.path;
+        hashedPasswordFile = config.sops.secrets.admin_hashed_password.path;
       };
     };
   };

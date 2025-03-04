@@ -4,7 +4,6 @@ kind: Ingress
 metadata:
   name: homarr
 spec:
-  ingressClassName: kong
   rules:
     - host: homarr.${DOMAIN}
       http:

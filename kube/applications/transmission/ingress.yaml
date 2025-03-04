@@ -4,7 +4,6 @@ kind: Ingress
 metadata:
   name: transmission
 spec:
-  ingressClassName: kong
   rules:
     - host: transmission.${DOMAIN}
       http:

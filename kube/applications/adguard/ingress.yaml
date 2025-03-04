@@ -5,7 +5,6 @@ metadata:
   name: adguardhome
   namespace: applications
 spec:
-  ingressClassName: kong
   rules:
     - host: adguardhome.${DOMAIN}
       http:

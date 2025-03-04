@@ -7,7 +7,6 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  ingressClassName: kong
   rules:
     - host: prowlarr.${DOMAIN}
       http:

@@ -5,7 +5,6 @@ metadata:
   name: jackett-ingress
   namespace: applications
 spec:
-  ingressClassName: kong
   rules:
     - host: jackett.${DOMAIN}
       http:

@@ -13,7 +13,7 @@ tasks:
           --exclude-paths tests/e2e/os
   kustomize:
     silent: true
-    # internal: true
+    internal: true
     run: "once"
     vars:
       KUSTOMIZATIONS_PATHS:

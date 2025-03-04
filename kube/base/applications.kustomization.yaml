@@ -20,7 +20,7 @@ spec:
     substituteFrom:
       - kind: ConfigMap
         name: domain-config
-  # decryption:
-  #   provider: sops
-  #   secretRef:
-  #     name: sops-age
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age

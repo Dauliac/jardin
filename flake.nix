@@ -36,6 +36,14 @@
       url = "github:errata-ai/Joblint";
       flake = false;
     };
+    json-schema-kube-catalog = {
+      url = "github:yannh/kubernetes-json-schema";
+      flake = false;
+    };
+    json-schema-crds-catalog = {
+      url = "github:datreeio/CRDs-catalog";
+      flake = false;
+    };
   };
 
   outputs =

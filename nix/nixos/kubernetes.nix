@@ -84,7 +84,7 @@ in
   systemd.services.emplace-sops-secret =
     let
       sopsKeyFile = config.sops.age.keyFile;
-      outputFile="${rkeManifestsDir}/sops-age.secret.yaml";
+      outputFile = "${rkeManifestsDir}/sops-age.secret.yaml";
       script = pkgs.writers.writeBash "emplace-sops-secret" ''
         set -o errexit
         set -o pipefail

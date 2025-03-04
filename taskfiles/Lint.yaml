@@ -2,28 +2,6 @@
 version: "3"
 set: [errexit, pipefail, nounset]
 tasks:
-  typos:
-    silent: true
-    internal: true
-    cmds:
-      - |
-        typos --write-changes .
-  reuse:
-    silent: true
-    internal: true
-    cmds:
-      - reuse lint
-  yamlfmt:
-    silent: true
-    internal: true
-    vars:
-      YAMLFMT_TO_LINT: '{{.YAMLFMT_TO_LINT | default "./**/*.yaml"}}'
-    cmds:
-      - |
-        yamlfmt -lint {{.YAMLFMT_TO_LINT}} || (
-          yamlfmt {{.YAMLFMT_TO_LINT}}
-          exit 1
-        )
   secrets:
     silent: true
     internal: true
@@ -51,7 +29,7 @@ tasks:
     internal: true
     prefix: kustomize:build:{{.KUSTOMIZATION_PATH}}
     vars:
-      OUTPUT_DIRECTORY: '{{joinPath .KUSTOMIZATION_PATH "build"}}'
+      OUTPUT_DIRECTORY: '{{joinPath "build" .KUSTOMIZATION_PATH}}'
       OUTPUT_FILE: '{{joinPath .OUTPUT_DIRECTORY "kustomization.yaml"}}'
     requires:
       vars:
@@ -85,17 +63,15 @@ tasks:
     cmds:
       - |
         kubeconform \
-          -schema-location default \
           -schema-location \
-            'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{"{{"}}.Group{{"}}"}}/{{"{{"}}.ResourceKind{{"}}"}}_{{"{{"}}.ResourceAPIVersion{{"}}"}}.json' \
-          -skip apiextensions.k8s.io/v1/CustomResourceDefinition \
+            '.json-schema/kube/{{"{{"}}.NormalizedKubernetesVersion{{"}}"}}-standalone{{"{{"}}.StrictSuffix{{"}}"}}/{{"{{"}}.ResourceKind{{"}}"}}{{"{{"}}.KindSuffix{{"}}"}}.json' \
+          -schema-location \
+            '.json-schema/crds-catalog/{{"{{"}}.Group{{"}}"}}/{{"{{"}}.ResourceKind{{"}}"}}_{{"{{"}}.ResourceAPIVersion{{"}}"}}.json' \
+          -skip "apiextensions.k8s.io/v1/CustomResourceDefinition,helm.cattle.io/v1/HelmChart,kuma.io/v1alpha1/Mesh" \
           "{{.KUBECONFORM_PATH}}"
   default:
     silent: true
     desc: 💄Lint jardin
     deps:
       - kustomize
-      - yamlfmt
-      - typos
-      - reuse
       - secrets

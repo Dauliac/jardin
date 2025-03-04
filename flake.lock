@@ -137,6 +137,38 @@
         "type": "github"
       }
     },
+    "json-schema-crds-catalog": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1740467557,
+        "narHash": "sha256-fcPwqXlZpZdzeBEuRwYcxywH1QZMau17/dcDxIfR+GU=",
+        "owner": "datreeio",
+        "repo": "CRDs-catalog",
+        "rev": "43e4407642d4c37683c88711f37caa6c9c20ca40",
+        "type": "github"
+      },
+      "original": {
+        "owner": "datreeio",
+        "repo": "CRDs-catalog",
+        "type": "github"
+      }
+    },
+    "json-schema-kube-catalog": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1740998327,
+        "narHash": "sha256-+U1IBDRmYy65gYaBATnLyFxR0H5akosvV8BrCsc3P5k=",
+        "owner": "yannh",
+        "repo": "kubernetes-json-schema",
+        "rev": "8bf6f75e84e126bd156255d8002be1f35e0590eb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "yannh",
+        "repo": "kubernetes-json-schema",
+        "type": "github"
+      }
+    },
     "nixos-hardware": {
       "locked": {
         "lastModified": 1740646007,
@@ -275,6 +307,8 @@
         "deadnix": "deadnix",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
+        "json-schema-crds-catalog": "json-schema-crds-catalog",
+        "json-schema-kube-catalog": "json-schema-kube-catalog",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_3",
         "nur": "nur",

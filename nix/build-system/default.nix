@@ -10,6 +10,7 @@
     ./options.nix
     ./dev.nix
     ./treefmt.nix
+    ./checks.nix
   ];
   perSystem =
     { system, ... }:

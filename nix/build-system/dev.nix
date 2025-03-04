@@ -1,4 +1,4 @@
-{ ... }:
+{ inputs, ... }:
 {
   imports = [
     ./docs.nix
@@ -36,6 +36,10 @@
           ++ config.docsPackages;
         shellHook = ''
           export SOPS_AGE_KEY_FILE=~/.config/sops/age/dotfiles.txt
+          rm -rf .json-schema
+          mkdir -p .json-schema
+          ln -sf ${inputs.json-schema-kube-catalog} .json-schema/kube
+          ln -sf ${inputs.json-schema-crds-catalog} .json-schema/crds-catalog
           ${config.documentationShellHookScript}
         '';
       };

@@ -1,7 +1,7 @@
 ---
 # yamllint disable rule:line-length
 keys:
-  - &key age10hjhp6r39p9qkqd5eny55lqhy2frrsndmq0dwgufw8r8vu7u5ajq4skyh2
+  - &key age17r5jkhtwepl0k27r5q6kdsfsyqyzxf25s5dzv4xc2awtea6c8cjs5clu6q
 # yamllint enable rule:line-length
 creation_rules:
   - path_regex: .*.sops.(ovpn|txt|conf|env|yaml)

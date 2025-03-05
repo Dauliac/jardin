@@ -16,9 +16,7 @@ in
   ];
   services.rke2 = {
     enable = true;
-    extraFlags = [
-      "--enable-servicelb"
-    ];
+    extraFlags = [ ];
   };
   systemd.services.emplace-rke-manifests =
     let

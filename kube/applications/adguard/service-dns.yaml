@@ -7,14 +7,15 @@ metadata:
 spec:
   selector:
     app: adguard
-  type: LoadBalancer
-  externalTrafficPolicy: Local # Optionnel : Préserve l'IP source
   ports:
     - protocol: UDP
       port: 53
       targetPort: 53
       name: udp
+      nodePort: 30053
     - protocol: TCP
       port: 53
       targetPort: 53
       name: tcp
+      nodePort: 30053
+  type: NodePort

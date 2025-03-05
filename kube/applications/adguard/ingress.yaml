@@ -13,6 +13,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: adguardhome
+                name: adguard-web
                 port:
                   number: 80

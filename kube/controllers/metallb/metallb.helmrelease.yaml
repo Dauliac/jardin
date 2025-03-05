@@ -11,7 +11,7 @@ spec:
     mode: enabled
   chart:
     spec:
-      # version: ""
+      version: "0.14.9"
       chart: metallb
       sourceRef:
         kind: HelmRepository

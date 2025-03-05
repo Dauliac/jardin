@@ -5,3 +5,4 @@ resources:
   - ./monitoring
   - ./cert-manager
   - ./kuma
+  - ./metallb

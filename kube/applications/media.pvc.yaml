@@ -6,8 +6,8 @@ metadata:
   namespace: applications
 spec:
   accessModes:
-    - ReadWriteOnce
-  storageClassName: standard
+    - ReadWriteMany
   resources:
     requests:
       storage: 3000Gi
+  volumeName: media

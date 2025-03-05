@@ -97,12 +97,12 @@ in
             echo "ERROR: SOPS key file not found at ${sopsKeyFile}"
             exit 1
           fi
-          SOPS_KEY=$(cat "${sopsKeyFile}")
-
-          echo "Generating Kubernetes Secret YAML for SOPS..."
-            ${pkgs.kubectl}/bin/kubectl create secret generic sops-age -n flux-system \
-            --from-literal=sops-key="$SOPS_KEY" \
-            --dry-run=client -o yaml > ${outputFile}
+          cat "${sopsKeyFile}" \
+          | ${pkgs.kubectl}/bin/kubectl  create secret generic sops-age \
+          --namespace=flux-system \
+          --dry-run=client \
+          -o yaml \
+          --from-file=age.agekey=/dev/stdin > ${outputFile}
 
           echo "SOPS Secret successfully created at ${outputFile}"
         }

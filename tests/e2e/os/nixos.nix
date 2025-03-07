@@ -45,6 +45,14 @@ in
               ...
             }:
             {
+             # TODO: is it required with externalDNS installed ?
+              # networking.interfaces.eth0 = {
+              #   useDHCP = false;
+              #   ipv4.addresses = [{
+              #     address = "192.168.100.50";
+              #     prefixLength = 24;
+              #   }];
+              # };
               virtualisation = {
                 diskSize = 512 * 1024;
                 memorySize = 8096;

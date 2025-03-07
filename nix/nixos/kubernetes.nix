@@ -143,7 +143,11 @@ in
 
           main() {
             mkdir -p ${rkeManifestsDir}
-            cp -f ${cfg.clusterKubeManifestsPaths} ${rkeManifestsDir}/cluster.kustomization.yaml
+            ${pkgs.kubectl}/bin/kubectl create configmap \
+              cluster-config \
+              --namespace=flux-system \
+              --from-literal=CLUSTER_NAME=${cfg.clusterName} \
+              --dry-run=client -o yaml > ${rkeManifestsDir}/cluster.configmap.yaml
           }
           main
         '';

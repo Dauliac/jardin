@@ -1,0 +1,23 @@
+---
+apiversion: kustomize.toolkit.fluxcd.io/v1
+kind: kustomization
+metadata:
+  name: cluster
+  namespace: flux-system
+spec:
+  interval: 3m
+  timeout: 5m
+  retryinterval: 1m
+  prune: true
+  wait: true
+  path: ./kube/clusters/${CLUSTER_NAME}
+  sourceref:
+    kind: gitrepository
+    name: jardin
+  substituteFrom:
+    - kind: ConfigMap
+      name: cluster-config
+  decryption:
+    provider: sops
+    secretref:
+      name: sops-age

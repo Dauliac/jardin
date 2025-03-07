@@ -5,6 +5,7 @@
   ...
 }:
 {
+  jardin.clusterName = "test";
   environment.systemPackages = with pkgs; [
     systemctl-tui
     htop
@@ -16,7 +17,6 @@
       target = "/mnt/host-share";
     };
   };
-
   sops = {
     age.keyFile = lib.mkForce "${config.virtualisation.sharedDirectories.host-share.target}/age.txt";
   };

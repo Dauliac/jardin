@@ -20,9 +20,8 @@ commit-msg:
 pre-commit:
   parallel: false
   commands:
-    formatter-nix:
+    formatter:
       tags: formatter
-      glob: "*.nix"
       run: nix fmt
       stage_fixed: true
     nix:check:

@@ -16,10 +16,11 @@ spec:
     name: jardin
   dependsOn:
     - name: controllers
+    - name: cluster
   postBuild:
     substituteFrom:
-      - kind: ConfigMap
-        name: domain-config
+      - kind: Secret
+        name: cluster-config
   decryption:
     provider: sops
     secretRef:

@@ -4,5 +4,3 @@ kind: Kustomization
 resources:
   - ./fluxcd.helmchart.cattle.yaml
   - ./controllers.kustomization.yaml
-  - ./applications.kustomization.yaml
-  - ./domain.configmap.yaml

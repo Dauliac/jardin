@@ -40,18 +40,6 @@ tasks:
       - fmt
     deps:
       - task: formatter:nix
-  build:
-    silent: true
-    desc: Build jardin
-    sources:
-      - ./src/**/*.rs
-      - ./Cargo.toml
-      - ./Cargo.lock
-    generates:
-      - ./target/debug/jardin
-    cmds:
-      - |
-        cargo build
   test:lefthook:
     silent: true
     cmds:

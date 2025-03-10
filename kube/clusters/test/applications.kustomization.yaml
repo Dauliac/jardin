@@ -16,7 +16,6 @@ spec:
     name: jardin
   dependsOn:
     - name: controllers
-    - name: cluster
   postBuild:
     substituteFrom:
       - kind: Secret

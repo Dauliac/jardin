@@ -45,7 +45,7 @@ in
               ...
             }:
             {
-             # TODO: is it required with externalDNS installed ?
+              # TODO: is it required with externalDNS installed ?
               # networking.interfaces.eth0 = {
               #   useDHCP = false;
               #   ipv4.addresses = [{

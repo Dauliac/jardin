@@ -11,6 +11,7 @@ spec:
   createNamespace: true
   version: "2.15.0"
   bootstrap: true
+  timeout: 15m
   valuesContent: |-
     installCRDs: true
     extraObjects:

@@ -14,8 +14,6 @@ spec:
         kind: HelmRepository
         name: kuma
       version: "*"
-  install:
-    createNamespace: true
   targetNamespace: kuma-system
   upgrade:
     remediation:

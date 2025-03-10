@@ -7,17 +7,18 @@ metadata:
 spec:
   interval: 3m
   timeout: 5m
-  retryinterval: 1m
+  retryInterval: 1m
   prune: true
   wait: true
   path: ./kube/clusters/${CLUSTER_NAME}
-  sourceref:
-    kind: gitrepository
+  sourceRef:
+    kind: GitRepository
     name: jardin
-  substituteFrom:
-    - kind: ConfigMap
-      name: cluster-config
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-config
   decryption:
     provider: sops
-    secretref:
+    secretRef:
       name: sops-age

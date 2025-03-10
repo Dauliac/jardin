@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - ./fluxcd.helmchart.cattle.yaml
   - ./controllers.kustomization.yaml
+  - ./cluster.kustomization.yaml

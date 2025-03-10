@@ -14,11 +14,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: jardin
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-config
-  # decryption:
-  #   provider: sops
-  #   secretRef:
-  #     name: sops-age
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age

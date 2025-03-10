@@ -40,6 +40,10 @@ spec:
           prune: true
           wait: true
           path: ./kube/base/
+          postBuild:
+            substituteFrom:
+              - kind: ConfigMap
+                name: cluster-config
           sourceRef:
             kind: GitRepository
             name: jardin

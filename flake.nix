@@ -24,18 +24,6 @@
       url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    valeMicrosoft = {
-      url = "github:errata-ai/Microsoft";
-      flake = false;
-    };
-    valeWriteGood = {
-      url = "github:errata-ai/write-good";
-      flake = false;
-    };
-    valeJoblint = {
-      url = "github:errata-ai/Joblint";
-      flake = false;
-    };
     json-schema-kube-catalog = {
       url = "github:yannh/kubernetes-json-schema";
       flake = false;

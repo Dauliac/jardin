@@ -1,0 +1,16 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: local-path-provisioner
+  namespace: local-path-provisioner-system
+spec:
+  interval: 10m
+  timeout: 5m
+  retryInterval: 2m
+  prune: true
+  wait: true
+  sourceRef:
+    kind: GitRepository
+    name: local-path-provisioner
+  path: ./deploy

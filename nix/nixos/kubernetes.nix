@@ -12,17 +12,13 @@ in
 {
   options = {
     jardin = {
-      clusterName = mkOption {
-        description = mdDoc "NixPkgs config to import";
-        default = "jardin";
-      };
-      clusterKubeManifestsPaths = mkOption {
-        description = mdDoc "Path of cluster specific kustomization";
-        default = ../../kube/clusters/${config.jardin.clusterName}.kustomization.yaml;
+      publicNetworkInterface = mkOption {
+        default = "eth0";
       };
     };
   };
   config = {
+    jardin.publicNetworkInterface = "wlp0s20f3";
     environment.systemPackages = with pkgs; [
       kubectl
       k9s
@@ -32,7 +28,9 @@ in
     ];
     services.rke2 = {
       enable = true;
-      extraFlags = [ ];
+      extraFlags = [
+        "--ingress-controller=none"
+      ];
     };
     systemd.services.emplace-rke-manifests =
       let
@@ -141,13 +139,25 @@ in
           set -o pipefail
           set -o nounset
 
+
           main() {
             mkdir -p ${rkeManifestsDir}
-            ${pkgs.kubectl}/bin/kubectl create configmap \
-              cluster-config \
+            declare -rgx DOMAIN=$(cat ${config.sops.secrets.domain.path})
+            declare -rgx IP_ADDRESS=$(${pkgs.iproute2}/bin/ip -4 addr show ${config.jardin.publicNetworkInterface} | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
+            if [[ -z $IP_ADDRESS ]]; then
+              printf "Failed to get ip adress of interface ${config.jardin.publicNetworkInterface}\n"
+              exit 1
+            fi
+            if [[ -z $DOMAIN ]]; then
+              printf "Failed to get domain from file ${config.sops.secrets.domain.path}\n"
+              exit 1
+            fi
+
+            ${pkgs.kubectl}/bin/kubectl create secret generic cluster-config \
               --namespace=flux-system \
-              --from-literal=CLUSTER_NAME=${cfg.clusterName} \
-              --dry-run=client -o yaml > ${rkeManifestsDir}/cluster.configmap.yaml
+              --from-literal=DOMAIN="$DOMAIN" \
+              --from-literal=IP_ADDRESS="$IP_ADDRESS" \
+              --dry-run=client -o yaml > ${rkeManifestsDir}/cluster.secret.yaml
           }
           main
         '';
@@ -156,10 +166,17 @@ in
         description = "Ensure RKE2 cluster specific manifests are in place before RKE2 starts";
         before = [ "rke2-server.service" ];
         wantedBy = [ "multi-user.target" ];
+        after = [
+          "network.target"
+        ];
         serviceConfig = {
           Type = "oneshot";
           RemainAfterExit = true;
           ExecStart = script;
+          Restart = "on-failure";
+          RestartSec = 5;
+          StartLimitBurst = 50;
+          StartLimitIntervalSec = 600;
         };
       };
   };

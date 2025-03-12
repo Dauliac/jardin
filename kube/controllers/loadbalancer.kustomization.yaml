@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: applications
+  name: loadbalancer-controller
   namespace: flux-system
 spec:
   interval: 3m
@@ -10,17 +10,13 @@ spec:
   retryInterval: 1m
   prune: true
   wait: true
-  path: ./kube/applications
-  sourceRef:
-    kind: GitRepository
-    name: jardin
+  path: ./kube/controllers/loadbalancer
   dependsOn:
-    - name: controllers
+    - name: metallb-controller
   postBuild:
     substituteFrom:
       - kind: Secret
         name: cluster-config
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
+  sourceRef:
+    kind: GitRepository
+    name: jardin

@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: local-path-provisioner
+  name: local-path-provisioner-controller
   namespace: local-path-provisioner-system
 spec:
   interval: 10m

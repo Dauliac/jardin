@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: controllers
+  name: ingress-nginx-controller
   namespace: flux-system
 spec:
   interval: 3m
@@ -10,7 +10,11 @@ spec:
   retryInterval: 1m
   prune: true
   wait: true
-  path: ./kube/controllers
+  path: ./kube/controllers/ingress-nginx
+  dependsOn:
+    - name: monitoring-controller
+    - name: metallb-controller
+    - name: loadbalancer-controller
   postBuild:
     substituteFrom:
       - kind: Secret

@@ -15,3 +15,17 @@ spec:
         name: external-dns
       version: "1.15.2"
   targetNamespace: external-dns-system
+  values:
+    provider:
+      name: cloudflare
+    env:
+      - name: CF_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: external-dns-cloudflare-credentials
+            key: CF_API_KEY
+      - name: CF_API_EMAIL
+        valueFrom:
+          secretKeyRef:
+            name: external-dns-cloudflare-credentials
+            key: CF_API_EMAIL

@@ -1,7 +1,14 @@
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: external-dns-system
 resources:
   - ./external-dns.namespace.yaml
   - ./external-dns.helmrepository.yaml
   - ./external-dns.helmrelease.yaml
+configurations:
+  - ./namereference.yaml
+secretGenerator:
+  - name: external-dns-cloudflare-credentials
+    envs:
+      - ./external-dns-cloudflare-credentials.sops.env

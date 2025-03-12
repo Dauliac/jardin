@@ -1,0 +1,10 @@
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: public
+  namespace: metallb-system
+spec:
+  addresses:
+    - "${IP_ADDRESS}-${IP_ADDRESS}"
+  autoAssign: true

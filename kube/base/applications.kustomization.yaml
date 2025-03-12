@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: controllers
+  name: applications
   namespace: flux-system
 spec:
   interval: 3m
@@ -10,7 +10,9 @@ spec:
   retryInterval: 1m
   prune: true
   wait: true
-  path: ./kube/controllers
+  path: ./kube/applications
+  dependsOn:
+    - name: controllers
   postBuild:
     substituteFrom:
       - kind: Secret
@@ -18,3 +20,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: jardin
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age

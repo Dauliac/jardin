@@ -2,8 +2,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./monitoring
   - ./cert-manager
   - ./kuma
   - ./local-path-provisioner
-  - ./external-dns
+  - ./monitoring.kustomization.yaml
+  - ./metallb.kustomization.yaml
+  - ./loadbalancer.kustomization.yaml
+  - ./ingress-nginx.kustomization.yaml
+  - ./external-dns.kustomization.yaml

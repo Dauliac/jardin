@@ -1,7 +1,10 @@
 _: {
   sops = {
     age.keyFile = "/home/admin/.config/sops/age/key.txt";
-    defaultSopsFile = ../../secrets.yaml;
-    secrets.admin_hashed_password = { };
+    defaultSopsFile = ../../secrets.sops.yaml;
+    secrets = {
+      domain = { };
+      admin_hashed_password = { };
+    };
   };
 }

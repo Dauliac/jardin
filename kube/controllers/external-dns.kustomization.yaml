@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: applications
+  name: external-dns-controller
   namespace: flux-system
 spec:
   interval: 3m
@@ -10,16 +10,17 @@ spec:
   retryInterval: 1m
   prune: true
   wait: true
-  path: ./kube/applications
-  sourceRef:
-    kind: GitRepository
-    name: jardin
+  path: ./kube/controllers/external-dns
   dependsOn:
-    - name: controllers
+    - name: monitoring-controller
+    - name: ingress-nginx-controller
   postBuild:
     substituteFrom:
       - kind: Secret
         name: cluster-config
+  sourceRef:
+    kind: GitRepository
+    name: jardin
   decryption:
     provider: sops
     secretRef:

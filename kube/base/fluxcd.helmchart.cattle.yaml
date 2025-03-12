@@ -10,8 +10,7 @@ spec:
   targetNamespace: flux-system
   createNamespace: true
   version: "2.15.0"
-  bootstrap: true
-  timeout: 15m
+  timeout: 20m
   valuesContent: |-
     installCRDs: true
     extraObjects:
@@ -43,7 +42,7 @@ spec:
           path: ./kube/base/
           postBuild:
             substituteFrom:
-              - kind: ConfigMap
+              - kind: Secret
                 name: cluster-config
           sourceRef:
             kind: GitRepository

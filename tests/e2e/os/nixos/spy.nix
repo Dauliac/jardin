@@ -5,7 +5,8 @@
   ...
 }:
 {
-  jardin.clusterName = "test";
+  jardin.publicNetworkInterface = lib.mkForce "eth0";
+  sops.defaultSopsFile = lib.mkForce ../../../secrets.sops.yaml;
   environment.systemPackages = with pkgs; [
     systemctl-tui
     htop

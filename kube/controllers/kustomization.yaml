@@ -6,3 +6,4 @@ resources:
   - ./cert-manager
   - ./kuma
   - ./local-path-provisioner
+  - ./external-dns

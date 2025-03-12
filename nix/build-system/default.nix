@@ -6,7 +6,6 @@
 {
   imports = [
     inputs.treefmt-nix.flakeModule
-    ./docs.nix
     ./options.nix
     ./dev.nix
     ./treefmt.nix

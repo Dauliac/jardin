@@ -1,8 +1,5 @@
 { inputs, ... }:
 {
-  imports = [
-    ./docs.nix
-  ];
   perSystem =
     {
       pkgs,
@@ -11,36 +8,32 @@
     }:
     {
       devShells.default = pkgs.mkShell {
-        nativeBuildInputs =
-          with pkgs;
-          [
-            go-task
-            lefthook
-            convco
-            fluxcd
-            kustomize
-            kubectl
-            trufflehog
-            fd
-            yamlfmt
-            reuse
-            sops
-            kubernetes-helm
-            k9s
-            kube-linter
-            kubeconform
-            comin
-            deadnix
-            sops
-          ]
-          ++ config.docsPackages;
+        nativeBuildInputs = with pkgs; [
+          go-task
+          lefthook
+          convco
+          fluxcd
+          kustomize
+          kubectl
+          trufflehog
+          fd
+          yamlfmt
+          reuse
+          sops
+          kubernetes-helm
+          k9s
+          kube-linter
+          kubeconform
+          comin
+          deadnix
+          sops
+        ];
         shellHook = ''
           export SOPS_AGE_KEY_FILE="$(git rev-parse --show-toplevel)/age.txt"
           rm -rf .json-schema
           mkdir -p .json-schema
           ln -sf ${inputs.json-schema-kube-catalog} .json-schema/kube
           ln -sf ${inputs.json-schema-crds-catalog} .json-schema/crds-catalog
-          ${config.documentationShellHookScript}
         '';
       };
       apps = {

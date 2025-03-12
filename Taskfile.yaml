@@ -7,8 +7,6 @@ includes:
   lint:
     taskfile: taskfiles/Lint.yaml
     dir: .
-  docs:
-    taskfile: docs/Taskfile.yaml
   dev:
     taskfile: taskfiles/Dev.yaml
     dir: .

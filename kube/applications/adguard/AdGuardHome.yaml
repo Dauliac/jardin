@@ -20,17 +20,11 @@ dns:
   ratelimit_subnet_len_ipv6: 56
   ratelimit_whitelist: []
   refuse_any: true
-  # upstream_dns:
-  #   - https://dns10.quad9.net/dns-query
-  # upstream_dns_file: ""
   upstream_dns:
     - coredns
     - 9.9.9.9
   bootstrap_dns:
     - 9.9.9.10
-    # - 149.112.112.10
-    # - 2620:fe::10
-    # - 2620:fe::fe:10
   fallback_dns: []
   upstream_mode: load_balance
   fastest_timeout: 1s
@@ -149,9 +143,6 @@ filtering:
   blocking_mode: default
   parental_block_host: family-block.dns.adguard.com
   safebrowsing_block_host: standard-block.dns.adguard.com
-  # rewrites:
-  #   - domain: '*.nofreedisk.space'
-  #     answer: localhost
   safebrowsing_cache_size: 1048576
   safesearch_cache_size: 1048576
   parental_cache_size: 1048576

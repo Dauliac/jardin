@@ -6,7 +6,7 @@ metadata:
   namespace: transmission
 data:
   LOCAL_NETWORK: 10.0.0.0/8 # TODO: Maybe set fluxcd variable in cluster configmap
-  OPENVPN_CONFIG: udp.sops.ovpn
+  OPENVPN_CONFIG: udp.sops
   OPENVPN_PROVIDER: custom
   TRANSMISSION_DOWNLOAD_QUEUE_SIZE: "4"
   TRANSMISSION_RATIO_LIMIT: "2"

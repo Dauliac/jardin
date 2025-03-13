@@ -34,21 +34,17 @@ spec:
           envFrom:
             - secretRef:
                 name: transmission-vpn-credentials
-          env:
-            - name: OPENVPN_PROVIDER
-              value: custom
-            - name: OPENVPN_CONFIG
-              value: udp
-            - name: LOCAL_NETWORK
-              value: 10.244.0.0/16 # TODO: define this with cluster variable
           volumeMounts:
             - name: openvpn-config-volume
-              mountPath: udp.ovpn
+              mountPath: /etc/openvpn/custom/udp.ovpn
               subPath: udp.ovpn
-            # - name: config-volume # TODO: define transmission config here
-            #   mountPath: /config
             - name: data-volume
               mountPath: /data
+            - mountPath: /dev/net/tun
+              name: tunnel
+            - mountPath: /etc/localtime
+              name: localtime
+          readOnly: true
           securityContext:
             capabilities:
               add:
@@ -60,3 +56,11 @@ spec:
         - name: data-volume
           persistentVolumeClaim:
             claimName: download
+        - hostPath:
+            path: /dev/net/tun
+            type: ""
+          name: tunnel
+        - hostPath:
+            path: /etc/localtime
+            type: ""
+          name: localtime

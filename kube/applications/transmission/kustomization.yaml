@@ -5,6 +5,7 @@ resources:
   - ./deployment.yaml
   - ./ingress.yaml
   - ./service.yaml
+  - ./config.yaml
   # - ./pvc-config.yaml
 secretGenerator:
   - name: transmission-vpn-credentials

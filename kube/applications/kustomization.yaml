@@ -14,6 +14,6 @@ resources:
   - ./homarr
   - ./jellyseerr
   - ./radarr
-  # - ./transmission
+  - ./transmission
   - ./prowlarr
   # - ./jackett

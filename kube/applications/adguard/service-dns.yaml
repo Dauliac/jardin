@@ -4,21 +4,17 @@ kind: Service
 metadata:
   name: adguard-dns
   namespace: applications
-  annotations:
-    metallb.universe.tf/loadBalancerIPs: 10.0.2.1
 spec:
   selector:
     app: adguard
   ports:
-    - protocol: UDP
+    - name: udp
+      protocol: UDP
       port: 53
       targetPort: 53
-      name: udp
-      nodePort: 30053
-    - protocol: TCP
+    - name: tcp
+      protocol: TCP
       port: 53
       targetPort: 53
-      name: tcp
-      # nodePort: 30053
-  # type: NodePort
   type: LoadBalancer
+  loadBalancerIP: "${IP_ADDRESS}"

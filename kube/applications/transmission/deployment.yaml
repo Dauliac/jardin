@@ -40,10 +40,10 @@ spec:
               subPath: udp.sops.ovpn
             - name: data-volume
               mountPath: /data
-            - mountPath: /dev/net/tun
-              name: tunnel
-            - mountPath: /etc/localtime
-              name: localtime
+              # - mountPath: /dev/net/tun
+              #   name: tunnel
+              # - mountPath: /etc/localtime
+              #   name: localtime
           readOnly: true
           securityContext:
             capabilities:
@@ -56,11 +56,11 @@ spec:
         - name: data-volume
           persistentVolumeClaim:
             claimName: download
-        - hostPath:
-            path: /dev/net/tun
-            type: ""
-          name: tunnel
-        - hostPath:
-            path: /etc/localtime
-            type: ""
-          name: localtime
+      # - hostPath:
+      #     path: /dev/net/tun
+      #     type: ""
+      #   name: tunnel
+      # - hostPath:
+      #     path: /etc/localtime
+      #     type: ""
+      #   name: localtime

@@ -35,7 +35,7 @@ spec:
             "helm.sh/hook": post-install,post-upgrade
         spec:
           interval: 1m
-          timeout: 5m
+          timeout: 20m
           retryInterval: 1m
           prune: true
           wait: true

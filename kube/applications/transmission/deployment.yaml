@@ -38,8 +38,7 @@ spec:
                 name: transmission-config
           volumeMounts:
             - name: openvpn-config-volume
-              mountPath: /etc/openvpn/custom/
-              subPath: udp.sops.ovpn
+              mountPath: /etc/openvpn/custom
             - name: data-volume
               mountPath: /data
               # - mountPath: /dev/net/tun

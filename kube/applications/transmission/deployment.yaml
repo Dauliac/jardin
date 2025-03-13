@@ -26,6 +26,18 @@ spec:
       labels:
         app: transmission
     spec:
+      initContainers:
+        - name: init-openvpn-config
+          image: alpine:latest # Image légère pour copier les fichiers
+          command: ["/bin/sh", "-c"]
+          args:
+            - cp -r /etc/openvpn-src/* /etc/openvpn-tmp/;
+          volumeMounts:
+            - name: openvpn-config-volume
+              mountPath: /etc/openvpn-src
+              readOnly: true
+            - name: openvpn-runtime-config
+              mountPath: /etc/openvpn-tmp
       containers:
         - name: transmission
           image: haugene/transmission-openvpn
@@ -37,11 +49,10 @@ spec:
             - configMapRef:
                 name: transmission-config
           volumeMounts:
-            - name: openvpn-config-volume
-              mountPath: /etc/openvpn/custom
+            - name: openvpn-runtime-config
+              mountPath: /etc/openvpn/custom # Maintenant monté en RW
             - name: data-volume
               mountPath: /data
-          readOnly: true
           securityContext:
             capabilities:
               add:
@@ -50,7 +61,8 @@ spec:
         - name: openvpn-config-volume
           secret:
             secretName: transmission-vpn-openvpn-config
-            defaultMode: 0777
+        - name: openvpn-runtime-config
+          emptyDir: {} # Volume temporaire RW
         - name: data-volume
           persistentVolumeClaim:
             claimName: download

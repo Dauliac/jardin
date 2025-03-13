@@ -41,10 +41,6 @@ spec:
               mountPath: /etc/openvpn/custom
             - name: data-volume
               mountPath: /data
-              # - mountPath: /dev/net/tun
-              #   name: tunnel
-              # - mountPath: /etc/localtime
-              #   name: localtime
           readOnly: true
           securityContext:
             capabilities:
@@ -54,14 +50,7 @@ spec:
         - name: openvpn-config-volume
           secret:
             secretName: transmission-vpn-openvpn-config
+            defaultMode: 0777
         - name: data-volume
           persistentVolumeClaim:
             claimName: download
-      # - hostPath:
-      #     path: /dev/net/tun
-      #     type: ""
-      #   name: tunnel
-      # - hostPath:
-      #     path: /etc/localtime
-      #     type: ""
-      #   name: localtime

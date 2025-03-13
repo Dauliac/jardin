@@ -13,4 +13,4 @@ secretGenerator:
       - ./credentials.sops.env
   - name: transmission-vpn-openvpn-config
     files:
-      - ./udp.ovpn=./udp.sops.ovpn
+      - ./udp.sops.ovpn

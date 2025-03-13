@@ -20,6 +20,7 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     deadnix.url = "github:astro/deadnix";
     catppuccin.url = "github:catppuccin/nix";
+    nix-fast-build.url = "github:Mic92/nix-fast-build";
     home-manager = {
       url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";

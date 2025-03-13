@@ -18,7 +18,7 @@ commit-msg:
       tags: check commit typos
       run: cat "{1}" | head -n 1 | typos -
 pre-commit:
-  parallel: false
+  parallel: true
   commands:
     formatter:
       tags: formatter
@@ -26,4 +26,4 @@ pre-commit:
       stage_fixed: true
     nix:check:
       tags: test e2e build
-      run: nix flake check
+      run: nix-fast-build --skip-cached --flake ".#checks"

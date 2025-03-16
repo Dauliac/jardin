@@ -2,7 +2,7 @@
 apiVersion: kuma.io/v1alpha1
 kind: Mesh
 metadata:
-  name: default
+  name: applications
 spec:
   mtls:
     enabledBackend: ca-1

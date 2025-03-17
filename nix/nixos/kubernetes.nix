@@ -7,6 +7,7 @@
 let
   inherit (lib) mkOption;
   rkeManifestsDir = "${config.services.rke2.dataDir}/server/manifests";
+  kubeConfig = "/etc/rancher/rke2/rke2.yaml";
 in
 {
   options = {
@@ -32,33 +33,8 @@ in
         "--ingress-controller=none"
       ];
     };
-    systemd.services.emplace-rke-manifests =
-      let
-        script = pkgs.writers.writeBash "emplace-rke-manifests" ''
-          set -o errexit
-          set -o pipefail
-          set -o nounset
-
-          main() {
-            mkdir -p ${rkeManifestsDir}
-            cp -f ${../../kube/base/fluxcd.helmchart.cattle.yaml} ${rkeManifestsDir}/fluxcd.helmchart.cattle.yaml
-          }
-          main
-        '';
-      in
-      {
-        description = "Ensure RKE2 manifests are in place before RKE2 starts";
-        before = [ "rke2-server.service" ];
-        wantedBy = [ "multi-user.target" ];
-        serviceConfig = {
-          Type = "oneshot";
-          RemainAfterExit = true;
-          ExecStart = script;
-        };
-      };
     systemd.services.emplace-kubeconfig =
       let
-        kubeConfigSrc = "/etc/rancher/rke2/rke2.yaml";
         kubeConfigDirDst = "/home/admin/.kube";
         kubeConfigDst = "${kubeConfigDirDst}/config";
         script = pkgs.writers.writeBash "emplace-kubeconfig" ''
@@ -69,7 +45,7 @@ in
 
           main() {
             mkdir -p ${kubeConfigDirDst}
-            cp -f ${kubeConfigSrc} ${kubeConfigDst}
+            cp -f ${kubeConfig} ${kubeConfigDst}
             chown -R admin:admin ${kubeConfigDirDst}
             chmod 400 ${kubeConfigDst}
           }
@@ -77,7 +53,7 @@ in
         '';
       in
       {
-        description = "Copy RKE2 kubeconfig ${kubeConfigSrc} to ${kubeConfigDst}";
+        description = "Copy RKE2 kubeconfig ${kubeConfig} to ${kubeConfigDst}";
         after = [
           "network.target"
         ];
@@ -139,7 +115,6 @@ in
           set -o pipefail
           set -o nounset
 
-
           main() {
             mkdir -p ${rkeManifestsDir}
             declare -rgx DOMAIN=$(cat ${config.sops.secrets.domain.path})
@@ -181,5 +156,56 @@ in
           StartLimitIntervalSec = 600;
         };
       };
+  systemd.services.apply-rke2-manifests =
+    let
+      script = pkgs.writers.writeBash "apply-rke2-manifests" ''
+        set -o errexit
+        set -o pipefail
+        set -o nounset
+        set -x  # Debugging output
+
+        export KUBECONFIG=${kubeConfig}  # Définit le kubeconfig
+
+        main() {
+          echo "Applying RKE2 cluster manifests..."
+          ${pkgs.kubectl}/bin/kubectl apply -f ${../../kube/base/fluxcd.helmchart.cattle.yaml}
+          local cmd="$1"
+          local max_retries=30
+          local sleep_time=10
+          local attempt=0
+          until ( \
+            ${pkgs.kubectl}/bin/kubectl apply -f ${../../kube/base/jardin.gitrepository.yaml} \
+            && ${pkgs.kubectl}/bin/kubectl apply -f ${../../kube/base/jardin.kustomization.yaml} \
+          ); do
+            attempt=$((attempt + 1))
+            echo "Attempt $attempt failed, retrying in $sleep_time seconds..."
+            if [[ $attempt -ge $max_retries ]]; then
+              echo "Max retries reached, exiting with failure."
+              exit 1
+            fi
+            sleep $sleep_time
+          done
+          echo "Manifests applied successfully"
+        }
+
+        main
+      '';
+    in
+    {
+      description = "Apply Kubernetes manifests after RKE2 starts";
+      after = [ "rke2-server.service" "network.target" ];
+      wants = [ "rke2-server.service" ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        User = "root";
+        Environment = "KUBECONFIG=${kubeConfig}";
+        ExecStart = script;
+        Restart = "on-failure";
+        RestartSec = 10;
+        StartLimitBurst = 100;
+        StartLimitIntervalSec = 600;
+      };
+    };
   };
 }

@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: jardin
+  namespace: flux-system
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+spec:
+  interval: 1m
+  ref:
+    branch: main
+  url: https://github.com/Dauliac/jardin.git

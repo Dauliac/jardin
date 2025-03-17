@@ -162,9 +162,6 @@ in
         set -o errexit
         set -o pipefail
         set -o nounset
-        set -x  # Debugging output
-
-        export KUBECONFIG=${kubeConfig}  # Définit le kubeconfig
 
         main() {
           echo "Applying RKE2 cluster manifests..."

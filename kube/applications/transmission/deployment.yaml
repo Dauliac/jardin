@@ -33,9 +33,9 @@ spec:
           args:
             - |-
               ls /tmp/ovpn/
-              && cp /tmp/ovpn/* /etc/openvpn/custom/
-              && echo "Done"
-              && ls /etc/openvpn/custom/
+              cp /tmp/ovpn/* /etc/openvpn/custom/
+              echo "Done"
+              ls /etc/openvpn/custom/
           volumeMounts:
             - name: openvpn-config-volume
               mountPath: /tmp/ovpn
@@ -47,6 +47,10 @@ spec:
           image: haugene/transmission-openvpn
           ports:
             - containerPort: 9091
+          # command: ["/bin/sh", "-c"]
+          # args:
+          #   - |-
+          #     sleep infinity
           envFrom:
             - secretRef:
                 name: transmission-vpn-credentials

@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: transmission-config
-  namespace: transmission
+  namespace: applications
 data:
   LOCAL_NETWORK: 10.0.0.0/8 # TODO: Maybe set fluxcd variable in cluster configmap
   OPENVPN_CONFIG: udp.sops

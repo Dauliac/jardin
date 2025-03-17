@@ -5,6 +5,8 @@ _: {
     secrets = {
       domain = { };
       admin_hashed_password = { };
+      lets_encrypt_email = { };
+      lets_encrypt_server = { };
     };
   };
 }

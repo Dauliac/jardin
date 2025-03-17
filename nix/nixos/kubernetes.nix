@@ -5,9 +5,8 @@
   ...
 }:
 let
-  inherit (lib) mdDoc mkOption;
+  inherit (lib) mkOption;
   rkeManifestsDir = "${config.services.rke2.dataDir}/server/manifests";
-  cfg = config.jardin;
 in
 {
   options = {
@@ -144,6 +143,8 @@ in
           main() {
             mkdir -p ${rkeManifestsDir}
             declare -rgx DOMAIN=$(cat ${config.sops.secrets.domain.path})
+            declare -rgx LETS_ENCRYPT_EMAIL=$(cat ${config.sops.secrets.lets_encrypt_email.path})
+            declare -rgx LETS_ENCRYPT_SERVER=$(cat ${config.sops.secrets.lets_encrypt_server.path})
             declare -rgx IP_ADDRESS=$(${pkgs.iproute2}/bin/ip -4 addr show ${config.jardin.publicNetworkInterface} | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
             if [[ -z $IP_ADDRESS ]]; then
               printf "Failed to get ip adress of interface ${config.jardin.publicNetworkInterface}\n"

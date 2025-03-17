@@ -29,19 +29,6 @@ spec:
       labels:
         app: prowlarr
     spec:
-      initContainers:
-        - name: configarr
-          image: ghcr.io/gi8lino/configarr:0.0.5
-          args:
-            - --debug
-          env:
-            - name: CONFIGARR__LAUNCHBROWSER
-              value: LaunchBrowser=False
-            - name: CONFIGARR__AUTHENTICATIONMETHOD
-              value: AuthenticationMethod=External
-          volumeMounts:
-            - name: data
-              mountPath: /config
       containers:
         - name: prowlarr
           image: ghcr.io/linuxserver/prowlarr:1.31.2.4975-ls108

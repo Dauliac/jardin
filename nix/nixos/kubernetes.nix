@@ -166,6 +166,9 @@ in
         main() {
           echo "Applying RKE2 cluster manifests..."
           ${pkgs.kubectl}/bin/kubectl apply -f ${../../kube/base/fluxcd.helmchart.cattle.yaml}
+          ${pkgs.kubectl}/bin/kubectl apply -f ${rkeManifestsDir}/cluster.secret.yaml
+          ${pkgs.kubectl}/bin/kubectl apply -f ${rkeManifestsDir}/sops-age.secret.yaml
+
           local cmd="$1"
           local max_retries=30
           local sleep_time=10

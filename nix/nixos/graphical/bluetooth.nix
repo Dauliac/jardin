@@ -6,6 +6,8 @@ _: {
       settings = {
         General = {
           Experimental = true;
+          ControllerMode = "dual";
+          FastConnectable = "true";
         };
       };
     };

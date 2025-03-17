@@ -25,6 +25,7 @@ in
       kubernetes-helm
       kumactl
       fluxcd
+      kustomize
     ];
     services.rke2 = {
       enable = true;

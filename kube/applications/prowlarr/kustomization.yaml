@@ -5,9 +5,4 @@ resources:
   - ./pvc.yaml
   - ./service.yaml
   - ./deployment.yaml
-  - ./config.pvc.yaml
   - ./ingress.yaml
-configMapGenerator:
-  - name: prowlarr-config
-    files:
-      - ./config.xml

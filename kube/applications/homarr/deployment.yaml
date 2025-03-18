@@ -43,5 +43,5 @@ spec:
       volumes:
         - name: config
           persistentVolumeClaim:
-            claimName: homarr-config
+            claimName: homarr-config # TODO: replace it with static config
       restartPolicy: Always

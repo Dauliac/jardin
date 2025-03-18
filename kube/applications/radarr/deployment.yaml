@@ -48,7 +48,7 @@ spec:
       volumes:
         - name: config
           persistentVolumeClaim:
-            claimName: radarr-pvc
+            claimName: radarr-config
         - name: download
           persistentVolumeClaim:
             claimName: download

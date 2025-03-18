@@ -10,4 +10,4 @@ spec:
   resources:
     requests:
       storage: 2Gi
-  volumeName: jellyseerr-config
+  volumeName: radarr-config

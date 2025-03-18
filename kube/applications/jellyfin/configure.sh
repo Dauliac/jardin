@@ -68,7 +68,11 @@ main() {
 
   retry_until_up
 
-  send_curl_request_post "/Startup/Configuration" '{"UICulture":"en-US","MetadataCountryCode":"US","PreferredMetadataLanguage":"en"}' || return 1
+  # TODO: improve fallback
+  send_curl_request_post "/Startup/Configuration" '{"UICulture":"en-US","MetadataCountryCode":"US","PreferredMetadataLanguage":"en"}' || (
+    printf "Jellyfin is already configured\n"
+    return 0
+  )
   send_curl_request_get "/Startup/User"
   send_curl_request_post "/Startup/User" "{\"Name\":\"$JELLYFIN_ADMIN_USER\",\"Password\": \"$JELLYFIN_ADMIN_PASSWORD\"}" || return 1
   send_curl_request_post "/Library/VirtualFolders?collectionType=movies&refreshLibrary=false&name=Movies" "$movie_json" || return 1

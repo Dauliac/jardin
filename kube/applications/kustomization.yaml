@@ -9,6 +9,7 @@ resources:
   - ./media.pv.yaml
   - ./download.pvc.yaml
   - ./download.pv.yaml
+  - ./kuma.mesh.yaml
   - ./jellyfin
   - ./adguard
   - ./homarr

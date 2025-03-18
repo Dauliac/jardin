@@ -21,6 +21,11 @@ tasks:
     sources:
       - ./lefthook.yml
       - ./flake.nix
+  build:
+    silent: true
+    desc: Build the project
+    cmds:
+      - nix-fast-build --skip-cached --flake ".#packages"
   formatter:nix:
     silent: true
     run: "once"

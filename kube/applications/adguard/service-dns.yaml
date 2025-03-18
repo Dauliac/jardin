@@ -17,4 +17,4 @@ spec:
       port: 53
       targetPort: 53
   type: LoadBalancer
-  loadBalancerIP: "${IP_ADDRESS}"
+  loadBalancerIP: "${DNS_IP_ADDRESS}"

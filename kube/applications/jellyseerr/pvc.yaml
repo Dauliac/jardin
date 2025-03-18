@@ -7,6 +7,6 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-    requests:
-      storage: 1Gi
+  requests:
+    storage: 1Gi
   volumeName: jellyseerr-config

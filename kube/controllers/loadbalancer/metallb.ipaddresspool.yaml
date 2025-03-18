@@ -6,5 +6,5 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-    - "${IP_ADDRESS}-${IP_ADDRESS}"
+    - "${IP_ADDRESS}-${DNS_IP_ADDRESS}"
   autoAssign: true

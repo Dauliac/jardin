@@ -1,9 +1,0 @@
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: kuma
-  namespace: kuma-system
-spec:
-  interval: 10m
-  url: https://kumahq.github.io/charts

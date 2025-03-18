@@ -15,3 +15,6 @@ spec:
                 name: transmission
                 port:
                   number: 9091
+  tls:
+    - hosts:
+        - transmission.${DOMAIN}

@@ -18,3 +18,6 @@ spec:
                   number: 8096
             path: /
             pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - jellyfin.${DOMAIN}

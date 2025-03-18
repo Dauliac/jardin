@@ -16,3 +16,6 @@ spec:
                 name: radarr
                 port:
                   number: 7878
+  tls:
+    - hosts:
+        - radarr.${DOMAIN}

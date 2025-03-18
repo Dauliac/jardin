@@ -16,3 +16,6 @@ spec:
                 name: jackett
                 port:
                   number: 9117
+  tls:
+    - hosts:
+        - homarr.${DOMAIN}

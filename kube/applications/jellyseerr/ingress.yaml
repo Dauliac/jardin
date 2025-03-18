@@ -16,3 +16,6 @@ spec:
                 name: jellyseerr
                 port:
                   number: 5055
+  tls:
+    - hosts:
+        - jellyseerr.${DOMAIN}

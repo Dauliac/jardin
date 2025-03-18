@@ -16,3 +16,6 @@ spec:
                 name: adguard-web
                 port:
                   number: 80
+  tls:
+    - hosts:
+        - adguardhome.${DOMAIN}

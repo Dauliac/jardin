@@ -9,7 +9,6 @@ spec:
   issuerRef:
     name: cloudflare-dns01
     kind: ClusterIssuer
-  commonName: "*.${DOMAIN}"
   dnsNames:
     - "*.${DOMAIN}"
     - "${DOMAIN}"

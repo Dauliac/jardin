@@ -129,11 +129,21 @@ in
               printf "Failed to get domain from file ${config.sops.secrets.domain.path}\n"
               exit 1
             fi
+            if [[ -z $LETS_ENCRYPT_EMAIL ]]; then
+              printf "Failed to get let's encrypt email from file ${config.sops.secrets.lets_encrypt_email.path}\n"
+              exit 1
+            fi
+            if [[ -z $LETS_ENCRYPT_SERVER ]]; then
+              printf "Failed to get let's encrypt server from file ${config.sops.secrets.lets_encrypt_server.path}\n"
+              exit 1
+            fi
 
             ${pkgs.kubectl}/bin/kubectl create secret generic cluster-config \
               --namespace=flux-system \
               --from-literal=DOMAIN="$DOMAIN" \
               --from-literal=IP_ADDRESS="$IP_ADDRESS" \
+              --from-literal=LETS_ENCRYPT_EMAIL="$LETS_ENCRYPT_EMAIL" \
+              --from-literal=LETS_ENCRYPT_SERVER="$LETS_ENCRYPT_SERVER" \
               --dry-run=client -o yaml > ${rkeManifestsDir}/cluster.secret.yaml
           }
           main

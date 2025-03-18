@@ -2,7 +2,6 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  annotations:
   labels:
     app.kubernetes.io/instance: jellyfin
     app.kubernetes.io/name: jellyfin
@@ -10,16 +9,6 @@ metadata:
 spec:
   rules:
     - host: jellyfin.${DOMAIN}
-      http:
-        paths:
-          - backend:
-              service:
-                name: jellyfin
-                port:
-                  number: 8096
-            path: /
-            pathType: ImplementationSpecific
-    - host: jellyfin.jardin
       http:
         paths:
           - backend:

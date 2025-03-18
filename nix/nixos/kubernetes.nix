@@ -69,7 +69,7 @@ in
           StartLimitIntervalSec = 600;
         };
       };
-    systemd.services.emplace-sops-secret =
+    systemd.services.emplace-rke-sops-secret =
       let
         sopsKeyFile = config.sops.age.keyFile;
         outputFile = "${rkeManifestsDir}/sops-age.secret.yaml";
@@ -156,56 +156,58 @@ in
           StartLimitIntervalSec = 600;
         };
       };
-  systemd.services.apply-rke2-manifests =
-    let
-      script = pkgs.writers.writeBash "apply-rke2-manifests" ''
-        set -o errexit
-        set -o pipefail
-        set -o nounset
+    systemd.services.apply-rke2-manifests =
+      let
+        script = pkgs.writers.writeBash "apply-rke2-manifests" ''
+          set -o errexit
+          set -o pipefail
+          set -o nounset
 
-        main() {
-          echo "Applying RKE2 cluster manifests..."
-          ${pkgs.kubectl}/bin/kubectl apply -f ${../../kube/base/fluxcd.helmchart.cattle.yaml}
-          ${pkgs.kubectl}/bin/kubectl apply -f ${rkeManifestsDir}/cluster.secret.yaml
-          ${pkgs.kubectl}/bin/kubectl apply -f ${rkeManifestsDir}/sops-age.secret.yaml
+          main() {
+            echo "Applying RKE2 cluster manifests..."
+            ${pkgs.kubectl}/bin/kubectl apply -f ${../../kube/base/fluxcd.helmchart.cattle.yaml}
+            ${pkgs.kubectl}/bin/kubectl apply -f ${rkeManifestsDir}/cluster.secret.yaml
+            ${pkgs.kubectl}/bin/kubectl apply -f ${rkeManifestsDir}/sops-age.secret.yaml
 
-          local cmd="$1"
-          local max_retries=30
-          local sleep_time=10
-          local attempt=0
-          until ( \
-            ${pkgs.kubectl}/bin/kubectl apply -f ${../../kube/base/jardin.gitrepository.yaml} \
-            && ${pkgs.kubectl}/bin/kubectl apply -f ${../../kube/base/jardin.kustomization.yaml} \
-          ); do
-            attempt=$((attempt + 1))
-            echo "Attempt $attempt failed, retrying in $sleep_time seconds..."
-            if [[ $attempt -ge $max_retries ]]; then
-              echo "Max retries reached, exiting with failure."
-              exit 1
-            fi
-            sleep $sleep_time
-          done
-          echo "Manifests applied successfully"
-        }
+            local max_retries=30
+            local sleep_time=10
+            local attempt=0
+            until ( \
+              ${pkgs.kubectl}/bin/kubectl apply -f ${../../kube/base/jardin.gitrepository.yaml} \
+              && ${pkgs.kubectl}/bin/kubectl apply -f ${../../kube/base/jardin.kustomization.yaml} \
+            ); do
+              attempt=$((attempt + 1))
+              echo "Attempt $attempt failed, retrying in $sleep_time seconds..."
+              if [[ $attempt -ge $max_retries ]]; then
+                echo "Max retries reached, exiting with failure."
+                exit 1
+              fi
+              sleep $sleep_time
+            done
+            echo "Manifests applied successfully"
+          }
 
-        main
-      '';
-    in
-    {
-      description = "Apply Kubernetes manifests after RKE2 starts";
-      after = [ "rke2-server.service" "network.target" ];
-      wants = [ "rke2-server.service" ];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        User = "root";
-        Environment = "KUBECONFIG=${kubeConfig}";
-        ExecStart = script;
-        Restart = "on-failure";
-        RestartSec = 10;
-        StartLimitBurst = 100;
-        StartLimitIntervalSec = 600;
+          main
+        '';
+      in
+      {
+        description = "Apply Kubernetes manifests after RKE2 starts";
+        after = [
+          "rke2-server.service"
+          "network.target"
+        ];
+        wants = [ "rke2-server.service" ];
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig = {
+          Type = "oneshot";
+          User = "root";
+          Environment = "KUBECONFIG=${kubeConfig}";
+          ExecStart = script;
+          Restart = "on-failure";
+          RestartSec = 10;
+          StartLimitBurst = 100;
+          StartLimitIntervalSec = 600;
+        };
       };
-    };
   };
 }

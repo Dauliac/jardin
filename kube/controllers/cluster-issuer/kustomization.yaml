@@ -2,3 +2,9 @@
 namespace: cert-manager
 resources:
   - ./cluster-issuer.yaml
+secretGenerator:
+  - name: cert-manager-cloudflare-api-token
+    files:
+      - api-key=./api-key.sops.txt
+configurations:
+  - ./namereference.yaml

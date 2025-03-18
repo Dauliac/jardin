@@ -6,7 +6,7 @@ set -o nounset
 
 # NOTE: https://github.com/jellyfin/jellyfin/discussions/7460
 
-readonly URL="http://jellyfin:8096"
+readonly URL="http://jellyfin.applications.svc.cluster.local:8096"
 readonly CONFIG_PATH="/etc/configure-jellyfin"
 readonly MOVIE_JSON_PATH="$CONFIG_PATH/movies.json"
 # readonly TV_SHOW_JSON_PATH="$CONFIG_PATH/tv_show.json"

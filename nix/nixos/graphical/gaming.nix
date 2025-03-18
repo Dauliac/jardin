@@ -5,4 +5,5 @@ _: {
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
   };
+  services.sunshine.enable = true;
 }

@@ -3,5 +3,3 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: applications
-  label:
-    kuma.io/sidecar-injection: enabled

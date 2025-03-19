@@ -5,7 +5,7 @@ metadata:
   name: homarr
 spec:
   rules:
-    - host: homarr.${DOMAIN}
+    - host: ${DOMAIN}
       http:
         paths:
           - path: /
@@ -17,4 +17,4 @@ spec:
                   number: 80
   tls:
     - hosts:
-        - homarr.${DOMAIN}
+        - ${DOMAIN}

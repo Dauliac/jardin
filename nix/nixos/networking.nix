@@ -4,7 +4,7 @@ _: {
       "9.9.9.9"
       "1.1.1.1"
     ];
-    # dhcpcd.enable = true;
+    firewall.enable = false;
     interfaces.wlp0s20f3 = {
       ipv4.addresses = [
         {

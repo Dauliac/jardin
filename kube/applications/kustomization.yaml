@@ -17,4 +17,4 @@ resources:
   - ./radarr
   - ./transmission
   - ./prowlarr
-  # - ./jackett
+  - ./jackett

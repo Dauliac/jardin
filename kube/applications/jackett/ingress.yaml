@@ -18,4 +18,4 @@ spec:
                   number: 9117
   tls:
     - hosts:
-        - homarr.${DOMAIN}
+        - jackett.${DOMAIN}

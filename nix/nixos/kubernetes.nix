@@ -22,6 +22,7 @@ in
     environment.systemPackages = with pkgs; [
       kubectl
       k9s
+      jq
       kubernetes-helm
       kumactl
       fluxcd

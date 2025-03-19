@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: homarr
-          image: ghcr.io/ajnart/homarr:latest
+          image: ghcr.io/homarr-labs/homarr:latest
           ports:
             - containerPort: 7575
               name: homarr

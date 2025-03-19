@@ -4,6 +4,12 @@ kind: Kustomization
 namespace: applications
 resources:
   - ./deployment.yaml
+  - ./pv.yaml
+  - ./database.pvc.yaml
   - ./pvc.yaml
   - ./service.yaml
   - ./ingress.yaml
+secretGenerator:
+  - name: homarr-secret-encryption-key
+    envs:
+      - ./key.sops.env

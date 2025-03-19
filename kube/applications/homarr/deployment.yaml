@@ -41,14 +41,9 @@ spec:
             - secretRef:
                 name: homarr-secret-encryption-key
           volumeMounts:
-            - name: config
-              mountPath: /app/data/configs
             - name: database
               mountPath: /app/data/db
       volumes:
-        - name: config
-          persistentVolumeClaim:
-            claimName: homarr-config # TODO: replace it with static config
         - name: database
           persistentVolumeClaim:
             claimName: homarr-database

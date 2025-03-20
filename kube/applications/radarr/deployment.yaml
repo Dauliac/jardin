@@ -42,9 +42,9 @@ spec:
             - name: config
               mountPath: /config
             - name: download
-              mountPath: /downloads
+              mountPath: /data/downloads
             - name: media
-              mountPath: /media
+              mountPath: /data/media
       volumes:
         - name: config
           persistentVolumeClaim:

@@ -43,8 +43,8 @@ spec:
               mountPath: /config
             - name: download
               mountPath: /downloads
-            - name: movies
-              mountPath: /movies
+            - name: media
+              mountPath: /media
       volumes:
         - name: config
           persistentVolumeClaim:
@@ -52,6 +52,6 @@ spec:
         - name: download
           persistentVolumeClaim:
             claimName: download
-        - name: movies
+        - name: media
           persistentVolumeClaim:
             claimName: media

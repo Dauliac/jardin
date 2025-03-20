@@ -47,10 +47,6 @@ spec:
           image: haugene/transmission-openvpn
           ports:
             - containerPort: 9091
-          # command: ["/bin/sh", "-c"]
-          # args:
-          #   - |-
-          #     sleep infinity
           envFrom:
             - secretRef:
                 name: transmission-vpn-credentials

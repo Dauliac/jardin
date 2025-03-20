@@ -4,7 +4,7 @@ resources:
   - ./cluster-issuer.yaml
 secretGenerator:
   - name: cert-manager-cloudflare-api-token
-    files:
-      - api-token=./api-key.sops.txt
+    envs:
+      - ./api-key.sops.env
 configurations:
   - ./namereference.yaml

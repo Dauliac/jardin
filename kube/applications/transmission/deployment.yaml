@@ -69,4 +69,4 @@ spec:
           emptyDir: {} # Volume temporaire RW
         - name: data-volume
           persistentVolumeClaim:
-            claimName: download
+            claimName: downloads

@@ -105,6 +105,12 @@ filters:
   - enabled: true
     url: https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt
     name: Hagezi Pro++
+  - enable: true
+    name: SmartTV AGH
+    url: https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/refs/heads/master/SmartTV-AGH.txt
+  - enable: true
+    name: Session replay
+    url: https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/refs/heads/master/SessionReplay.txt
 whitelist_filters: []
 user_rules: []
 dhcp:

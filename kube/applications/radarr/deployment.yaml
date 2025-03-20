@@ -28,7 +28,7 @@ spec:
       containers:
         - name: radarr
           # TODO:  add version
-          image: linuxserver/radarr:latest
+          image: linuxserver/radarr:5.20.2
           ports:
             - containerPort: 7878
           env:

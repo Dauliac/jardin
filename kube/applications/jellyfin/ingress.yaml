@@ -22,3 +22,4 @@ spec:
   tls:
     - hosts:
         - jellyfin.${DOMAIN}
+      secretName: wildcard-cert-jellyfin

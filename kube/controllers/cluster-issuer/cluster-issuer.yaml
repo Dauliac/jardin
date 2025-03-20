@@ -12,7 +12,6 @@ spec:
     solvers:
       - dns01:
           cloudflare:
-            email: "${LETS_ENCRYPT_EMAIL}"
             apiTokenSecretRef:
               name: cert-manager-cloudflare-api-token
-              key: api-key
+              key: api-token

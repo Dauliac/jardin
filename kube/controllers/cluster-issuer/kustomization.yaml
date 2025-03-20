@@ -5,6 +5,6 @@ resources:
 secretGenerator:
   - name: cert-manager-cloudflare-api-token
     files:
-      - api-key=./api-key.sops.txt
+      - api-token=./api-key.sops.txt
 configurations:
   - ./namereference.yaml

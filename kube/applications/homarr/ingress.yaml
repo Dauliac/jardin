@@ -5,7 +5,7 @@ metadata:
   name: homarr
 spec:
   rules:
-    - host: ${DOMAIN}
+    - host: homarr.${DOMAIN}
       http:
         paths:
           - path: /
@@ -17,5 +17,5 @@ spec:
                   number: 80
   tls:
     - hosts:
-        - ${DOMAIN}
+        - homarr.${DOMAIN}
       secretName: wildcard-cert

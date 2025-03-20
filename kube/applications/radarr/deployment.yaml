@@ -4,17 +4,6 @@ kind: Deployment
 metadata:
   name: radarr
   namespace: applications
-  annotations:
-    ignore-check.kube-linter.io/latest-tag: >-
-      FIXME: fix this one
-    ignore-check.kube-linter.io/no-read-only-root-fs: >-
-      FIXME: fix this one
-    ignore-check.kube-linter.io/run-as-non-root: >-
-      FIXME: fix this one
-    ignore-check.kube-linter.io/unset-memory-requirements: >-
-      FIXME: fix this one
-    ignore-check.kube-linter.io/unset-cpu-requirements: >-
-      FIXME: fix this one
 spec:
   replicas: 1
   selector:
@@ -25,10 +14,16 @@ spec:
       labels:
         app: radarr
     spec:
+      securityContext:
+        fsGroup: 1000
       containers:
         - name: radarr
-          # TODO:  add version
           image: linuxserver/radarr:5.20.2
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
           ports:
             - containerPort: 7878
           env:
@@ -38,6 +33,13 @@ spec:
               value: "1000"
             - name: TZ
               value: ${CONFIG_TIMEZONE}
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1024Mi"
+              cpu: "500m"
           volumeMounts:
             - name: config
               mountPath: /config

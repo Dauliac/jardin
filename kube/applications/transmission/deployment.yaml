@@ -56,7 +56,7 @@ spec:
             - name: openvpn-runtime-config
               mountPath: /etc/openvpn/custom
             - name: data-volume
-              mountPath: /data
+              mountPath: /data/downloads
           securityContext:
             capabilities:
               add:

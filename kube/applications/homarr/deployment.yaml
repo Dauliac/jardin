@@ -42,7 +42,7 @@ spec:
                 name: homarr-secret-encryption-key
           volumeMounts:
             - name: database
-              mountPath: /app/data/db
+              mountPath: /appdata
       volumes:
         - name: database
           persistentVolumeClaim:

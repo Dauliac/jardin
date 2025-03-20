@@ -23,6 +23,8 @@ spec:
       labels:
         app: radarr
     spec:
+      securityContext:
+        fsGroup: 1000
       containers:
         - name: radarr
           image: linuxserver/radarr:5.20.2
@@ -37,7 +39,7 @@ spec:
             - name: downloads
               mountPath: /data/downloads
             - name: media
-              mountPath: /data/media
+              mountPath: /data/media/movies
       volumes:
         - name: config
           persistentVolumeClaim:

@@ -4,8 +4,6 @@ kind: HelmRelease
 metadata:
   name: ingress-nginx
   namespace: ingress-nginx-system
-  annotations:
-    metallb.universe.tf/allow-shared-ip: "public-ip-${IP_ADDRESS}"
 spec:
   interval: 5m0s
   chart:
@@ -30,6 +28,8 @@ spec:
         controllerValue: "k8s.io/nginx"
       service:
         loadBalancerIP: "${IP_ADDRESS}"
+        annotations:
+          metallb.universe.tf/allow-shared-ip: "public-ip-${IP_ADDRESS}"
       metrics:
         enabled: true
         serviceMonitor:

@@ -11,10 +11,6 @@ _: {
           address = "10.10.0.20";
           prefixLength = 24;
         }
-        {
-          address = "10.10.0.21";
-          prefixLength = 24;
-        }
       ];
     };
   };

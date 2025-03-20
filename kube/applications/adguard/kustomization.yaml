@@ -4,7 +4,8 @@ kind: Kustomization
 resources:
   - ./pvc.yaml
   - ./deployment.yaml
-  - ./service-dns.yaml
+  - ./dns-tcp.service.yaml
+  - ./dns-udp.service.yaml
   - ./service-web.yaml
   - ./ingress.yaml
 configMapGenerator:

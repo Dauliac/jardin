@@ -113,7 +113,6 @@ in
       let
         inherit (config.networking.interfaces.wlp0s20f3.ipv4) addresses;
         firstIp = (builtins.head addresses).address;
-        lastIp = (builtins.elemAt addresses (builtins.length addresses - 1)).address;
         script = pkgs.writers.writeBash "emplace-rke-manifests" ''
           set -o errexit
           set -o pipefail
@@ -125,16 +124,10 @@ in
             declare -rgx LETS_ENCRYPT_EMAIL=$(cat ${config.sops.secrets.lets_encrypt_email.path})
             declare -rgx LETS_ENCRYPT_SERVER=$(cat ${config.sops.secrets.lets_encrypt_server.path})
             declare -rgx IP_ADDRESS=${firstIp}
-            declare -rgx DNS_IP_ADDRESS=${lastIp}
             if [[ -z $IP_ADDRESS ]]; then
               printf "Failed to get main ip adress of interface\n"
               exit 1
             fi
-            if [[ -z $DNS_IP_ADDRESS ]]; then
-              printf "Failed to get dns ip adress of interface\n"
-              exit 1
-            fi
-
             if [[ -z $DOMAIN ]]; then
               printf "Failed to get domain from file ${config.sops.secrets.domain.path}\n"
               exit 1
@@ -152,7 +145,6 @@ in
               --namespace=flux-system \
               --from-literal=DOMAIN="$DOMAIN" \
               --from-literal=IP_ADDRESS="$IP_ADDRESS" \
-              --from-literal=DNS_IP_ADDRESS="$DNS_IP_ADDRESS" \
               --from-literal=LETS_ENCRYPT_EMAIL="$LETS_ENCRYPT_EMAIL" \
               --from-literal=LETS_ENCRYPT_SERVER="$LETS_ENCRYPT_SERVER" \
               --dry-run=client -o yaml > ${rkeManifestsDir}/cluster.secret.yaml

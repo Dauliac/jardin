@@ -2,8 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: adguard-dns
+  name: adguard-dns-udp
   namespace: applications
+  annotations:
+    metallb.universe.tf/allow-shared-ip: "public-ip-${IP_ADDRESS}"
 spec:
   selector:
     app: adguard
@@ -12,9 +14,5 @@ spec:
       protocol: UDP
       port: 53
       targetPort: 53
-    - name: tcp
-      protocol: TCP
-      port: 53
-      targetPort: 53
   type: LoadBalancer
-  loadBalancerIP: "${DNS_IP_ADDRESS}"
+  loadBalancerIP: "${IP_ADDRESS}"

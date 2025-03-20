@@ -19,3 +19,4 @@ spec:
   tls:
     - hosts:
         - adguardhome.${DOMAIN}
+      secretName: wildcard-cert

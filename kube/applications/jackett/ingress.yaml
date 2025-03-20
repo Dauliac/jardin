@@ -19,3 +19,4 @@ spec:
   tls:
     - hosts:
         - jackett.${DOMAIN}
+      secretName: wildcard-cert

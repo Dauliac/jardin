@@ -19,3 +19,4 @@ spec:
   tls:
     - hosts:
         - jellyseerr.${DOMAIN}
+      secretName: wildcard-cert

@@ -5,7 +5,6 @@ metadata:
   labels:
     app.kubernetes.io/instance: jellyfin
     app.kubernetes.io/name: jellyfin
-    cert-manager.io/cluster-issuer: cloudflare-dns01
   name: jellyfin
 spec:
   rules:
@@ -22,4 +21,4 @@ spec:
   tls:
     - hosts:
         - jellyfin.${DOMAIN}
-      secretName: wildcard-cert-jellyfin
+      secretName: wildcard-cert

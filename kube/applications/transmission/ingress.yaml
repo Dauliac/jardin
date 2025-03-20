@@ -18,3 +18,4 @@ spec:
   tls:
     - hosts:
         - transmission.${DOMAIN}
+      secretName: wildcard-cert

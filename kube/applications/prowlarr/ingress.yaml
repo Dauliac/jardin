@@ -21,3 +21,4 @@ spec:
   tls:
     - hosts:
         - prowlarr.${DOMAIN}
+      secretName: wildcard-cert

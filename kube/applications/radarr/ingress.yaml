@@ -19,3 +19,4 @@ spec:
   tls:
     - hosts:
         - radarr.${DOMAIN}
+      secretName: wildcard-cert

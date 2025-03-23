@@ -14,7 +14,7 @@ spec:
               service:
                 name: flaresolverr
                 port:
-                  number: 80
+                  number: 8191
   tls:
     - hosts:
         - flaresolverr.${DOMAIN}

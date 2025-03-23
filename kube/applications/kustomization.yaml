@@ -10,10 +10,11 @@ resources:
   - ./downloads.pvc.yaml
   - ./downloads.pv.yaml
   - ./kuma.mesh.yaml
-  - ./jellyfin
   - ./adguard
+  - ./flaresolverr
   - ./homarr
+  - ./jellyfin
   - ./jellyseerr
+  - ./prowlarr
   - ./radarr
   - ./transmission
-  - ./prowlarr

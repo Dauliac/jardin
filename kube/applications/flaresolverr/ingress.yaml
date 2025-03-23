@@ -1,0 +1,21 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: flaresolverr
+spec:
+  rules:
+    - host: flaresolverr.${DOMAIN}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: flaresolverr
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - flaresolverr.${DOMAIN}
+      secretName: wildcard-cert

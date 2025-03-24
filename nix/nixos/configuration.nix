@@ -28,5 +28,8 @@
     fd
     vim
     htop
+    runc
+    cri-tools
+    nvidia-container-toolkit
   ];
 }

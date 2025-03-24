@@ -71,16 +71,14 @@ spec:
               memory: 250Mi
               cpu: 200m
           volumeMounts:
-            - name: data
+            - name: config
               mountPath: /config
-            - name: backup
-              mountPath: /config/Backups
       restartPolicy: Always
       automountServiceAccountToken: false
       volumes:
-        - name: data
+        - name: config
           persistentVolumeClaim:
-            claimName: prowlarr-data
+            claimName: prowlarr
         - name: backup
           persistentVolumeClaim:
             claimName: prowlarr-backup

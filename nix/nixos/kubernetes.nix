@@ -19,13 +19,6 @@ in
   };
   config = {
     virtualisation.containerd.enable = true;
-    hardware.nvidia = {
-      modesetting.enable = true;
-      package = config.boot.kernelPackages.nvidiaPackages.latest;
-      open = false;
-      nvidiaSettings = true;
-    };
-    hardware.nvidia-container-toolkit.enable = true;
     jardin.publicNetworkInterface = "wlp0s20f3";
     environment.systemPackages = with pkgs; [
       kubectl
@@ -83,13 +76,31 @@ in
         # https://docs.rke2.io/advanced#configuring-containerd
         script = pkgs.writers.writeBash "generate-nvidia-containerd-config" ''
           cat <<EOF > ${config.services.rke2.dataDir}/agent/etc/containerd/config.toml.tmpl
-          {{ template "base" . }}
-          [plugins.cri.containerd]
+          version = 2
+
+          [plugins."io.containerd.internal.v1.opt"]
+            path = "/var/lib/rancher/rke2/agent/containerd"
+          [plugins."io.containerd.grpc.v1.cri"]
+            stream_server_address = "127.0.0.1"
+            stream_server_port = "10010"
+            enable_selinux = false
+            enable_unprivileged_ports = true
+            enable_unprivileged_icmp = true
+            sandbox_image = "index.docker.io/rancher/mirrored-pause:3.6"
+
+          [plugins."io.containerd.grpc.v1.cri".containerd]
+            snapshotter = "overlayfs"
+            disable_snapshot_annotations = true
             default_runtime_name = "nvidia"
 
-          [plugins."io.containerd.grpc.v1.cri"]
-            enable_cdi = true
-            cdi_spec_dirs = ["/etc/cdi", "/var/run/cdi"]
+          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+            runtime_type = "io.containerd.runc.v2"
+
+          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+            SystemdCgroup = true
+
+          [plugins."io.containerd.grpc.v1.cri".registry]
+            config_path = "/var/lib/rancher/rke2/agent/etc/containerd/certs.d"
 
           [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
             privileged_without_host_devices = false

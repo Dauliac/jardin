@@ -11,6 +11,7 @@ resources:
   - ./downloads.pv.yaml
   - ./kuma.mesh.yaml
   - ./adguard
+  - ./byparr
   - ./flaresolverr
   - ./homarr
   - ./jellyfin

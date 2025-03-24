@@ -15,7 +15,10 @@ spec:
         namespace: nvidia-system
       interval: 1h
   values:
+    driver:
+      enabled: false
     toolkit:
-      env:
-        - name: CONTAINERD_SOCKET
-          value: /run/k3s/containerd/containerd.sock
+      enabled: false
+      # env:
+      #   - name: CONTAINERD_SOCKET
+      #     value: /run/k3s/containerd/containerd.sock

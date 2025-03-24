@@ -19,8 +19,10 @@ in
   };
   config = {
     virtualisation.containerd.enable = true;
+    virtualisation.containers.cdi.dynamic.nvidia.enable = true;
     hardware.nvidia = {
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      modesetting.enable = true;
+      package = config.boot.kernelPackages.nvidiaPackages.latest;
       open = false;
       nvidiaSettings = true;
     };
@@ -83,7 +85,12 @@ in
         script = pkgs.writers.writeBash "generate-nvidia-containerd-config" ''
           cat <<EOF > ${config.services.rke2.dataDir}/agent/etc/containerd/config.toml.tmpl
           {{ template "base" . }}
-          default_runtime_name = "nvidia"
+          [plugins.cri.containerd]
+            default_runtime_name = "nvidia"
+
+          [plugins."io.containerd.grpc.v1.cri"]
+            enable_cdi = true
+            cdi_spec_dirs = ["/etc/cdi", "/var/run/cdi"]
 
           [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
             privileged_without_host_devices = false

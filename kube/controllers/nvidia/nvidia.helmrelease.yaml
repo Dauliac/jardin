@@ -17,6 +17,8 @@ spec:
   values:
     driver:
       enabled: false
+    cdi:
+      enabled: true
     toolkit:
       enabled: false
       env:

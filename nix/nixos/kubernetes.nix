@@ -77,6 +77,37 @@ in
           StartLimitIntervalSec = 600;
         };
       };
+    systemd.services.emplace-rke-containerd-config =
+      let
+        # https://docs.rke2.io/advanced#configuring-containerd
+        script = pkgs.writers.writeBash "generate-nvidia-containerd-config" ''
+          cat <<EOF > ${config.services.rke2.dataDir}/agent/etc/containerd/config.toml.tmpl
+          {{ template "base" . }}
+          default_runtime_name = "nvidia"
+
+
+          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
+            privileged_without_host_devices = false
+            runtime_engine = ""
+            runtime_root = ""
+            runtime_type = "io.containerd.runc.v2"
+
+            [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]
+              BinaryName = "${pkgs.nvidia-docker}/bin/nvidia-container-runtime"
+          EOF
+        '';
+      in
+      {
+        description = "Generate Nvidia containerd config";
+        before = [ "rke2-server.service" ];
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          ExecStart = "${script}";
+        };
+      };
+
     systemd.services.emplace-rke-sops-secret =
       let
         sopsKeyFile = config.sops.age.keyFile;

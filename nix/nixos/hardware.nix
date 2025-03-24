@@ -57,9 +57,5 @@
     enable = true;
     enable32Bit = true;
   };
-  # virtualisation.docker = {
-  #   # enableNvidia = true;
-  #   # extraOptions = "--default-runtime=nvidia";
-  # };
   services.xserver.videoDrivers = [ "nvidia" ];
 }

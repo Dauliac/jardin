@@ -50,9 +50,9 @@ spec:
             - containerPort: 8096
               name: http
               protocol: TCP
-          resources:
-            limits:
-              nvidia.com/gpu: 1
+          # resources:
+          #   limits:
+          #     nvidia.com/gpu: 1
           readinessProbe:
             failureThreshold: 3
             httpGet:

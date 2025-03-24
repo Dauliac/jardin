@@ -85,7 +85,6 @@ in
           {{ template "base" . }}
           default_runtime_name = "nvidia"
 
-
           [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
             privileged_without_host_devices = false
             runtime_engine = ""
@@ -94,6 +93,7 @@ in
 
             [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]
               BinaryName = "${pkgs.nvidia-docker}/bin/nvidia-container-runtime"
+              SystemdCgroup = true
           EOF
         '';
       in

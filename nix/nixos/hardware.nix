@@ -57,12 +57,6 @@
     enable = true;
     enable32Bit = true;
   };
-  hardware.nvidia = {
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-    open = false;
-    nvidiaSettings = true;
-  };
-  hardware.nvidia-container-toolkit.enable = true;
   # virtualisation.docker = {
   #   # enableNvidia = true;
   #   # extraOptions = "--default-runtime=nvidia";

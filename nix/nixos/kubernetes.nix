@@ -18,6 +18,13 @@ in
     };
   };
   config = {
+    virtualisation.containerd.enable = true;
+    hardware.nvidia = {
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      open = false;
+      nvidiaSettings = true;
+    };
+    hardware.nvidia-container-toolkit.enable = true;
     jardin.publicNetworkInterface = "wlp0s20f3";
     environment.systemPackages = with pkgs; [
       kubectl

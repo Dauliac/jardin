@@ -37,9 +37,9 @@ spec:
             - name: config
               mountPath: /config
             - name: downloads
-              mountPath: /data/downloads
+              mountPath: /data/incomplete
             - name: media
-              mountPath: /data/media/movies
+              mountPath: /data/completed
       volumes:
         - name: config
           persistentVolumeClaim:

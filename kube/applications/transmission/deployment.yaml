@@ -55,8 +55,10 @@ spec:
           volumeMounts:
             - name: openvpn-runtime-config
               mountPath: /etc/openvpn/custom
-            - name: data-volume
-              mountPath: /data/downloads
+            - name: data
+              mountPath: /data/completed
+            - name: downloads
+              mountPath: /data/incomplete
           securityContext:
             capabilities:
               add:
@@ -67,6 +69,9 @@ spec:
             secretName: transmission-vpn-openvpn-config
         - name: openvpn-runtime-config
           emptyDir: {} # Volume temporaire RW
-        - name: data-volume
+        - name: downloads
           persistentVolumeClaim:
             claimName: downloads
+        - name: data
+          persistentVolumeClaim:
+            claimName: media

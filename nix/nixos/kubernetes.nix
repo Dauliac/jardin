@@ -19,7 +19,6 @@ in
   };
   config = {
     virtualisation.containerd.enable = true;
-    virtualisation.containers.cdi.dynamic.nvidia.enable = true;
     hardware.nvidia = {
       modesetting.enable = true;
       package = config.boot.kernelPackages.nvidiaPackages.latest;

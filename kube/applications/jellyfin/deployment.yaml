@@ -36,7 +36,7 @@ spec:
         app.kubernetes.io/name: jellyfin
     spec:
       containers:
-        - image: docker.io/linuxserver/jellyfin:10.7.7
+        - image: docker.io/linuxserver/jellyfin:10.10.6
           imagePullPolicy: IfNotPresent
           name: jellyfin
           env:

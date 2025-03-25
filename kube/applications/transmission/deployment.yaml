@@ -28,7 +28,7 @@ spec:
     spec:
       initContainers:
         - name: init-openvpn-config
-          image: alpine:latest # Image légère pour copier les fichiers
+          image: alpine:latest
           command: ["/bin/sh", "-c"]
           args:
             - |-

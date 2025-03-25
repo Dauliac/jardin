@@ -59,6 +59,8 @@ spec:
               mountPath: /data/media
             - name: downloads
               mountPath: /data/downloads
+            - name: config
+              mountPath: /config/transmission-home/
           securityContext:
             capabilities:
               add:
@@ -75,3 +77,6 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: media
+        - name: config
+          persistentVolumeClaim:
+            claimName: transmission-config

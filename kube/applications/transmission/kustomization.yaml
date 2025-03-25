@@ -6,6 +6,8 @@ resources:
   - ./ingress.yaml
   - ./service.yaml
   - ./config.yaml
+  - ./pv.yaml
+  - ./pvc.yaml
   # - ./pvc-config.yaml
 secretGenerator:
   - name: transmission-vpn-credentials

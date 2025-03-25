@@ -79,6 +79,3 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: prowlarr
-        - name: backup
-          persistentVolumeClaim:
-            claimName: prowlarr-backup

@@ -31,5 +31,6 @@
     runc
     cri-tools
     nvidia-container-toolkit
+    nerdctl
   ];
 }

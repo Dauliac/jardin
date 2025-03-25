@@ -38,8 +38,6 @@ spec:
               mountPath: /config
             - name: downloads
               mountPath: /data/downloads
-            - name: media
-              mountPath: /data/media
       volumes:
         - name: config
           persistentVolumeClaim:
@@ -47,6 +45,3 @@ spec:
         - name: downloads
           persistentVolumeClaim:
             claimName: downloads
-        - name: media
-          persistentVolumeClaim:
-            claimName: media

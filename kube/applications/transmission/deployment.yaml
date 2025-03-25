@@ -70,7 +70,7 @@ spec:
           secret:
             secretName: transmission-vpn-openvpn-config
         - name: openvpn-runtime-config
-          emptyDir: {} # Volume temporaire RW
+          emptyDir: {}
         - name: downloads
           persistentVolumeClaim:
             claimName: downloads

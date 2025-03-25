@@ -55,8 +55,6 @@ spec:
           volumeMounts:
             - name: openvpn-runtime-config
               mountPath: /etc/openvpn/custom
-            - name: data
-              mountPath: /data/media
             - name: downloads
               mountPath: /data/downloads
             - name: config
@@ -74,9 +72,6 @@ spec:
         - name: downloads
           persistentVolumeClaim:
             claimName: downloads
-        - name: data
-          persistentVolumeClaim:
-            claimName: media
         - name: config
           persistentVolumeClaim:
             claimName: transmission-config

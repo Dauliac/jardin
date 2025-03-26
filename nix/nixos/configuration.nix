@@ -15,6 +15,7 @@
     ./logind.nix
     ./sleep.nix
     ./sops.nix
+    ./jellyfin.nix
   ];
   system.stateVersion = "24.11";
   zramSwap.enable = true;

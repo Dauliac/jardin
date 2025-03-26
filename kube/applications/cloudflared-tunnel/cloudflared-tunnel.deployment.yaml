@@ -32,7 +32,6 @@ spec:
           image: cloudflare/cloudflared:1710-3f6b1f24d036
           imagePullPolicy: Always
           args:
-            - sleep infinity
             - tunnel
             - --no-autoupdate
             - --config

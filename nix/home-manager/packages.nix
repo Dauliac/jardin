@@ -5,5 +5,6 @@
     vlc
     ryujinx
     shadps4
+    google-chrome
   ];
 }

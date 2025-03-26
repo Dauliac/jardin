@@ -30,6 +30,7 @@
             comin
             deadnix
             sops
+            cloudflared
           ]
           ++ [
             inputs'.nix-fast-build.packages.nix-fast-build

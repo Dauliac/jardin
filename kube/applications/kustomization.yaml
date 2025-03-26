@@ -19,3 +19,4 @@ resources:
   - ./prowlarr
   - ./radarr
   - ./transmission
+  - ./cloudflared-tunnel

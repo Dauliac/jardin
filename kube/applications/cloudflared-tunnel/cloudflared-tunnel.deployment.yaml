@@ -42,7 +42,7 @@ spec:
             - containerPort: 2000
           envFrom:
             - secretRef:
-              name: cloudflared-tunnel-credentials
+                name: cloudflared-tunnel-credentials
           livenessProbe:
             httpGet:
               path: /ready

@@ -54,13 +54,7 @@ spec:
             - name: config
               mountPath: /etc/cloudflared/config
               readOnly: true
-            - name: credentials
-              mountPath: /etc/cloudflared/creds
-              readOnly: true
       volumes:
-        - name: credentials
-          secret:
-            secretName: cloudflared-tunnel-credentials
         - name: config
           configMap:
             name: cloudflared-tunnel-config

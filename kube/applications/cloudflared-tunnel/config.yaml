@@ -1,6 +1,6 @@
 ---
-tunnel: j4rd1-public
-credentials-file: /etc/cloudflared/creds/tunnel.json
+tunnel: f41a79e5-7adc-425a-84ab-64e471b2de7a
+# credentials-file: /etc/cloudflared/creds/tunnel.json
 metrics: 0.0.0.0:2000
 no-autoupdate: true
 originRequest:

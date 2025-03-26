@@ -31,13 +31,17 @@ spec:
         - name: cloudflared
           image: cloudflare/cloudflared:1710-3f6b1f24d036
           imagePullPolicy: Always
+          command:
+            - sh
+            - -c
           args:
-            - tunnel
-            - --no-autoupdate
-            - --config
-            - /etc/cloudflared/config/config.yaml
-            - run
-            - --token=$TOKEN
+            - sleep infinity
+            # - tunnel
+            # - --no-autoupdate
+            # - --config
+            # - /etc/cloudflared/config/config.yaml
+            # - run
+            # - --token=$TOKEN
           ports:
             - containerPort: 2000
           envFrom:

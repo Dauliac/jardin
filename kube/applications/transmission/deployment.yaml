@@ -56,7 +56,7 @@ spec:
             - name: openvpn-runtime-config
               mountPath: /etc/openvpn/custom
             - name: downloads
-              mountPath: /data/downloads
+              mountPath: /data/completed
             - name: config
               mountPath: /config/transmission-home/
           securityContext:

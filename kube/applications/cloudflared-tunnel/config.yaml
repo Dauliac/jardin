@@ -7,9 +7,9 @@ originRequest:
   keepAliveTimeout: 30s
 ingress:
   - hostname: streaming.${DOMAIN}
-    service: https://jellyfin.${DOMAIN}
+    service: http://${IP_ADDRESS}:8096
   - hostname: go.${DOMAIN}
-    service: https://jellyseer.${DOMAIN}
+    service: http://jellyseerr.applications.svc.cluster.local:5055
   - hostname: ssh.${DOMAIN}
-    service: ssh://${IP_ADDRESS}
+    service: ssh://${IP_ADDRESS}:22
   - service: http_status:404

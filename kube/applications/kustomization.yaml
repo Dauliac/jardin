@@ -14,7 +14,7 @@ resources:
   - ./byparr
   - ./flaresolverr
   - ./homarr
-  - ./jellyfin
+  # - ./jellyfin # BUG: until it's impossible to enable nvidia on kube
   - ./jellyseerr
   - ./prowlarr
   - ./radarr

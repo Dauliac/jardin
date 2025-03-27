@@ -6,7 +6,7 @@ no-autoupdate: true
 originRequest:
   keepAliveTimeout: 30s
 ingress:
-  - hostname: streaming.${DOMAIN}
+  - hostname: sun.${DOMAIN}
     service: http://${IP_ADDRESS}:8096
   - hostname: go.${DOMAIN}
     service: http://jellyseerr.applications.svc.cluster.local:5055

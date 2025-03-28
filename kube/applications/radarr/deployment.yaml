@@ -37,7 +37,7 @@ spec:
             - name: config
               mountPath: /config
             - name: downloads
-              mountPath: /data/downloads
+              mountPath: /data/completed
             - name: media
               mountPath: /data/media
       volumes:

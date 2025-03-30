@@ -34,6 +34,8 @@
           ]
           ++ [
             inputs'.nix-fast-build.packages.nix-fast-build
+            inputs'.disko.packages.disko
+            inputs'.disko.packages.disko-install
           ];
         shellHook = ''
           export SOPS_AGE_KEY_FILE="$(git rev-parse --show-toplevel)/age.txt"

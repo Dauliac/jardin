@@ -21,6 +21,7 @@ in
             inputs.nixos-hardware.nixosModules.dell-xps-13-9380
             inputs.nur.modules.nixos.default
             inputs.sops-nix.nixosModules.default
+            inputs.disko.nixosModules.disko
             ./configuration.nix
             {
               i18n.defaultLocale = "fr_FR.UTF-8";

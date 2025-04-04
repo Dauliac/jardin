@@ -19,6 +19,7 @@ in
           sops-nix.overlays.default
           comin.overlays.default
           nur.overlays.default
+          hyprpanel.overlay
         ];
       };
     };

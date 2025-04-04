@@ -1,22 +1,23 @@
 { pkgs, ... }:
 {
   imports = [
-    ./auditd.nix
-    ./comin.nix
-    ./nix.nix
-    ./boot.nix
-    ./kubernetes.nix
-    ./theme.nix
-    ./networking.nix
-    ./sshd.nix
-    ./graphical
     ./android.nix
-    ./users.nix
+    ./auditd.nix
+    ./boot.nix
+    ./comin.nix
+    ./disko.nix
+    ./graphical
+    ./jellyfin.nix
+    ./kubernetes.nix
     ./logind.nix
+    ./modules
+    ./networking.nix
+    ./nix.nix
     ./sleep.nix
     ./sops.nix
-    ./jellyfin.nix
-    ./disko.nix
+    ./sshd.nix
+    ./theme.nix
+    ./users.nix
   ];
   system.stateVersion = "24.11";
   zramSwap.enable = true;

@@ -5,5 +5,7 @@
     ./gaming.nix
     ./bluetooth.nix
     ./gnome.nix
+    ./hyprland.nix
+    ./display.nix
   ];
 }

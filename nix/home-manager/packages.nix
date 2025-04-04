@@ -7,5 +7,6 @@
     ryujinx
     shadps4
     google-chrome
+    # nerd-fonts.iosevka
   ];
 }

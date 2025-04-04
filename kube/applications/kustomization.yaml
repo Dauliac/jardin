@@ -9,7 +9,7 @@ resources:
   - ./media.pv.yaml
   - ./downloads.pvc.yaml
   - ./downloads.pv.yaml
-  - ./kuma.mesh.yaml
+  # - ./kuma.mesh.yaml
   - ./adguard
   - ./byparr
   - ./flaresolverr

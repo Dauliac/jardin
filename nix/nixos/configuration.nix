@@ -18,6 +18,7 @@
     ./sshd.nix
     ./theme.nix
     ./users.nix
+    ./ai.nix
   ];
   system.stateVersion = "24.11";
   zramSwap.enable = true;

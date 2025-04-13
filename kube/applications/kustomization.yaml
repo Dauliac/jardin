@@ -18,5 +18,6 @@ resources:
   - ./jellyseerr
   - ./prowlarr
   - ./radarr
+  - ./sonarr
   - ./transmission
   - ./cloudflared-tunnel

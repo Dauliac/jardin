@@ -1,13 +1,14 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   services.ollama = {
     # package = pkgs.unstable.ollama; # If you want to use the unstable channel package for example
     enable = true;
     acceleration = "cuda"; # Or "rocm"
     # environmentVariables = { # I haven't been able to get this to work, but please see the serviceConfig workaround below
-      # HOME = "/home/ollama";
-      # OLLAMA_MODELS = "/home/ollama/models";
-      # OLLAMA_HOST = "0.0.0.0:11434"; # Make Ollama accesible outside of localhost
-      # OLLAMA_ORIGINS = "http://localhost:8080,http://192.168.0.10:*"; # Allow access, otherwise Ollama returns 403 forbidden due to CORS
+    # HOME = "/home/ollama";
+    # OLLAMA_MODELS = "/home/ollama/models";
+    # OLLAMA_HOST = "0.0.0.0:11434"; # Make Ollama accesible outside of localhost
+    # OLLAMA_ORIGINS = "http://localhost:8080,http://192.168.0.10:*"; # Allow access, otherwise Ollama returns 403 forbidden due to CORS
     #};
   };
 
@@ -32,5 +33,4 @@
   environment.systemPackages = with pkgs; [
     oterm
   ];
-
 }

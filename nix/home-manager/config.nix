@@ -1,7 +1,6 @@
 { inputs, ... }:
 {
   imports = [
-    inputs.hyprpanel.homeManagerModules.hyprpanel
     ./firefox.nix
     ./theme.nix
     ./gnome.nix

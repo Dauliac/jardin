@@ -56,6 +56,7 @@
           smooth-scrolling.enable = true;
         };
       };
+      extensions.force = true;
       extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
         buster-captcha-solver
         clearurls

@@ -47,10 +47,6 @@
       url = "github:datreeio/CRDs-catalog";
       flake = false;
     };
-    hyprpanel = {
-      url = "github:Jas-SinghFSU/HyprPanel";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =

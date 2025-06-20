@@ -15,9 +15,7 @@
     { system, ... }:
     {
       _module.args.pkgs = import inputs.nixpkgs {
-        overlays = config.nixpkgsConfig.overlays ++ [
-          inputs.deadnix.overlays.default
-        ];
+        inherit (config.nixpkgsConfig) overlays;
         inherit system;
         inherit (config.nixpkgsConfig) config;
       };

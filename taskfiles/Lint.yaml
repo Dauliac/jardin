@@ -8,7 +8,6 @@ tasks:
     cmds:
       - |
         trufflehog \
-          --no-update \
           git file://. \
           --exclude-paths tests/e2e/os
   kustomize:

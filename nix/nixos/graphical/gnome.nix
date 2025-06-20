@@ -13,8 +13,8 @@
     desktopManager.gnome.enable = true;
     xkb = {
       layout = "fr";
+      options = "terminate:ctrl_alt_bksp";
     };
-    xkbOptions = "terminate:ctrl_alt_bksp";
   };
 
   environment.gnome.excludePackages = with pkgs; [
@@ -66,7 +66,7 @@
     ];
   };
   environment.systemPackages = with pkgs; [
-    gnome.gnome-tweaks
+    gnome-tweaks
   ];
   programs.kdeconnect = {
     enable = true;

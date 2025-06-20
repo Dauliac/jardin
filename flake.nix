@@ -1,14 +1,19 @@
 {
   description = "Jardin";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
-    flake-parts.url = "github:hercules-ci/flake-parts";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+    };
     comin = {
       url = "github:nlewo/comin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     treefmt-nix.url = "github:numtide/treefmt-nix";
-    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nur = {
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -22,11 +27,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    deadnix.url = "github:astro/deadnix";
-    catppuccin.url = "github:catppuccin/nix";
-    nix-fast-build.url = "github:Mic92/nix-fast-build";
+    catppuccin = {
+      url = "github:catppuccin/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-fast-build = {
+      url = "github:Mic92/nix-fast-build";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
+      url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     json-schema-kube-catalog = {

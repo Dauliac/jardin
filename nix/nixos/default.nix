@@ -27,7 +27,7 @@ in
               i18n.defaultLocale = "fr_FR.UTF-8";
               home-manager = {
                 sharedModules = [
-                  inputs.catppuccin.homeManagerModules.catppuccin
+                  inputs.catppuccin.homeModules.catppuccin
                   inputs.betterfox-nix.homeManagerModules.betterfox
                   {
                     nixpkgs = cfg.nixpkgsConfig;

@@ -28,7 +28,6 @@
             kube-linter
             kubeconform
             comin
-            deadnix
             sops
             cloudflared
           ]

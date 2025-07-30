@@ -51,7 +51,7 @@ in
   config = lib.mkIf cfg.enable {
     hardware.display = {
       outputs.${cfg.connector} = {
-        mode = "${cfg.resolution}@${toString cfg.refreshRate}";
+        mode = "${cfg.resolution}@${toString cfg.refreshRate}e";
         edid = "virtual.bin";
       };
 
@@ -60,8 +60,7 @@ in
         packages = [
           (pkgs.runCommand "edid-virtual" { } ''
             mkdir -p "$out/lib/firmware/edid"
-            base64 -d ${cfg.edidBinary} > "$out/lib/firmware/edid/virtual.bin"
-            )
+            base64 -d > "$out/lib/firmware/edid/virtual.bin" <<$(cat ${cfg.edidBinary}
           '')
         ];
       };

@@ -66,6 +66,9 @@ in
       };
     };
 
-    boot.kernelParams = [ "video=${cfg.connector}:${cfg.resolution}@${toString cfg.refreshRate}e" ];
+    boot.kernelParams = [
+      "drm.edid_firmware=${cfg.connector}:edid/virtual.bin" # <- CRUCIAL
+      "video=${cfg.connector}:${cfg.resolution}@${toString cfg.refreshRate}e"
+    ];
   };
 }

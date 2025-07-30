@@ -5,7 +5,7 @@
 }:
 {
   services.displayManager.autoLogin = {
-    enable = true;
+    # enable = true;
     user = "jardin";
   };
   security.sudo.extraRules = [
@@ -22,10 +22,8 @@
   users = {
     mutableUsers = false;
     groups = {
-      jardin = {
-      };
-      admin = {
-      };
+      jardin = { };
+      admin = { };
     };
     users = {
       jardin = {

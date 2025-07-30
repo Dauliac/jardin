@@ -51,7 +51,7 @@ in
   config = lib.mkIf cfg.enable {
     hardware.display = {
       outputs.${cfg.connector} = {
-        mode = "${cfg.resolution}@${toString cfg.refreshRate}e";
+        mode = "${cfg.resolution}@${toString cfg.refreshRate}";
         edid = "virtual.bin";
       };
 

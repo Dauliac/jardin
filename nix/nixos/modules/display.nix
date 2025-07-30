@@ -60,7 +60,7 @@ in
         packages = [
           (pkgs.runCommand "edid-virtual" { } ''
             mkdir -p "$out/lib/firmware/edid"
-            base64 -d > "$out/lib/firmware/edid/virtual.bin" <<$(cat ${cfg.edidBinary}
+            base64 -d "${cfg.edidBinary}" > "$out/lib/firmware/edid/virtual.bin"
           '')
         ];
       };
